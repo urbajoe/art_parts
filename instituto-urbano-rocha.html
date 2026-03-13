@@ -1,0 +1,1654 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instituto Urbano Rocha — Violão Clássico</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E2C97A;
+    --gold-dim: rgba(201,168,76,0.15);
+    --gold-border: rgba(201,168,76,0.3);
+    --black: #0A0A0A;
+    --dark: #111111;
+    --dark-2: #181818;
+    --dark-3: #1E1E1E;
+    --gray: #888;
+    --gray-light: #BBB;
+    --white: #F5F0E8;
+    --serif: 'Cormorant Garamond', serif;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--black);
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE GRAIN OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 0 clamp(1.5rem, 5vw, 4rem);
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--gold-border);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .nav-logo-icon {
+    width: 36px;
+    height: 36px;
+    position: relative;
+  }
+
+  .nav-logo-icon svg { width: 100%; height: 100%; }
+
+  .nav-logo-text h1 {
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+
+  .nav-logo-text p {
+    font-size: 0.65rem;
+    font-weight: 300;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  .nav-actions { display: flex; gap: 12px; align-items: center; }
+
+  .nav-link {
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: var(--gray-light);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: color 0.2s;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+  }
+  .nav-link:hover { color: var(--gold); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 22px;
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.25s;
+  }
+
+  .btn-gold {
+    background: var(--gold);
+    color: var(--black);
+  }
+  .btn-gold:hover {
+    background: var(--gold-light);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(201,168,76,0.3);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--gold-border);
+  }
+  .btn-outline:hover {
+    background: var(--gold-dim);
+    border-color: var(--gold);
+  }
+
+  /* ── PAGES ── */
+  .page { display: none; min-height: 100vh; padding-top: 72px; }
+  .page.active { display: block; }
+
+  /* ── HOME: HERO ── */
+  .hero {
+    position: relative;
+    min-height: calc(100vh - 72px);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 70% 50%, rgba(201,168,76,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 80% at 10% 80%, rgba(201,168,76,0.04) 0%, transparent 60%),
+      linear-gradient(180deg, var(--black) 0%, var(--dark) 100%);
+  }
+
+  /* Decorative guitar strings */
+  .hero-strings {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 50%;
+    overflow: hidden;
+    opacity: 0.12;
+  }
+
+  .hero-strings::before,
+  .hero-strings::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg, transparent 0%, var(--gold) 20%, var(--gold) 80%, transparent 100%);
+    animation: stringVibrate 3s ease-in-out infinite;
+  }
+
+  .hero-strings::before { left: 20%; animation-delay: 0s; }
+  .hero-strings::after { left: 40%; animation-delay: 0.5s; }
+
+  @keyframes stringVibrate {
+    0%, 100% { transform: scaleX(1); }
+    50% { transform: scaleX(1.5); }
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    padding: clamp(3rem, 8vw, 8rem) clamp(1.5rem, 5vw, 4rem);
+    max-width: 800px;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.1s forwards;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .hero-title {
+    font-family: var(--serif);
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    font-weight: 300;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--white);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.25s forwards;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold);
+    font-weight: 300;
+  }
+
+  .hero-subtitle {
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    font-weight: 300;
+    color: var(--gray-light);
+    line-height: 1.7;
+    max-width: 500px;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s forwards;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.55s forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── STAT BAR ── */
+  .stat-bar {
+    border-top: 1px solid var(--gold-border);
+    border-bottom: 1px solid var(--gold-border);
+    padding: 2.5rem clamp(1.5rem, 5vw, 4rem);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 2rem;
+    background: var(--dark-2);
+  }
+
+  .stat-item { text-align: center; }
+
+  .stat-number {
+    font-family: var(--serif);
+    font-size: 2.8rem;
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    font-weight: 400;
+    color: var(--gray);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+
+  /* ── SECTIONS ── */
+  .section {
+    padding: clamp(4rem, 8vw, 8rem) clamp(1.5rem, 5vw, 4rem);
+  }
+
+  .section-header {
+    margin-bottom: 4rem;
+  }
+
+  .section-eyebrow {
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-eyebrow::before {
+    content: '';
+    display: block;
+    width: 30px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .section-title {
+    font-family: var(--serif);
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    color: var(--white);
+  }
+
+  .section-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  /* ── FEATURES GRID ── */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1px;
+    background: var(--gold-border);
+    border: 1px solid var(--gold-border);
+  }
+
+  .feature-card {
+    background: var(--dark-2);
+    padding: 2.5rem 2rem;
+    transition: background 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.3s;
+    transform-origin: left;
+  }
+
+  .feature-card:hover { background: var(--dark-3); }
+  .feature-card:hover::before { transform: scaleX(1); }
+
+  .feature-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--gold-dim);
+    border: 1px solid var(--gold-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    color: var(--gold);
+  }
+
+  .feature-title {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 0.75rem;
+    line-height: 1.2;
+  }
+
+  .feature-desc {
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: var(--gray);
+    line-height: 1.7;
+  }
+
+  /* ── PHASES SECTION ── */
+  .phases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+
+  .phase-card {
+    background: var(--dark-2);
+    border: 1px solid var(--gold-border);
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+    cursor: pointer;
+  }
+
+  .phase-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s;
+  }
+
+  .phase-card:hover { border-color: var(--gold); transform: translateY(-4px); }
+  .phase-card:hover::after { transform: scaleX(1); }
+
+  .phase-number {
+    font-family: var(--serif);
+    font-size: 5rem;
+    font-weight: 300;
+    color: var(--gold-dim);
+    line-height: 1;
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    letter-spacing: -0.04em;
+  }
+
+  .phase-label {
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.75rem;
+  }
+
+  .phase-title {
+    font-family: var(--serif);
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 1.25rem;
+    line-height: 1.15;
+  }
+
+  .phase-info-item {
+    margin-bottom: 1rem;
+  }
+
+  .phase-info-label {
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .phase-info-label::before {
+    content: '';
+    display: block;
+    width: 14px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .phase-info-text {
+    font-size: 0.85rem;
+    color: var(--gray-light);
+    line-height: 1.6;
+  }
+
+  .br-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(201,168,76,0.12);
+    border: 1px solid var(--gold-border);
+    color: var(--gold);
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    margin-top: 6px;
+  }
+
+  /* ── CTA BANNER ── */
+  .cta-banner {
+    margin: 0 clamp(1.5rem, 5vw, 4rem) clamp(4rem, 8vw, 8rem);
+    padding: 4rem clamp(2rem, 5vw, 5rem);
+    background: linear-gradient(135deg, var(--dark-2) 0%, var(--dark-3) 100%);
+    border: 1px solid var(--gold-border);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-banner::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cta-banner-title {
+    font-family: var(--serif);
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+  }
+
+  .cta-banner-sub {
+    font-size: 0.9rem;
+    color: var(--gray);
+    max-width: 500px;
+    line-height: 1.6;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--gold-border);
+    padding: 3rem clamp(1.5rem, 5vw, 4rem);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    background: var(--dark);
+  }
+
+  footer p {
+    font-size: 0.8rem;
+    color: var(--gray);
+    line-height: 1.6;
+  }
+
+  footer span { color: var(--gold); }
+
+  /* ── DASHBOARD ── */
+  .dashboard-header {
+    padding: 3rem clamp(1.5rem, 5vw, 4rem) 0;
+    border-bottom: 1px solid var(--gold-border);
+  }
+
+  .dashboard-welcome {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .dashboard-title {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1;
+  }
+
+  .dashboard-subtitle {
+    font-size: 0.85rem;
+    color: var(--gold);
+    margin-top: 0.5rem;
+    letter-spacing: 0.05em;
+  }
+
+  /* Phase tabs */
+  .phase-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: none;
+  }
+
+  .phase-tab {
+    padding: 14px 32px;
+    font-family: var(--serif);
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--gray);
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    transition: all 0.25s;
+    letter-spacing: 0.02em;
+    position: relative;
+  }
+
+  .phase-tab:hover { color: var(--gold-light); }
+
+  .phase-tab.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  /* Dashboard content */
+  .dash-content {
+    padding: 3rem clamp(1.5rem, 5vw, 4rem);
+  }
+
+  .phase-panel { display: none; }
+  .phase-panel.active { display: block; }
+
+  .phase-panel-header {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--gold-border);
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .phase-panel-num {
+    font-family: var(--serif);
+    font-size: 5rem;
+    font-weight: 300;
+    color: var(--gold-dim);
+    line-height: 1;
+    flex-shrink: 0;
+    letter-spacing: -0.03em;
+  }
+
+  .phase-panel-info { flex: 1; }
+
+  .phase-panel-label {
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+
+  .phase-panel-title {
+    font-family: var(--serif);
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 300;
+    color: var(--white);
+    margin-bottom: 1rem;
+  }
+
+  .phase-panel-desc {
+    font-size: 0.9rem;
+    color: var(--gray-light);
+    line-height: 1.7;
+    max-width: 600px;
+  }
+
+  /* Repertoire grid */
+  .rep-cols {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+
+  .rep-col-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--gold-border);
+  }
+
+  .rep-col-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--gold-dim);
+    border: 1px solid var(--gold-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+
+  .rep-col-title {
+    font-family: var(--serif);
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  .rep-item {
+    background: var(--dark-2);
+    border: 1px solid rgba(201,168,76,0.12);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 12px;
+    transition: all 0.25s;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+  }
+
+  .rep-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--gold);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.3s;
+  }
+
+  .rep-item:hover { border-color: rgba(201,168,76,0.35); background: var(--dark-3); }
+  .rep-item:hover::before { transform: scaleY(1); }
+
+  .rep-item-title {
+    font-family: var(--serif);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 4px;
+    line-height: 1.2;
+  }
+
+  .rep-item-author {
+    font-size: 0.75rem;
+    color: var(--gold);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .rep-item-desc {
+    font-size: 0.78rem;
+    color: var(--gray);
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+
+  .rep-item-focus {
+    font-size: 0.7rem;
+    color: rgba(201,168,76,0.6);
+    display: flex;
+    gap: 4px;
+  }
+
+  .rep-item-focus strong { color: rgba(201,168,76,0.9); }
+
+  .difficulty-badge {
+    display: inline-block;
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border: 1px solid;
+  }
+
+  .difficulty-beginner { color: #7EC8A4; border-color: rgba(126,200,164,0.3); }
+  .difficulty-intermediate { color: var(--gold); border-color: var(--gold-border); }
+  .difficulty-advanced { color: #E07070; border-color: rgba(224,112,112,0.3); }
+
+  /* ── PROGRESS BAR (decorative) ── */
+  .progress-track {
+    height: 2px;
+    background: rgba(255,255,255,0.06);
+    margin-bottom: 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    animation: progressLoad 1s ease forwards;
+  }
+
+  @keyframes progressLoad {
+    from { width: 0; }
+    to { width: var(--prog); }
+  }
+
+  /* ── INSTITUTO LINK SECTION ── */
+  .instituto-cta {
+    margin-top: 3rem;
+    padding: 2.5rem 2rem;
+    background: linear-gradient(135deg, rgba(201,168,76,0.06) 0%, rgba(201,168,76,0.02) 100%);
+    border: 1px solid var(--gold-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .instituto-cta-text h4 {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+  }
+
+  .instituto-cta-text p {
+    font-size: 0.82rem;
+    color: var(--gray);
+    line-height: 1.6;
+    max-width: 420px;
+  }
+
+  /* ── LOGIN ── */
+  .login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 72px 1.5rem 3rem;
+    position: relative;
+  }
+
+  .login-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 60% at 50% 40%, rgba(201,168,76,0.06) 0%, transparent 70%),
+      var(--black);
+  }
+
+  .login-card {
+    position: relative;
+    z-index: 2;
+    background: var(--dark-2);
+    border: 1px solid var(--gold-border);
+    padding: 3.5rem;
+    width: 100%;
+    max-width: 440px;
+  }
+
+  .login-logo {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .login-logo svg {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 1rem;
+  }
+
+  .login-logo h2 {
+    font-family: var(--serif);
+    font-size: 1.8rem;
+    font-weight: 300;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+
+  .login-logo p {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .form-field {
+    margin-bottom: 1.25rem;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 8px;
+  }
+
+  .form-input {
+    width: 100%;
+    background: var(--dark-3);
+    border: 1px solid rgba(201,168,76,0.2);
+    color: var(--white);
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    padding: 12px 16px;
+    outline: none;
+    transition: border-color 0.25s;
+  }
+
+  .form-input:focus { border-color: var(--gold); }
+  .form-input::placeholder { color: var(--gray); }
+
+  .form-input[type="password"] { letter-spacing: 0.15em; }
+
+  .form-submit {
+    width: 100%;
+    margin-top: 0.5rem;
+    padding: 14px;
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+  }
+
+  .login-hint {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.78rem;
+    color: var(--gray);
+  }
+
+  .login-hint a {
+    color: var(--gold);
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .login-hint a:hover { color: var(--gold-light); }
+
+  /* ── ERROR / ALERT ── */
+  .alert {
+    padding: 12px 16px;
+    font-size: 0.8rem;
+    margin-bottom: 1.25rem;
+    display: none;
+  }
+
+  .alert-error {
+    background: rgba(224,112,112,0.1);
+    border: 1px solid rgba(224,112,112,0.3);
+    color: #E07070;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ── RESPONSIVENESS ── */
+  @media (max-width: 640px) {
+    .cta-banner { grid-template-columns: 1fr; }
+    .phase-tabs { overflow-x: auto; }
+    .phase-tab { padding: 12px 20px; white-space: nowrap; }
+    .login-card { padding: 2.5rem 1.75rem; }
+    .instituto-cta { flex-direction: column; }
+    footer { flex-direction: column; text-align: center; }
+  }
+
+  /* ── DIVIDER ── */
+  .gold-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0.3;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--dark); }
+  ::-webkit-scrollbar-thumb { background: var(--gold-border); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+</style>
+</head>
+<body>
+
+<!-- ─── NAVIGATION ─────────────────────── -->
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">
+    <div class="nav-logo-icon">
+      <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="18" cy="22" r="9" stroke="#C9A84C" stroke-width="1.2"/>
+        <circle cx="18" cy="22" r="3" fill="#C9A84C" opacity="0.4"/>
+        <line x1="18" y1="1" x2="18" y2="13" stroke="#C9A84C" stroke-width="1.2"/>
+        <line x1="18" y1="1" x2="24" y2="4" stroke="#C9A84C" stroke-width="1.2"/>
+        <line x1="15" y1="10" x2="21" y2="10" stroke="#C9A84C" stroke-width="1"/>
+        <line x1="16" y1="7" x2="20" y2="7" stroke="#C9A84C" stroke-width="1"/>
+      </svg>
+    </div>
+    <div class="nav-logo-text">
+      <h1>Violão Clássico</h1>
+      <p>Instituto Urbano Rocha</p>
+    </div>
+  </div>
+  <div class="nav-actions">
+    <button class="nav-link" onclick="showPage('home')">Início</button>
+    <button class="nav-link" id="nav-dashboard-link" onclick="goToDashboard()" style="display:none">Meu Curso</button>
+    <button class="btn btn-outline" id="nav-logout-btn" onclick="doLogout()" style="display:none">Sair</button>
+    <button class="btn btn-gold" id="nav-login-btn" onclick="showPage('login')">Entrar</button>
+  </div>
+</nav>
+
+<!-- ─── HOME PAGE ──────────────────────── -->
+<div id="page-home" class="page active">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-strings"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Instituto Urbano Rocha</div>
+      <h2 class="hero-title">
+        Violão<br><em>Clássico</em><br>do Início ao<br>Concerto
+      </h2>
+      <p class="hero-subtitle">
+        Metodologia estruturada em três fases progressivas, com repertório cuidadosamente selecionado e destaque para a rica tradição dos compositores brasileiros.
+      </p>
+      <div class="hero-actions">
+        <button class="btn btn-gold" onclick="showPage('login')">Começar agora</button>
+        <a href="https://urbajoe.github.io/curric_mus/" target="_blank" rel="noopener" class="btn btn-outline">Ver currículo completo ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <div class="stat-bar">
+    <div class="stat-item">
+      <div class="stat-number">45+</div>
+      <div class="stat-label">Anos de Experiência</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">3</div>
+      <div class="stat-label">Fases Progressivas</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">11</div>
+      <div class="stat-label">Compositores no Repertório</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">7</div>
+      <div class="stat-label">Autores Brasileiros</div>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-eyebrow">Diferenciais</div>
+      <h3 class="section-title">Formação <em>completa</em><br>e estruturada</h3>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 19V6l12-3v13M9 19c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm12-3c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/></svg>
+        </div>
+        <div class="feature-title">Repertório Curado</div>
+        <p class="feature-desc">Exercícios técnicos, estudos progressivos e obras selecionadas de mestres como Sor, Carcassi, Villa-Lobos e Brouwer.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <div class="feature-title">Tradição Brasileira</div>
+        <p class="feature-desc">Destaque especial para compositores brasileiros em cada fase — Henrique Pinto, Dilermando Reis, Villa-Lobos e outros.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <div class="feature-title">Método Científico</div>
+        <p class="feature-desc">Pedagogia baseada em neurociência aplicada à música. O Prof. Urbano Rocha integra teoria cognitiva à prática instrumental.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="feature-title">Progressão Clara</div>
+        <p class="feature-desc">Três fases bem definidas com objetivos técnicos e musicais concretos, do iniciante ao aluno em consolidação.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Phases Overview -->
+  <section class="section" style="padding-top:0">
+    <div class="section-header">
+      <div class="section-eyebrow">Estrutura do Curso</div>
+      <h3 class="section-title">As três <em>fases</em><br>da jornada</h3>
+    </div>
+    <div class="phases-grid">
+
+      <div class="phase-card" onclick="showPage('login')">
+        <div class="phase-number">01</div>
+        <div class="phase-label">Fase 1</div>
+        <div class="phase-title">Iniciação e Postura</div>
+        <div class="phase-info-item">
+          <div class="phase-info-label">Conteúdos</div>
+          <div class="phase-info-text">Postura correta, afinação, notas no braço, técnica básica de mão direita e esquerda</div>
+        </div>
+        <div class="phase-info-item">
+          <div class="phase-info-label">Autores Brasileiros</div>
+          <div class="phase-info-text">
+            <div class="br-badge">🇧🇷 Henrique Pinto</div>
+            <div class="br-badge" style="margin-left:4px">🇧🇷 Isaías Sávio</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-card" onclick="showPage('login')">
+        <div class="phase-number">02</div>
+        <div class="phase-label">Fase 2</div>
+        <div class="phase-title">Primeiras Peças e Coordenação</div>
+        <div class="phase-info-item">
+          <div class="phase-info-label">Conteúdos</div>
+          <div class="phase-info-text">Arpejos básicos, escalas simples, leitura de partitura e coordenação motora</div>
+        </div>
+        <div class="phase-info-item">
+          <div class="phase-info-label">Autores Brasileiros</div>
+          <div class="phase-info-text">
+            <div class="br-badge">🇧🇷 Dilermando Reis</div>
+            <div class="br-badge" style="margin-left:4px">🇧🇷 João Pernambuco</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-card" onclick="showPage('login')">
+        <div class="phase-number">03</div>
+        <div class="phase-label">Fase 3</div>
+        <div class="phase-title">Consolidação e Expressão</div>
+        <div class="phase-info-item">
+          <div class="phase-info-label">Conteúdos</div>
+          <div class="phase-info-text">Dinâmica, articulação, pestana, ligados e expressão musical</div>
+        </div>
+        <div class="phase-info-item">
+          <div class="phase-info-label">Autores Brasileiros</div>
+          <div class="phase-info-text">
+            <div class="br-badge">🇧🇷 Villa-Lobos</div>
+            <div class="br-badge" style="margin-left:4px">🇧🇷 Luiz Bonfá</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CTA Banner -->
+  <div class="cta-banner">
+    <div>
+      <div class="cta-banner-title">Pronto para iniciar<br>sua jornada musical?</div>
+      <p class="cta-banner-sub">Acesse o dashboard e explore o conteúdo completo das três fases, com repertório, foco técnico e compositores brasileiros destacados.</p>
+    </div>
+    <button class="btn btn-gold" onclick="showPage('login')">Fazer login agora</button>
+  </div>
+
+  <!-- Instituto info -->
+  <section class="section" style="padding-top:0">
+    <div style="background:var(--dark-2); border:1px solid var(--gold-border); padding:3rem; text-align:center;">
+      <div class="section-eyebrow" style="justify-content:center; margin-bottom:1rem">Informações e Valores</div>
+      <h3 style="font-family:var(--serif);font-size:2rem;font-weight:300;color:var(--white);margin-bottom:0.75rem">Conheça o Instituto</h3>
+      <p style="font-size:0.9rem;color:var(--gray);max-width:480px;margin:0 auto 2rem;line-height:1.7">
+        Planos de aula, valores, currículo do professor e informações completas sobre o Instituto Urbano Rocha.
+      </p>
+      <a href="https://urbajoe.github.io/curric_mus/" target="_blank" rel="noopener" class="btn btn-gold">
+        Acessar site do Instituto ↗
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <div>
+      <p>© 2026 <span>Instituto Urbano Rocha</span></p>
+      <p>Curso de Violão Clássico — 45 anos de excelência em educação musical</p>
+    </div>
+    <a href="https://urbajoe.github.io/curric_mus/" target="_blank" rel="noopener" style="font-size:0.75rem;color:var(--gold);text-decoration:none;letter-spacing:0.1em;text-transform:uppercase">Site do Instituto ↗</a>
+  </footer>
+</div>
+
+<!-- ─── LOGIN PAGE ──────────────────────── -->
+<div id="page-login" class="page">
+  <div class="login-page">
+    <div class="login-bg"></div>
+    <div class="login-card">
+      <div class="login-logo">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="24" cy="30" r="12" stroke="#C9A84C" stroke-width="1.5"/>
+          <circle cx="24" cy="30" r="4" fill="#C9A84C" opacity="0.4"/>
+          <line x1="24" y1="2" x2="24" y2="18" stroke="#C9A84C" stroke-width="1.5"/>
+          <line x1="24" y1="2" x2="32" y2="6" stroke="#C9A84C" stroke-width="1.5"/>
+          <line x1="20" y1="14" x2="28" y2="14" stroke="#C9A84C" stroke-width="1.2"/>
+          <line x1="21" y1="10" x2="27" y2="10" stroke="#C9A84C" stroke-width="1.2"/>
+        </svg>
+        <h2>Bem-vindo</h2>
+        <p>Instituto Urbano Rocha</p>
+      </div>
+
+      <div id="login-error" class="alert alert-error" style="display:none">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        <span id="login-error-msg">Credenciais inválidas.</span>
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">E-mail</label>
+        <input class="form-input" type="email" id="login-email" placeholder="seu@email.com" autocomplete="email">
+      </div>
+      <div class="form-field">
+        <label class="form-label">Senha</label>
+        <input class="form-input" type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+
+      <button class="btn btn-gold form-submit" onclick="doLogin()">Entrar no curso</button>
+
+      <p class="login-hint">
+        Ainda não é aluno? <a href="https://urbajoe.github.io/curric_mus/" target="_blank">Conhecer o Instituto ↗</a>
+      </p>
+      <p class="login-hint" style="margin-top:8px">
+        <a onclick="showPage('home')">← Voltar ao início</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ─── DASHBOARD PAGE ──────────────────── -->
+<div id="page-dashboard" class="page">
+
+  <div class="dashboard-header">
+    <div class="dashboard-welcome">
+      <div>
+        <div class="dashboard-title">Seu Curso</div>
+        <div class="dashboard-subtitle" id="dash-welcome-name">Olá — explore as fases do repertório</div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center">
+        <a href="https://urbajoe.github.io/curric_mus/" target="_blank" rel="noopener" class="btn btn-outline" style="font-size:0.72rem">Site do Instituto ↗</a>
+      </div>
+    </div>
+
+    <div class="phase-tabs" role="tablist">
+      <button class="phase-tab active" onclick="switchPhase(1)" id="tab-1">Fase 1</button>
+      <button class="phase-tab" onclick="switchPhase(2)" id="tab-2">Fase 2</button>
+      <button class="phase-tab" onclick="switchPhase(3)" id="tab-3">Fase 3</button>
+    </div>
+  </div>
+
+  <div class="dash-content">
+
+    <!-- PHASE 1 -->
+    <div class="phase-panel active" id="panel-1">
+      <div class="progress-track"><div class="progress-fill" style="--prog:35%"></div></div>
+      <div class="phase-panel-header">
+        <div class="phase-panel-num">01</div>
+        <div class="phase-panel-info">
+          <div class="phase-panel-label">Fase 1 — Iniciante</div>
+          <div class="phase-panel-title">Iniciação e Postura</div>
+          <p class="phase-panel-desc">Fundamentos da postura, afinação, notas no braço e técnica básica de mão direita e esquerda. A base que sustenta toda a jornada musical.</p>
+        </div>
+      </div>
+
+      <div class="rep-cols">
+        <!-- Exercícios -->
+        <div>
+          <div class="rep-col-header">
+            <div class="rep-col-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div class="rep-col-title">Exercícios Técnicos</div>
+          </div>
+
+          <div class="rep-item">
+            <div class="rep-item-title">Exercícios de Técnica Básica</div>
+            <div class="rep-item-author">
+              Dionisio Aguado
+              <span class="difficulty-badge difficulty-beginner">Iniciante</span>
+            </div>
+            <div class="rep-item-desc">Exercícios fundamentais de postura e digitação para mão esquerda e direita.</div>
+            <div class="rep-item-focus"><strong>Foco:</strong> Postura, afinação, digitação básica</div>
+          </div>
+
+          <div class="rep-item">
+            <div class="rep-item-title">Iniciação ao Violão I — Princípios Básicos</div>
+            <div class="rep-item-author">
+              Henrique Pinto
+              <span class="br-badge">🇧🇷 Brasileiro</span>
+              <span class="difficulty-badge difficulty-beginner">Iniciante</span>
+            </div>
+            <div class="rep-item-desc">Método fundamental de iniciação ao violão com foco em técnica elementar.</div>
+            <div class="rep-item-focus"><strong>Foco:</strong> Notas no braço, técnica de mão direita e esquerda</div>
+          </div>
+        </div>
+
+        <!-- Estudos -->
+        <div>
+          <div class="rep-col-header">
+            <div class="rep-col-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+            </div>
+            <div class="rep-col-title">Estudos Progressivos</div>
+          </div>
+
+          <div class="rep-item">
+            <div class="rep-item-title">Estudos Op. 60 (seleção)</div>
+            <div class="rep-item-author">
+              Matteo Carcassi
+              <span class="difficulty-badge difficulty-beginner">Iniciante</span>
+            </div>
+            <div class="rep-item-desc">Estudos progressivos para desenvolvimento técnico básico e independência de dedos.</div>
+            <div class="rep-item-focus"><strong>Foco:</strong> Independência de dedos, cordas soltas</div>
+          </div>
+        </div>
+
+        <!-- Obras -->
+        <div>
+          <div class="rep-col-header">
+            <div class="rep-col-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <div class="rep-col-title">Obras</div>
+          </div>
+
+          <div class="rep-item">
+            <div class="rep-item-title">Cenas Brasileiras (nível fácil)</div>
+            <div class="rep-item-author">
+              Isaías Sávio
+              <span class="br-badge">🇧🇷 Brasileiro</span>
+              <span class="difficulty-badge difficulty-beginner">Iniciante</span>
+            </div>
+            <div class="rep-item-desc">Peças simples com características rítmicas e melódicas brasileiras.</div>
+            <div class="rep-item-focus"><strong>Foco:</strong> Ritmo, expressão brasileira</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="instituto-cta">
+        <div class="instituto-cta-text">
+          <h4>Currículo completo e valores</h4>
+          <p>Para informações sobre planos de aula, preços e o currículo detalhado do Prof. Urbano Rocha, visite o site oficial do Instituto.</p>
+        </div>
+        <a href="https://urbajoe.github.io/curric_mus/" target="_blank" rel="noopener" class="btn btn-gold">Acessar o Instituto ↗</a>
+      </div>
+    </div>
+
+    <!-- PHASE 2 -->
+    <div class="phase-panel" id="panel-2">
+      <div class="progress-track"><div class="progress-fill" style="--prog:20%"></div></div>
+      <div class="phase-panel-header">
+        <div class="phase-panel-num">02</div>
+        <div class="phase-panel-info">
+          <div class="phase-panel-label">Fase 2 — Intermediário</div>
+          <div class="phase-panel-title">Primeiras Peças e Coordenação</div>
+          <p class="phase-panel-desc">Arpejos básicos, escalas simples, leitura de partitura e coordenação motora. O aluno dá os primeiros passos no repertório real do violão clássico.</p>
+        </div>
+      </div>
+
+      <div class="rep-cols">
+        <!-- Exercícios -->
+        <div>
+          <div class="rep-col-header">
+            <div class="rep-col-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div class="rep-col-title">Exercícios Técnicos</div>
+          </div>
+
+          <div class="rep-item">
+            <div class="rep-item-title">120 Exercícios (seleção)</div>
+            <div class="rep-item-author">
+              Mauro Giuliani
+              <span class="difficulty-badge difficulty-intermediate">Intermediário</span>
+            </div>
+            <div class="rep-item-desc">Exercícios de arpejo e técnica de mão direita, essenciais no repertório clássico.</div>
+            <div class="rep-item-focus"><strong>Foco:</strong> Arpejos básicos, dedilhados</div>
+          </div>
+        </div>
+
+        <!-- Estudos -->
+        <div>
+          <div class="rep-col-header">
+            <div class="rep-col-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+            </div>
+            <div class="rep-col-title">Estudos Progressivos</div>
+          </div>
+
+          <div class="rep-item">
+            <div class="rep-item-title">Estudos Op. 35 e Op. 60</div>
+            <div class="rep-item-author">
+              Fernando Sor
+              <span class="difficulty-badge difficulty-intermediate">Intermediário</span>
+            </div>
+            <div class="rep-item-desc">Estudos progressivos para desenvolvimento de coordenação e independência.</div>
+            <div class="rep-item-focus"><strong>Foco:</strong> Arpejos, escalas, coordenação</div>
+          </div>
+        </div>
+
+        <!-- Obras -->
+        <div>
+          <div class="rep-col-header">
+            <div class="rep-col-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <div class="rep-col-title">Obras</div>
+          </div>
+
+          <div class="rep-item">
+            <div class="rep-item-title">Abismo de Rosas (versão simplificada)</div>
+            <div class="rep-item-author">
+              Dilermando Reis
+              <span class="br-badge">🇧🇷 Brasileiro</span>
+              <span class="difficulty-badge difficulty-intermediate">Intermediário</span>
+            </div>
+            <div class="rep-item-desc">Clássico do violão brasileiro em versão acessível ao aluno intermediário.</div>
+            <div class="rep-item-focus"><strong>Foco:</strong> Expressão, leitura de partitura</div>
+          </div>
+
+          <div class="rep-item">
+            <div class="rep-item-title">Sons de Carrilhões</div>
+            <div class="rep-item-author">
+              João Pernambuco
+              <span class="br-badge">🇧🇷 Brasileiro</span>
+              <span class="difficulty-badge difficulty-intermediate">Intermediário</span>
+            </div>
+            <div class="rep-item-desc">Choro brasileiro para desenvolvimento musical e rítmico.</div>
+            <div class="rep-item-focus"><strong>Foco:</strong> Ritmo brasileiro, articulação</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="instituto-cta">
+        <div class="instituto-cta-text">
+          <h4>Currículo completo e valores</h4>
+          <p>Para informações sobre planos de aula, preços e o currículo detalhado do Prof. Urbano Rocha, visite o site oficial do Instituto.</p>
+        </div>
+        <a href="https://urbajoe.github.io/curric_mus/" target="_blank" rel="noopener" class="btn btn-gold">Acessar o Instituto ↗</a>
+      </div>
+    </div>
+
+    <!-- PHASE 3 -->
+    <div class="phase-panel" id="panel-3">
+      <div class="progress-track"><div class="progress-fill" style="--prog:5%"></div></div>
+      <div class="phase-panel-header">
+        <div class="phase-panel-num">03</div>
+        <div class="phase-panel-info">
+          <div class="phase-panel-label">Fase 3 — Em Consolidação</div>
+          <div class="phase-panel-title">Consolidação e Expressão</div>
+          <p class="phase-panel-desc">Dinâmica, articulação, pestana, ligados e expressão musical. O aluno aprofunda o domínio técnico e inicia a construção de uma voz artística própria.</p>
+        </div>
+      </div>
+
+      <div class="rep-cols">
+        <!-- Exercícios -->
+        <div>
+          <div class="rep-col-header">
+            <div class="rep-col-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div class="rep-col-title">Exercícios Técnicos</div>
+          </div>
+          <div class="rep-item">
+            <div style="font-size:0.8rem;color:var(--gray);font-style:italic;padding:0.5rem 0">Nenhum exercício específico nesta fase.</div>
+          </div>
+        </div>
+
+        <!-- Estudos -->
+        <div>
+          <div class="rep-col-header">
+            <div class="rep-col-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+            </div>
+            <div class="rep-col-title">Estudos Progressivos</div>
+          </div>
+
+          <div class="rep-item">
+            <div class="rep-item-title">Estudos Simples 1–5</div>
+            <div class="rep-item-author">
+              Leo Brouwer
+              <span class="difficulty-badge difficulty-intermediate">Intermediário</span>
+            </div>
+            <div class="rep-item-desc">Estudos para consolidação de técnica e expressão musical contemporânea.</div>
+            <div class="rep-item-focus"><strong>Foco:</strong> Dinâmica, articulação, pestana</div>
+          </div>
+
+          <div class="rep-item">
+            <div class="rep-item-title">Estudo em Mi menor</div>
+            <div class="rep-item-author">
+              Heitor Villa-Lobos
+              <span class="br-badge">🇧🇷 Brasileiro</span>
+              <span class="difficulty-badge difficulty-intermediate">Intermediário</span>
+            </div>
+            <div class="rep-item-desc">Estudo de consolidação de técnica e expressão do maior compositor brasileiro.</div>
+            <div class="rep-item-focus"><strong>Foco:</strong> Pestana, ligados, expressão musical</div>
+          </div>
+        </div>
+
+        <!-- Obras -->
+        <div>
+          <div class="rep-col-header">
+            <div class="rep-col-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <div class="rep-col-title">Obras</div>
+          </div>
+
+          <div class="rep-item">
+            <div class="rep-item-title">Suíte Popular Brasileira — Mazurka-Choro</div>
+            <div class="rep-item-author">
+              Heitor Villa-Lobos
+              <span class="br-badge">🇧🇷 Brasileiro</span>
+              <span class="difficulty-badge difficulty-intermediate">Intermediário</span>
+            </div>
+            <div class="rep-item-desc">Obra brasileira de grande importância pedagógica e musical.</div>
+            <div class="rep-item-focus"><strong>Foco:</strong> Expressão, técnica avançada, características brasileiras</div>
+          </div>
+
+          <div class="rep-item">
+            <div class="rep-item-title">Manhã de Carnaval (arranjo facilitado)</div>
+            <div class="rep-item-author">
+              Luiz Bonfá
+              <span class="br-badge">🇧🇷 Brasileiro</span>
+              <span class="difficulty-badge difficulty-intermediate">Intermediário</span>
+            </div>
+            <div class="rep-item-desc">Clássico brasileiro com arranjo acessível, símbolo da bossa nova.</div>
+            <div class="rep-item-focus"><strong>Foco:</strong> Expressão, dinâmica, ligados</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="instituto-cta">
+        <div class="instituto-cta-text">
+          <h4>Currículo completo e valores</h4>
+          <p>Para informações sobre planos de aula, preços e o currículo detalhado do Prof. Urbano Rocha, visite o site oficial do Instituto.</p>
+        </div>
+        <a href="https://urbajoe.github.io/curric_mus/" target="_blank" rel="noopener" class="btn btn-gold">Acessar o Instituto ↗</a>
+      </div>
+    </div>
+
+  </div><!-- end dash-content -->
+</div><!-- end dashboard page -->
+
+
+<script>
+  // ── STATE
+  let currentUser = null;
+
+  // Demo credentials
+  const DEMO = { email: 'aluno@instituto.com', password: 'violao123', name: 'Aluno Demo' };
+
+  // ── PAGE ROUTER
+  function showPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    window.scrollTo(0, 0);
+    updateNav();
+  }
+
+  function updateNav() {
+    const loggedIn = !!currentUser;
+    document.getElementById('nav-login-btn').style.display = loggedIn ? 'none' : '';
+    document.getElementById('nav-logout-btn').style.display = loggedIn ? '' : 'none';
+    document.getElementById('nav-dashboard-link').style.display = loggedIn ? '' : 'none';
+  }
+
+  function goToDashboard() {
+    if (currentUser) {
+      document.getElementById('dash-welcome-name').textContent = 'Olá, ' + currentUser.name + ' — explore as fases do repertório';
+      showPage('dashboard');
+    } else {
+      showPage('login');
+    }
+  }
+
+  // ── AUTH
+  function doLogin() {
+    const email = document.getElementById('login-email').value.trim();
+    const pass = document.getElementById('login-password').value;
+    const errEl = document.getElementById('login-error');
+    const errMsg = document.getElementById('login-error-msg');
+
+    errEl.style.display = 'none';
+
+    if (!email || !pass) {
+      errMsg.textContent = 'Preencha todos os campos.';
+      errEl.style.display = 'flex';
+      return;
+    }
+
+    // Accept demo creds OR any email + "violao123"
+    if (pass === 'violao123') {
+      const name = email.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+      currentUser = { email, name };
+      document.getElementById('login-email').value = '';
+      document.getElementById('login-password').value = '';
+      document.getElementById('dash-welcome-name').textContent = 'Olá, ' + currentUser.name + ' — explore as fases do repertório';
+      showPage('dashboard');
+    } else {
+      errMsg.textContent = 'Senha inválida. (Use: violao123)';
+      errEl.style.display = 'flex';
+    }
+  }
+
+  function doLogout() {
+    currentUser = null;
+    updateNav();
+    showPage('home');
+  }
+
+  // Enter key on login
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && document.getElementById('page-login').classList.contains('active')) {
+      doLogin();
+    }
+  });
+
+  // ── PHASE TABS
+  function switchPhase(n) {
+    document.querySelectorAll('.phase-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.phase-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-' + n).classList.add('active');
+    document.getElementById('panel-' + n).classList.add('active');
+
+    // Re-trigger progress animation
+    const fill = document.querySelector('#panel-' + n + ' .progress-fill');
+    if (fill) {
+      fill.style.animation = 'none';
+      fill.offsetHeight; // reflow
+      fill.style.animation = '';
+    }
+  }
+
+  // Initial nav state
+  updateNav();
+</script>
+</body>
+</html>
