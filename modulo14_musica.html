@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>14º Módulo – Escalas Diatônicas de Modo Menor</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --deep: #16213e;
+    --accent: #c9a84c;
+    --accent2: #e8c97e;
+    --cream: #faf6ef;
+    --muted: #6b6b7a;
+    --card: #ffffff;
+    --border: #e2d9c8;
+    --red: #c0392b;
+    --green: #27ae60;
+    --shadow: 0 4px 24px rgba(26,26,46,0.10);
+    --radius: 16px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── LOGIN SCREEN ── */
+  #login-screen {
+    position: fixed; inset: 0;
+    background: linear-gradient(135deg, var(--deep) 0%, #0f3460 60%, #1a1a2e 100%);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999;
+    transition: opacity .5s, transform .5s;
+  }
+  #login-screen.hide {
+    opacity: 0; pointer-events: none; transform: scale(1.04);
+  }
+  .login-card {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 24px;
+    padding: 52px 48px 44px;
+    width: 100%; max-width: 420px;
+    text-align: center;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.4);
+  }
+  .login-logo {
+    width: 72px; height: 72px; margin: 0 auto 20px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+    box-shadow: 0 8px 32px rgba(201,168,76,0.35);
+  }
+  .login-card h1 {
+    font-family: 'Playfair Display', serif;
+    color: #fff; font-size: 1.8rem; font-weight: 700; margin-bottom: 6px;
+  }
+  .login-card p { color: rgba(255,255,255,0.55); font-size: .9rem; margin-bottom: 32px; }
+  .login-label {
+    display: block; text-align: left; color: rgba(255,255,255,0.7);
+    font-size: .8rem; font-weight: 500; letter-spacing: .06em;
+    text-transform: uppercase; margin-bottom: 6px;
+  }
+  .login-input {
+    width: 100%; padding: 13px 16px; margin-bottom: 18px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 10px; color: #fff; font-size: .95rem;
+    font-family: 'DM Sans', sans-serif;
+    outline: none; transition: border-color .2s;
+  }
+  .login-input:focus { border-color: var(--accent); }
+  .login-input::placeholder { color: rgba(255,255,255,0.3); }
+  .login-btn {
+    width: 100%; padding: 14px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none; border-radius: 10px;
+    color: var(--deep); font-size: 1rem; font-weight: 700;
+    font-family: 'DM Sans', sans-serif; cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+    margin-bottom: 14px;
+  }
+  .login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,168,76,0.4); }
+  .login-error {
+    color: #ff6b6b; font-size: .85rem; margin-top: -8px; margin-bottom: 10px;
+    min-height: 20px;
+  }
+  .login-hint { color: rgba(255,255,255,0.35); font-size: .78rem; }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(100deg, var(--deep) 0%, #0f3460 100%);
+    color: #fff; padding: 0 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 68px; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.18);
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .header-icon {
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+  }
+  .header-title { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; line-height: 1.2; }
+  .header-sub { font-size: .75rem; color: rgba(255,255,255,0.55); font-weight: 400; }
+  .header-actions { display: flex; gap: 10px; align-items: center; }
+  .header-link {
+    padding: 8px 16px; border-radius: 8px; font-size: .82rem; font-weight: 600;
+    text-decoration: none; transition: all .2s; cursor: pointer; border: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-outline { background: transparent; border: 1px solid rgba(201,168,76,0.5); color: var(--accent); }
+  .btn-outline:hover { background: rgba(201,168,76,0.12); }
+  .btn-gold { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: var(--deep); font-weight: 700; }
+  .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(201,168,76,0.35); }
+  .btn-logout { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); font-size: .78rem; }
+  .btn-logout:hover { background: rgba(255,255,255,0.15); }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(120deg, #16213e 0%, #0f3460 55%, #1a1a2e 100%);
+    color: #fff; padding: 56px 32px 48px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '𝄞';
+    position: absolute; top: -20px; right: 5%; font-size: 240px;
+    color: rgba(201,168,76,0.06); line-height: 1; pointer-events: none;
+    font-family: serif;
+  }
+  .hero-badge {
+    display: inline-block; background: rgba(201,168,76,0.15);
+    border: 1px solid rgba(201,168,76,0.4); color: var(--accent2);
+    font-size: .75rem; font-weight: 600; letter-spacing: .1em;
+    text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif; font-size: clamp(2rem,4vw,3.2rem);
+    font-weight: 900; margin-bottom: 14px; line-height: 1.15;
+  }
+  .hero h1 span { color: var(--accent2); }
+  .hero p { color: rgba(255,255,255,0.65); font-size: 1.05rem; max-width: 560px; margin: 0 auto 28px; }
+  .hero-stats { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; }
+  .stat { text-align: center; }
+  .stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--accent2); }
+  .stat-label { font-size: .75rem; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: .08em; }
+
+  /* ── TABS ── */
+  .tabs-wrapper { background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 68px; z-index: 90; }
+  .tabs { display: flex; padding: 0 24px; gap: 0; overflow-x: auto; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    padding: 16px 22px; font-size: .88rem; font-weight: 600; color: var(--muted);
+    cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap;
+    transition: all .2s; display: flex; align-items: center; gap: 7px;
+    background: none; border-top: none; border-left: none; border-right: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab.active { color: var(--ink); border-bottom-color: var(--accent); }
+  .tab-icon { font-size: 1rem; }
+
+  /* ── CONTENT ── */
+  .content { max-width: 900px; margin: 0 auto; padding: 40px 24px 80px; }
+  .tab-panel { display: none; animation: fadeIn .35s ease; }
+  .tab-panel.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--card); border-radius: var(--radius); padding: 32px;
+    margin-bottom: 24px; box-shadow: var(--shadow); border: 1px solid var(--border);
+  }
+  .card-title {
+    font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700;
+    margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+  }
+  .card-title .icon {
+    width: 36px; height: 36px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center; font-size: 18px;
+    flex-shrink: 0;
+  }
+  .icon-gold { background: linear-gradient(135deg,#fef3c7,#fde68a); }
+  .icon-blue { background: linear-gradient(135deg,#dbeafe,#bfdbfe); }
+  .icon-green { background: linear-gradient(135deg,#d1fae5,#a7f3d0); }
+  .icon-rose { background: linear-gradient(135deg,#ffe4e6,#fecdd3); }
+  .icon-purple { background: linear-gradient(135deg,#ede9fe,#ddd6fe); }
+
+  p { line-height: 1.75; color: #333; margin-bottom: 12px; }
+  p:last-child { margin-bottom: 0; }
+
+  /* ── HIGHLIGHT BOXES ── */
+  .highlight {
+    border-radius: 12px; padding: 20px 24px; margin: 20px 0;
+    border-left: 4px solid;
+  }
+  .highlight-gold { background: #fffbeb; border-color: var(--accent); }
+  .highlight-blue { background: #eff6ff; border-color: #3b82f6; }
+  .highlight-green { background: #f0fdf4; border-color: #22c55e; }
+  .highlight h4 { font-weight: 700; margin-bottom: 6px; font-size: .95rem; }
+  .highlight-gold h4 { color: #92400e; }
+  .highlight-blue h4 { color: #1e40af; }
+  .highlight-green h4 { color: #15803d; }
+
+  /* ── SCALE DIAGRAM ── */
+  .scale-diagram {
+    background: #1a1a2e; border-radius: 14px; padding: 24px 28px;
+    margin: 20px 0; color: #fff;
+  }
+  .scale-title { font-family: 'DM Mono', monospace; font-size: .75rem; color: var(--accent); text-transform: uppercase; letter-spacing: .12em; margin-bottom: 14px; }
+  .scale-notes { display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
+  .note {
+    width: 52px; height: 52px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .88rem; font-family: 'DM Mono', monospace;
+    position: relative; flex-shrink: 0;
+  }
+  .note-normal { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+  .note-highlight { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #1a1a2e; border: none; }
+  .note-sharp { background: linear-gradient(135deg, #3b82f6, #60a5fa); color: #fff; border: none; }
+  .note-raised { background: linear-gradient(135deg, #ef4444, #f87171); color: #fff; border: none; }
+  .arrow { color: rgba(255,255,255,0.3); font-size: 1.1rem; padding: 0 2px; }
+  .interval-label {
+    font-family: 'DM Mono', monospace; font-size: .65rem;
+    color: rgba(255,255,255,0.45); text-align: center; margin-top: 6px; width: 52px;
+  }
+  .note-wrapper { display: flex; flex-direction: column; align-items: center; }
+
+  /* ── TABLE ── */
+  .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+  th {
+    background: linear-gradient(100deg, var(--deep), #0f3460);
+    color: #fff; padding: 13px 18px; text-align: left; font-weight: 600;
+    font-size: .8rem; letter-spacing: .05em; text-transform: uppercase;
+  }
+  th:first-child { border-radius: 12px 0 0 0; }
+  th:last-child { border-radius: 0 12px 0 0; }
+  td { padding: 12px 18px; border-bottom: 1px solid var(--border); }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: #faf8f4; }
+  tr:hover td { background: #fef9ec; transition: background .15s; }
+  .acc-badge {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    font-family: 'DM Mono', monospace; font-size: .8rem; font-weight: 600;
+  }
+  .acc-none { background: #e5e7eb; color: #374151; }
+  .acc-sharp { background: #dbeafe; color: #1d4ed8; }
+  .acc-flat { background: #fce7f3; color: #9d174d; }
+
+  /* ── SCALES GRID ── */
+  .scales-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(160px,1fr)); gap: 14px; margin-top: 16px; }
+  .scale-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px; text-align: center; transition: all .2s; cursor: default;
+  }
+  .scale-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(26,26,46,0.12); border-color: var(--accent); }
+  .scale-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+  .scale-acc { font-family: 'DM Mono', monospace; font-size: .78rem; padding: 3px 10px; border-radius: 20px; display: inline-block; }
+  .scale-sharp .scale-acc { background: #dbeafe; color: #1d4ed8; }
+  .scale-flat .scale-acc { background: #fce7f3; color: #9d174d; }
+
+  /* ── FORMS (Concept type) ── */
+  .concept-row { display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 0; }
+  .concept-box {
+    flex: 1; min-width: 200px; border-radius: 14px; padding: 22px; border: 1px solid;
+    position: relative; overflow: hidden;
+  }
+  .concept-box::before {
+    content: attr(data-num);
+    position: absolute; right: 14px; top: 8px;
+    font-family: 'Playfair Display', serif; font-size: 3.5rem; font-weight: 900;
+    opacity: 0.06; line-height: 1;
+  }
+  .concept-harmonica { background: #fffbeb; border-color: #fde68a; }
+  .concept-melodica { background: #eff6ff; border-color: #bfdbfe; }
+  .concept-antiga { background: #f0fdf4; border-color: #a7f3d0; }
+  .concept-box h3 { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 10px; }
+  .concept-harmonica h3 { color: #92400e; }
+  .concept-melodica h3 { color: #1e40af; }
+  .concept-antiga h3 { color: #15803d; }
+  .concept-box p { font-size: .88rem; line-height: 1.65; }
+
+  /* ── QUIZ ── */
+  .quiz-q { margin-bottom: 28px; }
+  .quiz-q h4 { font-weight: 700; margin-bottom: 12px; font-size: 1rem; }
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-opt {
+    padding: 12px 16px; border-radius: 10px; border: 2px solid var(--border);
+    background: #fff; cursor: pointer; font-size: .9rem; font-family: 'DM Sans', sans-serif;
+    transition: all .18s; text-align: left;
+  }
+  .quiz-opt:hover { border-color: var(--accent); background: #fffbeb; }
+  .quiz-opt.correct { border-color: #22c55e; background: #f0fdf4; color: #15803d; font-weight: 600; }
+  .quiz-opt.wrong { border-color: #ef4444; background: #fef2f2; color: #b91c1c; }
+  .quiz-feedback { margin-top: 10px; font-size: .88rem; font-weight: 600; }
+  .quiz-score-bar { background: #e5e7eb; border-radius: 20px; height: 10px; margin: 8px 0; }
+  .quiz-score-fill { height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width .5s; }
+
+  /* ── GLOSSARY ── */
+  .glossary-item { padding: 16px 0; border-bottom: 1px solid var(--border); }
+  .glossary-item:last-child { border-bottom: none; }
+  .glossary-term { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.05rem; margin-bottom: 4px; }
+  .glossary-def { font-size: .9rem; color: #555; line-height: 1.65; }
+
+  /* ── EXERCISE ── */
+  .exercise-header {
+    background: linear-gradient(100deg, var(--deep), #0f3460); color: #fff;
+    border-radius: 12px; padding: 20px 24px; margin-bottom: 20px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .exercise-num { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 900; color: var(--accent2); line-height: 1; }
+  .exercise-info h3 { font-size: 1.1rem; font-weight: 700; }
+  .exercise-info p { font-size: .82rem; color: rgba(255,255,255,0.6); margin: 0; }
+  .exercise-staff {
+    background: #f9f7f2; border: 1px solid var(--border); border-radius: 12px;
+    padding: 24px; text-align: center; min-height: 80px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.5rem; color: #bbb; letter-spacing: 4px;
+  }
+
+  /* ── EXTERNAL LINKS ── */
+  .link-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; }
+  @media(max-width:600px) { .link-cards { grid-template-columns: 1fr; } }
+  .link-card {
+    border-radius: 14px; padding: 24px; text-decoration: none; color: inherit;
+    border: 1px solid; transition: all .2s; display: block;
+  }
+  .link-card:hover { transform: translateY(-3px); }
+  .link-card-enroll { background: #fffbeb; border-color: #fde68a; }
+  .link-card-enroll:hover { box-shadow: 0 8px 24px rgba(201,168,76,0.2); }
+  .link-card-contact { background: #eff6ff; border-color: #bfdbfe; }
+  .link-card-contact:hover { box-shadow: 0 8px 24px rgba(59,130,246,0.15); }
+  .link-card-icon { font-size: 2rem; margin-bottom: 10px; }
+  .link-card h3 { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 6px; }
+  .link-card p { font-size: .85rem; color: var(--muted); margin: 0; }
+  .link-arrow { margin-top: 14px; font-size: .82rem; font-weight: 700; }
+  .link-card-enroll .link-arrow { color: var(--accent); }
+  .link-card-contact .link-arrow { color: #3b82f6; }
+
+  /* ── PROGRESS ── */
+  .progress-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px 24px; margin-bottom: 24px; }
+  .progress-label { font-size: .82rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 8px; }
+  .progress-bar { background: #e5e7eb; border-radius: 20px; height: 8px; }
+  .progress-fill { height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+
+  /* footer */
+  footer {
+    background: var(--deep); color: rgba(255,255,255,0.45); text-align: center;
+    padding: 24px; font-size: .82rem;
+  }
+  footer span { color: var(--accent); }
+
+  @media(max-width:640px) {
+    .hero { padding: 36px 20px 32px; }
+    .card { padding: 22px 18px; }
+    header { padding: 0 16px; }
+    .header-title { font-size: 1rem; }
+    .tabs { padding: 0 8px; }
+    .tab { padding: 14px 14px; font-size: .8rem; }
+    .link-cards { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">🎵</div>
+    <h1>Teoria Musical</h1>
+    <p>14º Módulo — Escalas Diatônicas de Modo Menor</p>
+    <label class="login-label">Usuário</label>
+    <input id="l-user" class="login-input" type="text" placeholder="aluno@email.com" autocomplete="username">
+    <label class="login-label">Senha</label>
+    <input id="l-pass" class="login-input" type="password" placeholder="••••••••" autocomplete="current-password">
+    <div class="login-error" id="login-error"></div>
+    <button class="login-btn" onclick="doLogin()">Entrar →</button>
+    <p class="login-hint">Demo: usuário <strong style="color:rgba(255,255,255,.55)">aluno</strong> / senha <strong style="color:rgba(255,255,255,.55)">1234</strong></p>
+  </div>
+</div>
+
+<!-- ══ HEADER ══ -->
+<header>
+  <div class="header-left">
+    <div class="header-icon">🎼</div>
+    <div>
+      <div class="header-title">Teoria Musical</div>
+      <div class="header-sub">14º Módulo</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <a href="https://candid-tanuki-66ac7b.netlify.app" target="_blank" class="header-link btn-gold">Inscrições</a>
+    <a href="https://sage-narwhal-db712d.netlify.app" target="_blank" class="header-link btn-outline">Professor</a>
+    <button class="header-link btn-logout" onclick="doLogout()">Sair</button>
+  </div>
+</header>
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+  <div class="hero-badge">📚 14º Módulo · Apostila Oficial</div>
+  <h1>Escalas Diatônicas<br><span>de Modo Menor</span></h1>
+  <p>Compreenda as três formas da escala menor, suas armaduras de clave e as escalas relativas.</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">3</div><div class="stat-label">Formas da escala</div></div>
+    <div class="stat"><div class="stat-num">15</div><div class="stat-label">Tonalidades menores</div></div>
+    <div class="stat"><div class="stat-num">12</div><div class="stat-label">Pares relativos</div></div>
+    <div class="stat"><div class="stat-num">2</div><div class="stat-label">Exercícios Bona</div></div>
+  </div>
+</section>
+
+<!-- ══ TABS ══ -->
+<div class="tabs-wrapper">
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('conceito')" data-tab="conceito"><span class="tab-icon">📖</span>Conceitos</button>
+    <button class="tab" onclick="switchTab('formas')" data-tab="formas"><span class="tab-icon">🎵</span>Formas da Escala</button>
+    <button class="tab" onclick="switchTab('armaduras')" data-tab="armaduras"><span class="tab-icon">🔑</span>Armaduras</button>
+    <button class="tab" onclick="switchTab('relativas')" data-tab="relativas"><span class="tab-icon">🔄</span>Escalas Relativas</button>
+    <button class="tab" onclick="switchTab('exercicios')" data-tab="exercicios"><span class="tab-icon">🎶</span>Exercícios</button>
+    <button class="tab" onclick="switchTab('quiz')" data-tab="quiz"><span class="tab-icon">✏️</span>Quiz</button>
+    <button class="tab" onclick="switchTab('glossario')" data-tab="glossario"><span class="tab-icon">📝</span>Glossário</button>
+    <button class="tab" onclick="switchTab('links')" data-tab="links"><span class="tab-icon">🔗</span>Links</button>
+  </div>
+</div>
+
+<!-- ══ CONTENT ══ -->
+<main class="content">
+
+  <!-- CONCEITOS -->
+  <div id="tab-conceito" class="tab-panel active">
+    <div class="progress-wrap">
+      <div class="progress-label">Progresso nesta aba</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="icon icon-gold">📖</div>Introdução às Escalas de Modo Menor</div>
+      <p>A escala de <strong>LA MENOR</strong> é o modelo das escalas do modo menor. Na sua forma mais primitiva — chamada de <em>antiga</em> ou <em>natural</em> — não havia alterações. Porém, essa forma foi modificada por uma razão específica:</p>
+      <div class="highlight highlight-gold">
+        <h4>⚠️ O Problema da Sensível</h4>
+        <p>O VII grau, quando separado do VIII por intervalo de <strong>TOM</strong>, não caracteriza a nota <strong>SENSÍVEL</strong>. Isso enfraquecia a atração melódica em direção à tônica.</p>
+      </div>
+      <p>Para corrigir isso, introduziu-se a <strong>alteração ascendente do VII grau</strong>. Essa modificação, porém, criou um novo problema: um intervalo de <strong>2ª aumentada</strong> entre o VI e o VII graus.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="icon icon-blue">🎯</div>As Três Formas da Escala Menor</div>
+      <div class="concept-row">
+        <div class="concept-box concept-antiga" data-num="1">
+          <h3>① Antiga (Natural)</h3>
+          <p>Forma primitiva, sem alterações. O VII grau fica um tom abaixo da tônica, chamando-se <strong>subtônica</strong>.</p>
+        </div>
+        <div class="concept-box concept-harmonica" data-num="2">
+          <h3>② Harmônica</h3>
+          <p>VII grau elevado (alteração ascendente), criando a sensível. Gera 2ª aumentada entre VI e VII.</p>
+        </div>
+        <div class="concept-box concept-melodica" data-num="3">
+          <h3>③ Melódica</h3>
+          <p>VI e VII elevados na <em>subida</em>; na <em>descida</em>, volta à forma primitiva, evitando a 2ª aumentada.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="icon icon-green">🌐</div>Quantas Tonalidades Menores Existem?</div>
+      <p>Partindo da escala-modelo de <strong>Lá menor</strong> e percorrendo quintas justas, obtemos:</p>
+      <div class="highlight highlight-green">
+        <h4>✅ Total: 15 Tonalidades</h4>
+        <p><strong>1</strong> escala-modelo (Lá menor) · <strong>7</strong> com sustenidos · <strong>7</strong> com bemóis</p>
+      </div>
+      <p>As tonalidades com sustenidos são encontradas por <strong>5ªs Justas ascendentes</strong>; as com bemóis, por <strong>5ªs Justas descendentes</strong> (ou 4ªs ascendentes).</p>
+    </div>
+  </div>
+
+  <!-- FORMAS DA ESCALA -->
+  <div id="tab-formas" class="tab-panel">
+    <div class="card">
+      <div class="card-title"><div class="icon icon-gold">🎵</div>Escala de Lá Menor — Modelo</div>
+      <p>A escala de Lá menor natural (sem acidentes na armadura de clave) serve de modelo para todas as outras escalas do modo menor.</p>
+
+      <div class="scale-diagram">
+        <div class="scale-title">Lá Menor Natural — VII grau = Subtônica (Sol)</div>
+        <div class="scale-notes">
+          <div class="note-wrapper"><div class="note note-highlight">Lá</div><div class="interval-label">I</div></div>
+          <div class="arrow">›</div>
+          <div class="note-wrapper"><div class="note note-normal">Si</div><div class="interval-label">II</div></div>
+          <div class="arrow">›</div>
+          <div class="note-wrapper"><div class="note note-normal">Dó</div><div class="interval-label">III</div></div>
+          <div class="arrow">›</div>
+          <div class="note-wrapper"><div class="note note-normal">Ré</div><div class="interval-label">IV</div></div>
+          <div class="arrow">›</div>
+          <div class="note-wrapper"><div class="note note-normal">Mi</div><div class="interval-label">V</div></div>
+          <div class="arrow">›</div>
+          <div class="note-wrapper"><div class="note note-normal">Fá</div><div class="interval-label">VI</div></div>
+          <div class="arrow">›</div>
+          <div class="note-wrapper"><div class="note note-normal">Sol</div><div class="interval-label">VII ↓</div></div>
+          <div class="arrow">›</div>
+          <div class="note-wrapper"><div class="note note-highlight">Lá</div><div class="interval-label">VIII</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="icon icon-rose">🔥</div>Escala Harmônica — VII grau elevado</div>
+      <p>A forma <strong>Harmônica</strong> eleva o VII grau (Sol → Sol♯), criando a <em>sensível</em> — nota a semitom da tônica. Isso gera um intervalo de <strong>2ª aumentada</strong> entre Fá e Sol♯.</p>
+
+      <div class="scale-diagram">
+        <div class="scale-title">Lá Menor Harmônica — VII elevado (Sol♯ = Sensível)</div>
+        <div class="scale-notes">
+          <div class="note-wrapper"><div class="note note-highlight">Lá</div><div class="interval-label">I</div></div>
+          <div class="arrow">›</div>
+          <div class="note-wrapper"><div class="note note-normal">Si</div><div class="interval-label">II</div></div>
+          <div class="arrow">›</div>
+          <div class="note-wrapper"><div class="note note-normal">Dó</div><div class="interval-label">III</div></div>
+          <div class="arrow">›</div>
+          <div class="note-wrapper"><div class="note note-normal">Ré</div><div class="interval-label">IV</div></div>
+          <div class="arrow">›</div>
+          <div class="note-wrapper"><div class="note note-normal">Mi</div><div class="interval-label">V</div></div>
+          <div class="arrow">›</div>
+          <div class="note-wrapper"><div class="note note-normal">Fá</div><div class="interval-label">VI</div></div>
+          <div class="arrow" style="color:#ef4444">⬆2ªAum</div>
+          <div class="note-wrapper"><div class="note note-raised">Sol♯</div><div class="interval-label">VII ↑</div></div>
+          <div class="arrow">›</div>
+          <div class="note-wrapper"><div class="note note-highlight">Lá</div><div class="interval-label">VIII</div></div>
+        </div>
+      </div>
+
+      <div class="highlight highlight-gold">
+        <h4>📌 Nome: HARMÔNICA</h4>
+        <p>Recebe esse nome pois o VII elevado é essencial para a harmonia tonal — especialmente para o acorde de dominante com sétima (V7).</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="icon icon-blue">🎶</div>Escala Melódica — VI e VII elevados na subida</div>
+      <p>Para evitar a 2ª aumentada (difícil entoação), a forma <strong>Melódica</strong> eleva também o VI grau na subida. Na descida, retorna às notas da forma primitiva.</p>
+
+      <div class="scale-diagram">
+        <div class="scale-title">Lá Menor Melódica — SUBIDA: VI e VII elevados</div>
+        <div class="scale-notes">
+          <div class="note-wrapper"><div class="note note-highlight">Lá</div><div class="interval-label">I</div></div>
+          <div class="arrow">›</div>
+          <div class="note-wrapper"><div class="note note-normal">Si</div><div class="interval-label">II</div></div>
+          <div class="arrow">›</div>
+          <div class="note-wrapper"><div class="note note-normal">Dó</div><div class="interval-label">III</div></div>
+          <div class="arrow">›</div>
+          <div class="note-wrapper"><div class="note note-normal">Ré</div><div class="interval-label">IV</div></div>
+          <div class="arrow">›</div>
+          <div class="note-wrapper"><div class="note note-normal">Mi</div><div class="interval-label">V</div></div>
+          <div class="arrow">›</div>
+          <div class="note-wrapper"><div class="note note-sharp">Fá♯</div><div class="interval-label">VI ↑</div></div>
+          <div class="arrow">›</div>
+          <div class="note-wrapper"><div class="note note-raised">Sol♯</div><div class="interval-label">VII ↑</div></div>
+          <div class="arrow">›</div>
+          <div class="note-wrapper"><div class="note note-highlight">Lá</div><div class="interval-label">VIII</div></div>
+        </div>
+      </div>
+
+      <div class="scale-diagram" style="margin-top:14px">
+        <div class="scale-title">Lá Menor Melódica — DESCIDA: volta à forma primitiva</div>
+        <div class="scale-notes">
+          <div class="note-wrapper"><div class="note note-highlight">Lá</div><div class="interval-label">VIII</div></div>
+          <div class="arrow">‹</div>
+          <div class="note-wrapper"><div class="note note-normal">Sol</div><div class="interval-label">VII ↓</div></div>
+          <div class="arrow">‹</div>
+          <div class="note-wrapper"><div class="note note-normal">Fá</div><div class="interval-label">VI ↓</div></div>
+          <div class="arrow">‹</div>
+          <div class="note-wrapper"><div class="note note-normal">Mi</div><div class="interval-label">V</div></div>
+          <div class="arrow">‹</div>
+          <div class="note-wrapper"><div class="note note-normal">Ré</div><div class="interval-label">IV</div></div>
+          <div class="arrow">‹</div>
+          <div class="note-wrapper"><div class="note note-normal">Dó</div><div class="interval-label">III</div></div>
+          <div class="arrow">‹</div>
+          <div class="note-wrapper"><div class="note note-normal">Si</div><div class="interval-label">II</div></div>
+          <div class="arrow">‹</div>
+          <div class="note-wrapper"><div class="note note-highlight">Lá</div><div class="interval-label">I</div></div>
+        </div>
+      </div>
+
+      <div class="highlight highlight-blue">
+        <h4>📌 Nome: MELÓDICA</h4>
+        <p>Recebe esse nome pois a alteração bidirecional facilita a entoação melódica — especialmente em linhas vocais e instrumentais.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARMADURAS -->
+  <div id="tab-armaduras" class="tab-panel">
+    <div class="card">
+      <div class="card-title"><div class="icon icon-gold">🔑</div>Escalas Menores com Sustenidos (#)</div>
+      <p>As 7 tonalidades menores com sustenidos, obtidas por 5ªs Justas ascendentes a partir de Lá menor:</p>
+      <div class="scales-grid">
+        <div class="scale-card scale-sharp"><div class="scale-name">Mi menor</div><span class="scale-acc">1 #</span></div>
+        <div class="scale-card scale-sharp"><div class="scale-name">Si menor</div><span class="scale-acc">2 #</span></div>
+        <div class="scale-card scale-sharp"><div class="scale-name">Fá♯ menor</div><span class="scale-acc">3 #</span></div>
+        <div class="scale-card scale-sharp"><div class="scale-name">Dó♯ menor</div><span class="scale-acc">4 #</span></div>
+        <div class="scale-card scale-sharp"><div class="scale-name">Sol♯ menor</div><span class="scale-acc">5 #</span></div>
+        <div class="scale-card scale-sharp"><div class="scale-name">Ré♯ menor</div><span class="scale-acc">6 #</span></div>
+        <div class="scale-card scale-sharp"><div class="scale-name">Lá♯ menor</div><span class="scale-acc">7 #</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="icon icon-rose">♭</div>Escalas Menores com Bemóis (♭)</div>
+      <p>As 7 tonalidades menores com bemóis, obtidas por 5ªs Justas descendentes (ou 4ªs ascendentes):</p>
+      <div class="scales-grid">
+        <div class="scale-card scale-flat"><div class="scale-name">Ré menor</div><span class="scale-acc">1 ♭</span></div>
+        <div class="scale-card scale-flat"><div class="scale-name">Sol menor</div><span class="scale-acc">2 ♭</span></div>
+        <div class="scale-card scale-flat"><div class="scale-name">Dó menor</div><span class="scale-acc">3 ♭</span></div>
+        <div class="scale-card scale-flat"><div class="scale-name">Fá menor</div><span class="scale-acc">4 ♭</span></div>
+        <div class="scale-card scale-flat"><div class="scale-name">Si♭ menor</div><span class="scale-acc">5 ♭</span></div>
+        <div class="scale-card scale-flat"><div class="scale-name">Mi♭ menor</div><span class="scale-acc">6 ♭</span></div>
+        <div class="scale-card scale-flat"><div class="scale-name">Lá♭ menor</div><span class="scale-acc">7 ♭</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="icon icon-green">📊</div>Resumo das 15 Tonalidades Menores</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>#</th><th>Escala</th><th>Acidentes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>—</td><td><strong>Lá menor</strong></td><td><span class="acc-badge acc-none">Nenhum</span></td></tr>
+            <tr><td>1</td><td>Mi menor</td><td><span class="acc-badge acc-sharp">1 #</span></td></tr>
+            <tr><td>2</td><td>Si menor</td><td><span class="acc-badge acc-sharp">2 #</span></td></tr>
+            <tr><td>3</td><td>Fá♯ menor</td><td><span class="acc-badge acc-sharp">3 #</span></td></tr>
+            <tr><td>4</td><td>Dó♯ menor</td><td><span class="acc-badge acc-sharp">4 #</span></td></tr>
+            <tr><td>5</td><td>Sol♯ menor</td><td><span class="acc-badge acc-sharp">5 #</span></td></tr>
+            <tr><td>6</td><td>Ré♯ menor</td><td><span class="acc-badge acc-sharp">6 #</span></td></tr>
+            <tr><td>7</td><td>Lá♯ menor</td><td><span class="acc-badge acc-sharp">7 #</span></td></tr>
+            <tr><td>1</td><td>Ré menor</td><td><span class="acc-badge acc-flat">1 ♭</span></td></tr>
+            <tr><td>2</td><td>Sol menor</td><td><span class="acc-badge acc-flat">2 ♭</span></td></tr>
+            <tr><td>3</td><td>Dó menor</td><td><span class="acc-badge acc-flat">3 ♭</span></td></tr>
+            <tr><td>4</td><td>Fá menor</td><td><span class="acc-badge acc-flat">4 ♭</span></td></tr>
+            <tr><td>5</td><td>Si♭ menor</td><td><span class="acc-badge acc-flat">5 ♭</span></td></tr>
+            <tr><td>6</td><td>Mi♭ menor</td><td><span class="acc-badge acc-flat">6 ♭</span></td></tr>
+            <tr><td>7</td><td>Lá♭ menor</td><td><span class="acc-badge acc-flat">7 ♭</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- RELATIVAS -->
+  <div id="tab-relativas" class="tab-panel">
+    <div class="card">
+      <div class="card-title"><div class="icon icon-purple">🔄</div>O que são Escalas Relativas?</div>
+      <p>Chamam-se <strong>ESCALAS RELATIVAS</strong> aquelas que possuem a mesma <em>armadura de clave</em>, mas pertencem a modos diferentes (uma maior, outra menor).</p>
+      <div class="highlight highlight-blue">
+        <h4>📌 Exemplo clássico</h4>
+        <p><strong>Sol Maior (1 #)</strong> e <strong>Mi menor (1 #)</strong> são relativas — compartilham exatamente a mesma armadura de clave.</p>
+      </div>
+      <p>As notas que formam as duas escalas relativas são as mesmas, com exceção do VII grau da escala do <strong>Modo Menor Harmônica</strong> (que tem alteração acidental ascendente).</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="icon icon-gold">📋</div>Tabela Completa — Maiores e suas Relativas Menores</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Escala Maior</th><th>Relativa Menor</th><th>Acidentes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Dó maior</td><td>Lá menor</td><td><span class="acc-badge acc-none">Nenhum</span></td></tr>
+            <tr><td>Ré♭ maior</td><td>Si♭ menor</td><td><span class="acc-badge acc-flat">5 ♭</span></td></tr>
+            <tr><td>Ré maior</td><td>Si menor</td><td><span class="acc-badge acc-sharp">2 #</span></td></tr>
+            <tr><td>Mi♭ maior</td><td>Dó menor</td><td><span class="acc-badge acc-flat">3 ♭</span></td></tr>
+            <tr><td>Mi maior</td><td>Dó♯ menor</td><td><span class="acc-badge acc-sharp">4 #</span></td></tr>
+            <tr><td>Fá maior</td><td>Ré menor</td><td><span class="acc-badge acc-flat">1 ♭</span></td></tr>
+            <tr><td>Sol♭ maior</td><td>Mi♭ menor</td><td><span class="acc-badge acc-flat">6 ♭</span></td></tr>
+            <tr><td>Sol maior</td><td>Mi menor</td><td><span class="acc-badge acc-sharp">1 #</span></td></tr>
+            <tr><td>Lá♭ maior</td><td>Fá menor</td><td><span class="acc-badge acc-flat">4 ♭</span></td></tr>
+            <tr><td>Lá maior</td><td>Fá♯ menor</td><td><span class="acc-badge acc-sharp">3 #</span></td></tr>
+            <tr><td>Si♭ maior</td><td>Sol menor</td><td><span class="acc-badge acc-flat">2 ♭</span></td></tr>
+            <tr><td>Si maior</td><td>Sol♯ menor</td><td><span class="acc-badge acc-sharp">5 #</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="icon icon-green">💡</div>Como Encontrar a Relativa Menor</div>
+      <div class="highlight highlight-green">
+        <h4>Regra prática</h4>
+        <p>A relativa menor sempre está no <strong>VI grau</strong> da escala maior correspondente — ou seja, uma terça menor <em>abaixo</em> da tônica maior.</p>
+      </div>
+      <p>Exemplo: Dó Maior → conte VI graus → <strong>Lá</strong> → Lá menor é a relativa de Dó maior.</p>
+    </div>
+  </div>
+
+  <!-- EXERCÍCIOS -->
+  <div id="tab-exercicios" class="tab-panel">
+    <div class="card">
+      <div class="card-title"><div class="icon icon-rose">🎶</div>Exercícios de Solfejo — Bona 91 e 92</div>
+      <p>Os exercícios a seguir são extraídos do método <strong>Bona</strong>, referência clássica para solfejo e leitura musical. Pratique com atenção às indicações de andamento e articulação.</p>
+    </div>
+
+    <div class="card">
+      <div class="exercise-header">
+        <div class="exercise-num">91</div>
+        <div class="exercise-info">
+          <h3>Exercício 91 — Allegro</h3>
+          <p>Armadura: 1♭ (Ré menor / Fá maior) · Compasso: 4/4 · Andamento: Allegro</p>
+        </div>
+      </div>
+      <div class="highlight highlight-gold">
+        <h4>🎯 Objetivos do Exercício 91</h4>
+        <p>Praticar grupos de tercinas (grupos de 3 notas), ligaduras de expressão e variações rítmicas com colcheias e semicolcheias em andamento rápido. Atenção especial para as notas com bemol acidental (Mi♭, Si♭) que surgem no desenvolvimento.</p>
+      </div>
+      <div class="exercise-staff">
+        𝄞 𝅝𝅥 𝅘𝅥𝅮 𝅘𝅥𝅮 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅮 𝅘𝅥𝅮 𝅘𝅥𝅮 ♩ 𝄽 𝄾 …
+      </div>
+      <p style="margin-top:14px;font-size:.85rem;color:var(--muted)">Veja a partitura completa na página 4 da apostila (PDF em anexo). O exercício contém 10 linhas com marcação de <em>cresc.</em> (crescendo) e sforzando.</p>
+    </div>
+
+    <div class="card">
+      <div class="exercise-header">
+        <div class="exercise-num">92</div>
+        <div class="exercise-info">
+          <h3>Exercício 92 — Andante</h3>
+          <p>Armadura: 1# (Mi menor / Sol maior) · Compasso: 2/4 · Andamento: Andante</p>
+        </div>
+      </div>
+      <div class="highlight highlight-blue">
+        <h4>🎯 Objetivos do Exercício 92</h4>
+        <p>Desenvolver o senso rítmico com grupos de tercinas em andamento moderado. O exercício inclui marcação de pulsação <strong>(1 e 2 e)</strong>, auxiliando na interiorização do compasso binário. Atenção à escala menor harmônica com Dó♯ acidental.</p>
+      </div>
+      <div class="exercise-staff">
+        𝄞 𝅝𝅥 𝅘𝅥𝅮 𝅘𝅥𝅮 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅮 𝅘𝅥𝅮 ♩ 𝄾 …
+      </div>
+      <p style="margin-top:14px;font-size:.85rem;color:var(--muted)">Veja a partitura completa na página 5 da apostila (PDF em anexo). O exercício tem 10 linhas com fermata no compasso final e inclui notas com bemóis acidentais (Mi♭) no desenvolvimento.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="icon icon-green">📌</div>Dicas de Estudo</div>
+      <div class="concept-row">
+        <div class="concept-box concept-antiga" data-num="1">
+          <h3>① Ritmo primeiro</h3>
+          <p>Estude o ritmo separado da melodia. Bata palmas ou use um metrônomo antes de cantar as alturas.</p>
+        </div>
+        <div class="concept-box concept-harmonica" data-num="2">
+          <h3>② Tercinas</h3>
+          <p>As tercinas devem soar <em>exatamente</em> dentro do tempo do compasso. Pratique devagar antes de aumentar o andamento.</p>
+        </div>
+        <div class="concept-box concept-melodica" data-num="3">
+          <h3>③ Acidentes</h3>
+          <p>Marque os acidentes acidentais (♯ e ♭) no texto antes de cantar. Eles aparecem inesperadamente e podem surpreender.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="tab-quiz" class="tab-panel">
+    <div class="card">
+      <div class="card-title"><div class="icon icon-purple">✏️</div>Quiz de Revisão — 14º Módulo</div>
+      <p>Teste seus conhecimentos sobre escalas diatônicas de modo menor. Clique na alternativa correta.</p>
+      <div id="quiz-score-section" style="margin-bottom:20px;">
+        <div style="display:flex;justify-content:space-between;font-size:.85rem;font-weight:600;margin-bottom:6px;">
+          <span>Pontuação</span><span id="score-text">0 / 7</span>
+        </div>
+        <div class="quiz-score-bar"><div class="quiz-score-fill" id="score-fill" style="width:0%"></div></div>
+      </div>
+      <div id="quiz-container"></div>
+      <button onclick="resetQuiz()" style="margin-top:16px;padding:10px 22px;background:var(--ink);color:#fff;border:none;border-radius:10px;font-size:.9rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🔄 Reiniciar Quiz</button>
+    </div>
+  </div>
+
+  <!-- GLOSSÁRIO -->
+  <div id="tab-glossario" class="tab-panel">
+    <div class="card">
+      <div class="card-title"><div class="icon icon-gold">📝</div>Glossário de Termos — Módulo 14</div>
+      <div class="glossary-item">
+        <div class="glossary-term">Sensível</div>
+        <div class="glossary-def">O VII grau da escala quando está a <strong>semitom</strong> (meio tom) da tônica (VIII grau). Cria forte atração melódica em direção à tônica. Presente na escala menor harmônica e melódica (subida).</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Subtônica</div>
+        <div class="glossary-def">O VII grau quando está a um <strong>tom inteiro</strong> da tônica. Ocorre na escala menor natural e na descida da escala melódica. Não possui a atração característica da sensível.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">2ª Aumentada</div>
+        <div class="glossary-def">Intervalo de segunda maior ampliado em um semitom. Na escala menor harmônica, surge entre o VI e o VII grau (ex: Fá – Sol♯ em Lá menor). Considerado de difícil entoação.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Escala Harmônica</div>
+        <div class="glossary-def">Forma da escala menor com o VII grau elevado (acidente ascendente). Usada principalmente em contextos harmônicos, onde o acorde de dominante com sétima requer a sensível.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Escala Melódica</div>
+        <div class="glossary-def">Forma da escala menor com VI e VII graus elevados na subida e notas naturais (forma primitiva) na descida. Resolve o problema da 2ª aumentada da escala harmônica.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Armadura de Clave</div>
+        <div class="glossary-def">Conjunto de sustenidos ou bemóis escritos logo após a clave, no início de cada pauta. Indicam quais notas devem ser alteradas durante toda a peça, definindo a tonalidade.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Escalas Relativas</div>
+        <div class="glossary-def">Par de escalas — uma maior e uma menor — que compartilham a mesma armadura de clave. Ex: Dó maior e Lá menor (ambas sem acidentes). A relativa menor está no VI grau da maior.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Quinta Justa</div>
+        <div class="glossary-def">Intervalo de cinco graus (7 semitons). Ao percorrer quintas justas ascendentes a partir de Lá menor, obtemos as tonalidades com sustenidos. Descendo, obtemos as com bemóis.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Alteração Acidental</div>
+        <div class="glossary-def">Acidente (♯, ♭, ♮) colocado diretamente antes de uma nota, válido somente para aquele compasso. Usado na escala menor harmônica para elevar o VII grau quando este não está na armadura.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LINKS -->
+  <div id="tab-links" class="tab-panel">
+    <div class="card">
+      <div class="card-title"><div class="icon icon-gold">🔗</div>Links Importantes</div>
+      <p>Acesse os recursos do curso diretamente pelos links abaixo.</p>
+      <div class="link-cards">
+        <a href="https://candid-tanuki-66ac7b.netlify.app" target="_blank" class="link-card link-card-enroll">
+          <div class="link-card-icon">🎓</div>
+          <h3>Inscrições no Curso</h3>
+          <p>Faça sua matrícula e tenha acesso a todos os módulos do curso de Teoria Musical.</p>
+          <div class="link-arrow">Acessar → candid-tanuki-66ac7b.netlify.app</div>
+        </a>
+        <a href="https://sage-narwhal-db712d.netlify.app" target="_blank" class="link-card link-card-contact">
+          <div class="link-card-icon">👨‍🏫</div>
+          <h3>Contato do Professor</h3>
+          <p>Entre em contato com o professor para dúvidas, aulas particulares e informações adicionais.</p>
+          <div class="link-arrow">Acessar → sage-narwhal-db712d.netlify.app</div>
+        </a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="icon icon-blue">📧</div>Sobre o Curso</div>
+      <div class="highlight highlight-blue">
+        <h4>14º Módulo — Escalas Diatônicas de Modo Menor</h4>
+        <p>Este módulo faz parte de um curso completo de Teoria Musical. Ao concluir, você estará apto a reconhecer, escrever e cantar as escalas menores nas suas três formas em qualquer tonalidade.</p>
+      </div>
+      <p>Para mais informações sobre outros módulos, inscrições e horários, acesse os links acima ou entre em contato diretamente com o professor.</p>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p>14º Módulo · Escalas Diatônicas de Modo Menor · <span>Teoria Musical</span></p>
+  <p style="margin-top:4px;">Material pedagógico baseado na apostila oficial do módulo.</p>
+</footer>
+
+<script>
+// ── AUTH ──
+function doLogin() {
+  const u = document.getElementById('l-user').value.trim();
+  const p = document.getElementById('l-pass').value.trim();
+  const err = document.getElementById('login-error');
+  if ((u === 'aluno' || u === 'aluno@email.com') && p === '1234') {
+    err.textContent = '';
+    document.getElementById('login-screen').classList.add('hide');
+    setTimeout(() => document.getElementById('login-screen').style.display = 'none', 550);
+  } else {
+    err.textContent = '⚠️ Usuário ou senha incorretos.';
+    document.getElementById('l-pass').value = '';
+  }
+}
+function doLogout() {
+  document.getElementById('login-screen').style.display = 'flex';
+  requestAnimationFrame(() => document.getElementById('login-screen').classList.remove('hide'));
+}
+document.getElementById('l-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('l-user').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('l-pass').focus(); });
+
+// ── TABS ──
+function switchTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  document.querySelector(`[data-tab="${id}"]`).classList.add('active');
+}
+
+// ── QUIZ ──
+const questions = [
+  { q: 'Qual é o nome da forma da escala menor que possui o VII grau elevado?', opts: ['Melódica', 'Harmônica', 'Natural', 'Primitiva'], a: 1 },
+  { q: 'O VII grau a UM TOM da tônica é chamado de:', opts: ['Sensível', 'Dominante', 'Subtônica', 'Mediante'], a: 2 },
+  { q: 'Qual intervalo problemático é criado na escala menor harmônica entre o VI e VII graus?', opts: ['2ª maior', '3ª menor', '2ª aumentada', '2ª diminuta'], a: 2 },
+  { q: 'Na escala menor melódica, na DESCIDA as notas são:', opts: ['Todas elevadas', 'Forma primitiva (natural)', 'Forma harmônica', 'VI elevado e VII natural'], a: 1 },
+  { q: 'Quantas tonalidades existem no modo menor no total?', opts: ['12', '14', '15', '7'], a: 2 },
+  { q: 'Escalas relativas são aquelas que possuem:', opts: ['A mesma tônica', 'A mesma armadura de clave', 'As mesmas notas', 'O mesmo andamento'], a: 1 },
+  { q: 'Qual é a relativa menor de Sol maior (1#)?', opts: ['Si menor', 'Mi menor', 'Ré menor', 'Dó menor'], a: 1 },
+];
+
+let answered = new Array(questions.length).fill(false);
+let score = 0;
+
+function buildQuiz() {
+  const c = document.getElementById('quiz-container');
+  c.innerHTML = '';
+  questions.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-q';
+    div.id = 'qq-' + i;
+    div.innerHTML = `<h4>${i+1}. ${q.q}</h4><div class="quiz-options">${q.opts.map((o,j) => `<button class="quiz-opt" onclick="answerQ(${i},${j})">${o}</button>`).join('')}</div><div class="quiz-feedback" id="qf-${i}"></div>`;
+    c.appendChild(div);
+  });
+}
+
+function answerQ(qi, oi) {
+  if (answered[qi]) return;
+  answered[qi] = true;
+  const opts = document.querySelectorAll(`#qq-${qi} .quiz-opt`);
+  const fb = document.getElementById('qf-' + qi);
+  opts.forEach(b => b.disabled = true);
+  if (oi === questions[qi].a) {
+    opts[oi].classList.add('correct');
+    fb.textContent = '✅ Correto!'; fb.style.color = '#15803d';
+    score++;
+  } else {
+    opts[oi].classList.add('wrong');
+    opts[questions[qi].a].classList.add('correct');
+    fb.textContent = `❌ Incorreto. Correto: ${questions[qi].opts[questions[qi].a]}`; fb.style.color = '#b91c1c';
+  }
+  updateScore();
+}
+
+function updateScore() {
+  document.getElementById('score-text').textContent = `${score} / ${questions.length}`;
+  document.getElementById('score-fill').style.width = `${(score/questions.length)*100}%`;
+}
+
+function resetQuiz() {
+  answered = new Array(questions.length).fill(false);
+  score = 0;
+  updateScore();
+  buildQuiz();
+}
+
+buildQuiz();
+</script>
+</body>
+</html>

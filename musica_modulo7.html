@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>7º Módulo — Teoria Musical</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #faf7f2;
+    --warm-white: #fff9f3;
+    --ink: #1a1208;
+    --brown: #5c3d1e;
+    --amber: #c8821a;
+    --amber-light: #f0b84a;
+    --amber-glow: #fde68a;
+    --sage: #4a6741;
+    --red-accent: #c0392b;
+    --blue-accent: #2a5c8a;
+    --staff-line: #2d1f0e;
+    --shadow: rgba(92,61,30,0.15);
+    --card-bg: #fffdf8;
+    --border: #e8d9c4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: -1;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(92,61,30,0.04) 28px, rgba(92,61,30,0.04) 29px),
+      linear-gradient(135deg, #faf7f2 0%, #fff3e0 50%, #faf0e0 100%);
+    pointer-events: none;
+  }
+
+  /* ───── LOGIN ───── */
+  #loginScreen {
+    position: fixed; inset: 0; z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(145deg, #1a0f02 0%, #2d1f0e 40%, #3d2b10 100%);
+    overflow: hidden;
+  }
+
+  #loginScreen::before {
+    content: '𝄢';
+    position: absolute;
+    font-size: 35vw;
+    color: rgba(200,130,26,0.06);
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  #loginScreen::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 0; right: 0;
+    height: 60px;
+    background: repeating-linear-gradient(0deg, transparent, transparent 14px, rgba(200,130,26,0.12) 14px, rgba(200,130,26,0.12) 15px);
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+
+  .login-card {
+    background: linear-gradient(160deg, #faf7f2, #fff9ef);
+    border-radius: 20px;
+    padding: 52px 48px 44px;
+    width: 420px;
+    max-width: 94vw;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.55), 0 2px 0 rgba(200,130,26,0.4) inset;
+    border: 1px solid rgba(200,130,26,0.25);
+    animation: cardIn 0.6s cubic-bezier(0.34,1.56,0.64,1);
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(40px) scale(0.95); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .login-badge {
+    display: inline-block;
+    background: var(--amber);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+
+  .login-card h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--brown);
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+
+  .login-card .subtitle {
+    font-size: 13.5px;
+    color: #8a6840;
+    margin-bottom: 32px;
+    line-height: 1.5;
+  }
+
+  .login-field { margin-bottom: 16px; }
+
+  .login-field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--brown);
+    margin-bottom: 7px;
+  }
+
+  .login-field input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    background: #fffdf8;
+    color: var(--ink);
+    outline: none;
+    transition: border 0.2s, box-shadow 0.2s;
+  }
+
+  .login-field input:focus {
+    border-color: var(--amber);
+    box-shadow: 0 0 0 3px rgba(200,130,26,0.15);
+  }
+
+  .login-hint { font-size: 11.5px; color: #a08050; margin-top: 4px; }
+
+  .login-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--amber), #a06010);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+    letter-spacing: 0.3px;
+  }
+
+  .login-btn:hover { filter: brightness(1.08); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(200,130,26,0.4); }
+  .login-btn:active { transform: translateY(0); }
+
+  .login-error { color: var(--red-accent); font-size: 13px; margin-top: 10px; text-align: center; min-height: 18px; font-weight: 500; }
+
+  .login-divider { border: none; border-top: 1px solid var(--border); margin: 24px 0 18px; }
+
+  .login-links { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  .login-link-btn {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--brown);
+    background: transparent;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.2s, background 0.2s;
+    text-decoration: none;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+
+  .login-link-btn:hover { border-color: var(--amber); background: rgba(200,130,26,0.06); }
+
+  /* ───── APP ───── */
+  #app { display: none; }
+  #app.visible { display: block; animation: fadeIn 0.5s ease; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  /* ───── HEADER ───── */
+  header {
+    background: linear-gradient(135deg, #1a0f02 0%, #2d1f0e 100%);
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 68px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+  }
+
+  .header-left { display: flex; align-items: center; gap: 14px; }
+
+  .header-clef {
+    font-size: 36px;
+    color: var(--amber);
+    line-height: 1;
+    filter: drop-shadow(0 2px 6px rgba(200,130,26,0.5));
+  }
+
+  .header-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--cream);
+    line-height: 1.2;
+  }
+
+  .header-title span {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+
+  .header-right { display: flex; align-items: center; gap: 14px; }
+  .header-user { font-size: 13px; color: rgba(255,255,255,0.65); }
+
+  .btn-logout {
+    padding: 7px 16px;
+    border: 1px solid rgba(200,130,26,0.4);
+    border-radius: 7px;
+    background: transparent;
+    color: var(--amber-light);
+    font-size: 12.5px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .btn-logout:hover { background: rgba(200,130,26,0.15); border-color: var(--amber); }
+
+  /* ───── HERO ───── */
+  .hero {
+    background: linear-gradient(90deg, #2d1f0e, #1a0f02);
+    padding: 28px 40px;
+    display: flex; align-items: center; gap: 20px;
+    border-bottom: 3px solid var(--amber);
+    position: relative; overflow: hidden;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(200,130,26,0.04) 40px, rgba(200,130,26,0.04) 41px);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    background: var(--amber);
+    color: #fff;
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    padding: 14px 20px;
+    border-radius: 12px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .hero-text h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--cream);
+  }
+
+  .hero-text p { font-size: 13.5px; color: rgba(255,255,255,0.55); margin-top: 4px; }
+
+  /* ───── TABS ───── */
+  .tabs-wrapper {
+    background: var(--card-bg);
+    border-bottom: 2px solid var(--border);
+    padding: 0 40px;
+    position: sticky; top: 68px; z-index: 99;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .tabs-wrapper::-webkit-scrollbar { display: none; }
+
+  .tabs { display: flex; gap: 2px; min-width: max-content; }
+
+  .tab {
+    padding: 0 20px;
+    height: 52px;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #8a6840;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+    user-select: none;
+  }
+
+  .tab:hover { color: var(--amber); }
+  .tab.active { color: var(--amber); border-bottom-color: var(--amber); font-weight: 600; }
+  .tab-icon { font-size: 16px; }
+
+  /* ───── CONTENT ───── */
+  .content { max-width: 980px; margin: 0 auto; padding: 36px 40px 60px; }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; animation: panelIn 0.35s ease; }
+  @keyframes panelIn { from { opacity:0; transform: translateY(14px); } to { opacity:1; transform:none; } }
+
+  /* ───── SECTION HEADER ───── */
+  .section-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 28px; }
+
+  .section-num {
+    background: var(--amber);
+    color: #fff;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 6px;
+    flex-shrink: 0;
+    margin-top: 5px;
+  }
+
+  .section-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-weight: 900;
+    color: var(--brown);
+    line-height: 1.2;
+  }
+
+  .section-header p { font-size: 14px; color: #8a6840; margin-top: 6px; line-height: 1.6; }
+
+  /* ───── CARDS ───── */
+  .concept-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 30px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 12px var(--shadow);
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+
+  .concept-card:hover { box-shadow: 0 6px 24px rgba(92,61,30,0.18); transform: translateY(-2px); }
+
+  .concept-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: var(--amber);
+    border-radius: 4px 0 0 4px;
+  }
+
+  .concept-card.green::before { background: var(--sage); }
+  .concept-card.blue::before { background: var(--blue-accent); }
+  .concept-card.red::before { background: var(--red-accent); }
+
+  .concept-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--brown);
+    margin-bottom: 12px;
+  }
+
+  .concept-card p { font-size: 14.5px; line-height: 1.75; color: #3d2b10; }
+  .concept-card p strong { color: var(--amber); }
+
+  /* ───── DEF ROW ───── */
+  .def-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 620px) { .def-row { grid-template-columns: 1fr; } }
+
+  /* ───── STAFF DEMO ───── */
+  .staff-demo {
+    background: #fffdf5;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+  }
+
+  .staff-demo h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--brown);
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .staff-svg { display: block; max-width: 100%; }
+
+  /* ───── INFO BOX ───── */
+  .info-box {
+    border-radius: 12px;
+    padding: 16px 20px;
+    font-size: 14px;
+    line-height: 1.65;
+    margin-bottom: 20px;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+
+  .info-box.warn { background: rgba(192,57,43,0.07); border: 1px solid rgba(192,57,43,0.2); color: #7a1a0a; }
+  .info-box.note { background: rgba(200,130,26,0.08); border: 1px solid rgba(200,130,26,0.25); color: #6a3a00; }
+  .info-box.tip { background: rgba(74,103,65,0.08); border: 1px solid rgba(74,103,65,0.2); color: #2a4a22; }
+  .info-box.blue { background: rgba(42,92,138,0.07); border: 1px solid rgba(42,92,138,0.2); color: #1a3a5a; }
+  .info-box .icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ───── TABLE ───── */
+  .sincopa-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px var(--shadow);
+    margin-bottom: 24px;
+    font-size: 14px;
+  }
+
+  .sincopa-table thead tr { background: linear-gradient(135deg, var(--brown), #3d2010); color: #fff; }
+
+  .sincopa-table th {
+    padding: 14px 18px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .sincopa-table td {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    background: var(--card-bg);
+    vertical-align: top;
+    line-height: 1.6;
+  }
+
+  .sincopa-table tr:last-child td { border-bottom: none; }
+  .sincopa-table tr:hover td { background: #fff8ee; }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
+  .tag-amber { background: rgba(200,130,26,0.15); color: #a06010; }
+  .tag-green { background: rgba(74,103,65,0.12); color: #3a5733; }
+  .tag-blue { background: rgba(42,92,138,0.12); color: #1a3a6a; }
+
+  /* ───── ACCORDION ───── */
+  .accordion { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 16px; box-shadow: 0 1px 8px var(--shadow); }
+
+  .accordion-header {
+    padding: 16px 20px;
+    background: var(--card-bg);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between;
+    font-weight: 600;
+    font-size: 14.5px;
+    color: var(--brown);
+    transition: background 0.2s;
+    user-select: none;
+  }
+
+  .accordion-header:hover { background: #fff8ee; }
+  .accordion-header.open { border-bottom: 1px solid var(--border); }
+
+  .accordion-arrow { font-size: 14px; transition: transform 0.3s; color: var(--amber); }
+  .accordion-header.open .accordion-arrow { transform: rotate(180deg); }
+
+  .accordion-body {
+    padding: 0 20px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.3s;
+    background: #fffdf8;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #4a3015;
+  }
+
+  .accordion-body.open { max-height: 600px; padding: 18px 20px; }
+
+  /* ───── QUIZ ───── */
+  .quiz-card {
+    background: var(--card-bg);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    padding: 26px 28px;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 10px var(--shadow);
+  }
+
+  .quiz-card .q-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--amber);
+    letter-spacing: 1.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .quiz-card .q-text { font-size: 15px; font-weight: 600; color: var(--brown); margin-bottom: 18px; line-height: 1.5; }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+
+  .option {
+    padding: 11px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, transform 0.1s;
+    user-select: none;
+    background: #fffdf8;
+    color: var(--ink);
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .option:hover:not(.answered) { border-color: var(--amber); background: rgba(200,130,26,0.06); transform: translateX(4px); }
+  .option.correct { border-color: var(--sage); background: rgba(74,103,65,0.1); color: var(--sage); font-weight: 600; }
+  .option.wrong { border-color: var(--red-accent); background: rgba(192,57,43,0.07); color: var(--red-accent); }
+  .option.revealed { border-color: var(--sage); background: rgba(74,103,65,0.05); color: #3a5733; }
+
+  .option-letter {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: rgba(200,130,26,0.12);
+    color: var(--amber);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .feedback { margin-top: 14px; font-size: 13.5px; padding: 10px 14px; border-radius: 8px; display: none; line-height: 1.5; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: rgba(74,103,65,0.1); color: #2a5020; border-left: 3px solid var(--sage); }
+  .feedback.no { background: rgba(192,57,43,0.08); color: #8a1a0a; border-left: 3px solid var(--red-accent); }
+
+  .quiz-score {
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(135deg, rgba(200,130,26,0.1), rgba(200,130,26,0.05));
+    border: 1.5px solid rgba(200,130,26,0.3);
+    border-radius: 14px;
+    margin-top: 20px;
+    display: none;
+  }
+
+  .quiz-score.show { display: block; animation: panelIn 0.4s ease; }
+
+  .quiz-score .big-score {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    font-weight: 900;
+    color: var(--amber);
+  }
+
+  .quiz-score p { font-size: 15px; color: var(--brown); margin-top: 6px; }
+
+  .btn-retry {
+    margin-top: 14px;
+    padding: 10px 24px;
+    background: var(--amber);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: filter 0.2s;
+  }
+
+  .btn-retry:hover { filter: brightness(1.1); }
+
+  /* ───── EXERCISES ───── */
+  .exercise-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .exercise-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 18px;
+    box-shadow: 0 1px 8px var(--shadow);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+
+  .exercise-item:hover { box-shadow: 0 4px 18px rgba(92,61,30,0.18); transform: translateY(-2px); }
+
+  .exercise-item .ex-label { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--amber); margin-bottom: 8px; }
+  .exercise-item p { font-size: 13.5px; line-height: 1.6; color: #4a3015; }
+
+  /* ───── TIMELINE (síncopa visual) ───── */
+  .timeline {
+    display: flex;
+    gap: 0;
+    margin: 18px 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .tl-cell {
+    flex: 1;
+    padding: 10px 8px;
+    text-align: center;
+    line-height: 1.3;
+    border-right: 1px solid var(--border);
+  }
+
+  .tl-cell:last-child { border-right: none; }
+  .tl-cell.fraco { background: rgba(200,130,26,0.08); color: #8a5010; }
+  .tl-cell.forte { background: rgba(42,92,138,0.1); color: #1a3a6a; }
+  .tl-cell.sincopa { background: linear-gradient(135deg, rgba(200,130,26,0.2), rgba(42,92,138,0.15)); color: var(--brown); border: 2px solid var(--amber); }
+
+  .tl-label { font-size: 10px; font-weight: 400; opacity: 0.7; display: block; margin-top: 2px; }
+
+  /* ───── CTA ───── */
+  .cta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+  @media (max-width: 560px) { .cta-grid { grid-template-columns: 1fr; } }
+
+  .cta-card {
+    border-radius: 16px;
+    padding: 28px 26px;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    display: block;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .cta-card:hover { transform: translateY(-3px); box-shadow: 0 12px 36px rgba(0,0,0,0.2); }
+  .cta-card.primary { background: linear-gradient(135deg, #2d1f0e, #1a0f02); border: 1px solid rgba(200,130,26,0.3); }
+  .cta-card.secondary { background: linear-gradient(135deg, #3a4a35, #263020); border: 1px solid rgba(74,103,65,0.4); }
+  .cta-card .cta-icon { font-size: 32px; margin-bottom: 12px; }
+  .cta-card h3 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+  .cta-card p { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.5; margin-bottom: 16px; }
+
+  .cta-btn {
+    display: inline-block;
+    padding: 9px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .cta-card.primary .cta-btn { border-color: var(--amber); color: var(--amber-light); }
+  .cta-card.secondary .cta-btn { border-color: rgba(74,103,65,0.8); color: #a0d090; }
+
+  /* ───── HINOS REF ───── */
+  .hinos-wrap {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin: 12px 0 20px;
+  }
+
+  .hino-tag {
+    background: rgba(200,130,26,0.1);
+    border: 1px solid rgba(200,130,26,0.25);
+    color: var(--brown);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(92,61,30,0.2); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(92,61,30,0.35); }
+</style>
+</head>
+<body>
+
+<!-- ══════════ LOGIN ══════════ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-badge">🎵 Teoria Musical</div>
+    <h1>7º Módulo</h1>
+    <p class="subtitle">Acesse o material didático sobre Síncopa e Síncope — conceitos, tipos, exercícios e quiz interativo.</p>
+
+    <div class="login-field">
+      <label>Usuário</label>
+      <input type="text" id="loginUser" placeholder="ex: aluno01" autocomplete="username">
+    </div>
+    <div class="login-field">
+      <label>Senha</label>
+      <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+      <div class="login-hint">Usuário: <strong>aluno</strong> · Senha: <strong>musica123</strong></div>
+    </div>
+
+    <button class="login-btn" onclick="doLogin()">Entrar no Curso</button>
+    <div class="login-error" id="loginErr"></div>
+
+    <hr class="login-divider">
+
+    <div class="login-links">
+      <a href="https://candid-tanuki-66ac7b.netlify.app" target="_blank" class="login-link-btn">📝 Fazer Inscrição</a>
+      <a href="https://sage-narwhal-db712d.netlify.app" target="_blank" class="login-link-btn">👨‍🏫 Contato do Professor</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ APP ══════════ -->
+<div id="app">
+
+  <header>
+    <div class="header-left">
+      <div class="header-clef">𝄞</div>
+      <div class="header-title">
+        Teoria Musical
+        <span>7º Módulo — Síncopa e Síncope</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="header-user" id="headerUser"></div>
+      <button class="btn-logout" onclick="doLogout()">Sair</button>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="hero-badge">7°</div>
+    <div class="hero-text">
+      <h2>Síncopa (ou Síncope)</h2>
+      <p>Conceito, tipos Regular e Irregular, exemplos de hinos, exercícios Bona 64–66 e quiz</p>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs-wrapper">
+    <div class="tabs">
+      <div class="tab active" onclick="showTab('conceito')" data-tab="conceito">
+        <span class="tab-icon">🎼</span> Conceito
+      </div>
+      <div class="tab" onclick="showTab('tipos')" data-tab="tipos">
+        <span class="tab-icon">⚖️</span> Regular e Irregular
+      </div>
+      <div class="tab" onclick="showTab('formas')" data-tab="formas">
+        <span class="tab-icon">🔗</span> Formas de Síncopa
+      </div>
+      <div class="tab" onclick="showTab('exercicios')" data-tab="exercicios">
+        <span class="tab-icon">✏️</span> Exercícios
+      </div>
+      <div class="tab" onclick="showTab('quiz')" data-tab="quiz">
+        <span class="tab-icon">🧠</span> Quiz
+      </div>
+      <div class="tab" onclick="showTab('contatos')" data-tab="contatos">
+        <span class="tab-icon">🔗</span> Contatos
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ── TAB: CONCEITO ── -->
+    <div class="tab-panel active" id="tab-conceito">
+      <div class="section-header">
+        <div class="section-num">01</div>
+        <div>
+          <h2>O que é Síncopa?</h2>
+          <p>Deslocamento rítmico do acento musical — do tempo fraco para o tempo forte</p>
+        </div>
+      </div>
+
+      <div class="concept-card">
+        <h3>Definição</h3>
+        <p><strong>Síncopa</strong> é um som que se inicia no <strong>tempo fraco</strong> do compasso (ou parte fraca do tempo) e se <strong>prolonga para o tempo forte</strong> ou parte forte do tempo seguinte. Esse deslocamento cria uma sensação de tensão e balanço rítmico característico.</p>
+      </div>
+
+      <!-- Visual timeline -->
+      <div class="staff-demo">
+        <h4>🎼 Visualização — Tempo Fraco → Tempo Forte</h4>
+        <div style="margin-bottom:10px; font-size:13px; color:#8a6840;">Compasso 4/4: o som começa no tempo fraco e continua no tempo forte seguinte</div>
+        <div class="timeline">
+          <div class="tl-cell forte">
+            TEMPO 1<br><span class="tl-label">Forte</span>
+          </div>
+          <div class="tl-cell fraco">
+            tempo 2<br><span class="tl-label">fraco</span>
+          </div>
+          <div class="tl-cell sincopa">
+            ★ INÍCIO<br><span class="tl-label">tempo fraco</span>
+          </div>
+          <div class="tl-cell sincopa">
+            ↔ PROLONGA<br><span class="tl-label">tempo forte</span>
+          </div>
+        </div>
+        <div style="margin-top:14px;">
+          <svg class="staff-svg" viewBox="0 0 640 110" xmlns="http://www.w3.org/2000/svg">
+            <!-- Staff -->
+            <g stroke="#2d1f0e" stroke-width="1">
+              <line x1="40" y1="25" x2="610" y2="25"/>
+              <line x1="40" y1="37" x2="610" y2="37"/>
+              <line x1="40" y1="49" x2="610" y2="49"/>
+              <line x1="40" y1="61" x2="610" y2="61"/>
+              <line x1="40" y1="73" x2="610" y2="73"/>
+            </g>
+            <!-- Bar lines -->
+            <line x1="40" y1="25" x2="40" y2="73" stroke="#2d1f0e" stroke-width="1.5"/>
+            <line x1="320" y1="25" x2="320" y2="73" stroke="#2d1f0e" stroke-width="1.5"/>
+            <line x1="608" y1="25" x2="608" y2="73" stroke="#2d1f0e" stroke-width="2"/>
+            <line x1="603" y1="25" x2="603" y2="73" stroke="#2d1f0e" stroke-width="1"/>
+            <!-- Clef area -->
+            <text x="44" y="65" font-size="42" fill="#2d1f0e" font-family="serif">𝄞</text>
+            <!-- Time sig -->
+            <text x="88" y="50" font-size="20" fill="#2d1f0e" font-family="serif" font-weight="bold">4</text>
+            <text x="88" y="70" font-size="20" fill="#2d1f0e" font-family="serif" font-weight="bold">4</text>
+            <!-- Notes: two quarters on beat 1,2 -->
+            <ellipse cx="135" cy="55" rx="9" ry="6.5" fill="#2d1f0e" transform="rotate(-15,135,55)"/>
+            <line x1="144" y1="55" x2="144" y2="25" stroke="#2d1f0e" stroke-width="2"/>
+            <ellipse cx="185" cy="55" rx="9" ry="6.5" fill="#2d1f0e" transform="rotate(-15,185,55)"/>
+            <line x1="194" y1="55" x2="194" y2="25" stroke="#2d1f0e" stroke-width="2"/>
+            <!-- Syncopa: starts beat 3 (fraco), ties to beat 4 (forte next bar) -->
+            <ellipse cx="240" cy="55" rx="9" ry="6.5" fill="#c8821a" transform="rotate(-15,240,55)"/>
+            <line x1="249" y1="55" x2="249" y2="25" stroke="#c8821a" stroke-width="2"/>
+            <!-- Tie over barline -->
+            <path d="M 249 62 Q 285 72 320 62" fill="none" stroke="#c8821a" stroke-width="2"/>
+            <!-- Continued note after barline -->
+            <ellipse cx="360" cy="55" rx="9" ry="6.5" fill="#c8821a" transform="rotate(-15,360,55)"/>
+            <line x1="369" y1="55" x2="369" y2="25" stroke="#c8821a" stroke-width="2"/>
+            <ellipse cx="460" cy="55" rx="9" ry="6.5" fill="#2d1f0e" transform="rotate(-15,460,55)"/>
+            <line x1="469" y1="55" x2="469" y2="25" stroke="#2d1f0e" stroke-width="2"/>
+            <ellipse cx="540" cy="55" rx="9" ry="6.5" fill="#2d1f0e" transform="rotate(-15,540,55)"/>
+            <line x1="549" y1="55" x2="549" y2="25" stroke="#2d1f0e" stroke-width="2"/>
+            <!-- Labels -->
+            <text x="120" y="95" font-family="DM Sans" font-size="10" fill="#5c3d1e">tempo forte</text>
+            <text x="175" y="95" font-family="DM Sans" font-size="10" fill="#8a6840">fraco</text>
+            <text x="225" y="95" font-family="DM Sans" font-size="10" fill="#c8821a" font-weight="bold">★ início</text>
+            <text x="340" y="95" font-family="DM Sans" font-size="10" fill="#c8821a" font-weight="bold">↔ prolonga</text>
+            <text x="445" y="95" font-family="DM Sans" font-size="10" fill="#5c3d1e">normal</text>
+          </svg>
+        </div>
+      </div>
+
+      <div class="info-box note">
+        <span class="icon">💡</span>
+        <span>A síncopa cria um efeito de <strong>"escapar do pulso"</strong> — a nota começa onde normalmente não se esperaria o acento, criando tensão e movimento rítmico.</span>
+      </div>
+
+      <div class="info-box blue">
+        <span class="icon">🎵</span>
+        <span><strong>Exemplos de hinos com síncopa (com ligadura):</strong></span>
+      </div>
+      <div class="hinos-wrap">
+        <span class="hino-tag">Hino 22</span>
+        <span class="hino-tag">Hino 190</span>
+        <span class="hino-tag">Hino 362 (coro)</span>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          📌 Como identificar uma síncopa? <span class="accordion-arrow">▾</span>
+        </div>
+        <div class="accordion-body">
+          Para identificar uma síncopa, siga estes passos:<br><br>
+          <strong>1.</strong> Marque os tempos fortes e fracos do compasso.<br>
+          <strong>2.</strong> Observe onde a nota começa — se iniciar em tempo fraco ou parte fraca, pode ser síncopa.<br>
+          <strong>3.</strong> Verifique se essa nota <em>atravessa</em> o tempo forte seguinte (ou seja, se prolonga além dele).<br>
+          <strong>4.</strong> Se sim: é síncopa!
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: TIPOS ── -->
+    <div class="tab-panel" id="tab-tipos">
+      <div class="section-header">
+        <div class="section-num">02</div>
+        <div>
+          <h2>Regular e Irregular</h2>
+          <p>A síncopa pode ser classificada de acordo com a duração das notas envolvidas</p>
+        </div>
+      </div>
+
+      <table class="sincopa-table">
+        <thead>
+          <tr>
+            <th>Tipo</th>
+            <th>Característica</th>
+            <th>Exemplo de figuras</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <strong>Síncopa Regular</strong><br>
+              <span class="tag tag-amber">Igual</span>
+            </td>
+            <td>As notas envolvidas têm a <strong>mesma duração</strong>. O ritmo é simétrico e previsível, mas deslocado.</td>
+            <td>Semínima + semínima<br>Colcheia + colcheia</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>Síncopa Irregular</strong><br>
+              <span class="tag tag-green">Diferente</span>
+            </td>
+            <td>As notas envolvidas têm <strong>durações diferentes</strong>. Cria um efeito mais complexo e variado.</td>
+            <td>Colcheia + semicolcheia<br>Semínima + colcheia</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="def-row">
+        <div class="concept-card">
+          <h3>🟡 Regular</h3>
+          <p>Notas com a <strong>mesma duração</strong>. A sensação é de um deslocamento uniforme — o ouvido percebe o padrão, mas o acento está fora do lugar esperado.</p>
+        </div>
+        <div class="concept-card green">
+          <h3>🟢 Irregular</h3>
+          <p>Notas com <strong>durações diferentes</strong>. Os dois padrões irregulares mais comuns são: <strong>colcheia + semicolcheia</strong> e <strong>semínima + colcheia</strong>.</p>
+        </div>
+      </div>
+
+      <!-- Visual comparison -->
+      <div class="staff-demo">
+        <h4>📊 Visualização — Regular vs. Irregular</h4>
+
+        <div style="margin-bottom:10px;">
+          <div style="font-size:13px; font-weight:600; color:var(--brown); margin-bottom:6px;">Síncopa Regular (semínima + semínima)</div>
+          <div style="display:flex; height:28px; border-radius:7px; overflow:hidden; border:1px solid var(--border); margin-bottom:14px;">
+            <div style="width:25%; background:#e8d9c4; display:flex; align-items:center; justify-content:center; font-size:11px; color:#8a6840; border-right:1px solid var(--border);">♩ fraco</div>
+            <div style="width:25%; background:linear-gradient(135deg,rgba(200,130,26,0.35),rgba(200,130,26,0.2)); display:flex; align-items:center; justify-content:center; font-size:11px; color:#6a3a00; font-weight:700; border-right:2px solid var(--amber);">★ INÍCIO</div>
+            <div style="width:25%; background:linear-gradient(135deg,rgba(200,130,26,0.2),rgba(42,92,138,0.15)); display:flex; align-items:center; justify-content:center; font-size:11px; color:#3a2000; font-weight:700; border-right:1px solid var(--border);">↔ FORTE</div>
+            <div style="width:25%; background:#e8d9c4; display:flex; align-items:center; justify-content:center; font-size:11px; color:#8a6840;">normal</div>
+          </div>
+
+          <div style="font-size:13px; font-weight:600; color:var(--brown); margin-bottom:6px;">Síncopa Irregular (colcheia + semicolcheia)</div>
+          <div style="display:flex; height:28px; border-radius:7px; overflow:hidden; border:1px solid var(--border);">
+            <div style="width:30%; background:#e8d9c4; display:flex; align-items:center; justify-content:center; font-size:11px; color:#8a6840; border-right:1px solid var(--border);">♩ normal</div>
+            <div style="width:20%; background:linear-gradient(135deg,rgba(74,103,65,0.35),rgba(74,103,65,0.2)); display:flex; align-items:center; justify-content:center; font-size:11px; color:#2a5020; font-weight:700; border-right:2px solid var(--sage);">★ ♪</div>
+            <div style="width:12%; background:linear-gradient(135deg,rgba(74,103,65,0.2),rgba(42,92,138,0.15)); display:flex; align-items:center; justify-content:center; font-size:10px; color:#2a4a00; font-weight:700; border-right:1px solid var(--border);">↔</div>
+            <div style="width:38%; background:#e8d9c4; display:flex; align-items:center; justify-content:center; font-size:11px; color:#8a6840;">normal</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box tip">
+        <span class="icon">🎯</span>
+        <span>Na prática: a síncopa <strong>regular</strong> é mais fácil de sentir e executar pois as notas têm o mesmo peso. A síncopa <strong>irregular</strong> exige mais atenção à proporção entre as durações.</span>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          🎓 Combinações irregulares mais comuns <span class="accordion-arrow">▾</span>
+        </div>
+        <div class="accordion-body">
+          <strong>Colcheia + semicolcheia:</strong> a nota mais longa (colcheia) cai no tempo fraco e a mais curta (semicolcheia) ocupa o início do tempo forte.<br><br>
+          <strong>Semínima + colcheia:</strong> a semínima começa no tempo fraco e se prolonga até englobar o tempo forte, terminando na segunda metade do tempo.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: FORMAS ── -->
+    <div class="tab-panel" id="tab-formas">
+      <div class="section-header">
+        <div class="section-num">03</div>
+        <div>
+          <h2>Formas de Apresentação</h2>
+          <p>A síncopa nem sempre aparece com ligadura — observe as diferentes notações</p>
+        </div>
+      </div>
+
+      <div class="concept-card">
+        <h3>Com Ligadura</h3>
+        <p>A forma mais clássica: duas notas ligadas, onde a primeira cai no tempo fraco e a segunda está no tempo forte. A ligadura indica que o som continua sem nova articulação.</p>
+      </div>
+
+      <div class="concept-card blue">
+        <h3>Sem Ligadura</h3>
+        <p>A síncopa <strong>também pode ser escrita sem ligadura</strong> — usando figuras de maior duração que já "atravessam" naturalmente o tempo forte. Reconheça pelo posicionamento rítmico da nota, não apenas pela presença de ligadura.</p>
+      </div>
+
+      <div class="info-box note">
+        <span class="icon">💡</span>
+        <span>Exemplos de hinos em que a síncopa é apresentada <strong>sem ligadura:</strong></span>
+      </div>
+
+      <div class="hinos-wrap">
+        <span class="hino-tag">Hino 14</span>
+        <span class="hino-tag">Hino 153</span>
+        <span class="hino-tag">Hino 296</span>
+        <span class="hino-tag">Hino 59</span>
+        <span class="hino-tag">Hino 397</span>
+        <span class="hino-tag">Hino 405</span>
+        <span class="hino-tag">Hino 428</span>
+        <span class="hino-tag">Hino 429</span>
+        <span class="hino-tag">Hino 439</span>
+      </div>
+
+      <!-- Comparison SVG -->
+      <div class="staff-demo">
+        <h4>🎼 Síncopa com ligadura vs. sem ligadura</h4>
+        <svg class="staff-svg" viewBox="0 0 640 130" xmlns="http://www.w3.org/2000/svg">
+          <!-- Staff 1 (com ligadura) -->
+          <text x="40" y="16" font-family="DM Sans" font-size="11" fill="#5c3d1e" font-weight="600">Com ligadura:</text>
+          <g stroke="#2d1f0e" stroke-width="0.8">
+            <line x1="40" y1="25" x2="290" y2="25"/>
+            <line x1="40" y1="35" x2="290" y2="35"/>
+            <line x1="40" y1="45" x2="290" y2="45"/>
+            <line x1="40" y1="55" x2="290" y2="55"/>
+            <line x1="40" y1="65" x2="290" y2="65"/>
+          </g>
+          <line x1="40" y1="25" x2="40" y2="65" stroke="#2d1f0e" stroke-width="1.5"/>
+          <line x1="178" y1="25" x2="178" y2="65" stroke="#2d1f0e" stroke-width="1.2"/>
+          <line x1="289" y1="25" x2="289" y2="65" stroke="#2d1f0e" stroke-width="1.5"/>
+          <!-- Notes with tie -->
+          <ellipse cx="80" cy="50" rx="8" ry="5.5" fill="#2d1f0e" transform="rotate(-15,80,50)"/>
+          <line x1="88" y1="50" x2="88" y2="26" stroke="#2d1f0e" stroke-width="1.5"/>
+          <ellipse cx="130" cy="50" rx="8" ry="5.5" fill="#c8821a" transform="rotate(-15,130,50)"/>
+          <line x1="138" y1="50" x2="138" y2="26" stroke="#c8821a" stroke-width="1.5"/>
+          <path d="M 138 57 Q 158 65 178 57" fill="none" stroke="#c8821a" stroke-width="1.8"/>
+          <ellipse cx="205" cy="50" rx="8" ry="5.5" fill="#c8821a" transform="rotate(-15,205,50)"/>
+          <line x1="213" y1="50" x2="213" y2="26" stroke="#c8821a" stroke-width="1.5"/>
+          <ellipse cx="255" cy="50" rx="8" ry="5.5" fill="#2d1f0e" transform="rotate(-15,255,50)"/>
+          <line x1="263" y1="50" x2="263" y2="26" stroke="#2d1f0e" stroke-width="1.5"/>
+          <!-- Labels com ligadura -->
+          <text x="74" y="80" font-family="DM Sans" font-size="9" fill="#5c3d1e">normal</text>
+          <text x="118" y="80" font-family="DM Sans" font-size="9" fill="#c8821a">fraco</text>
+          <text x="192" y="80" font-family="DM Sans" font-size="9" fill="#c8821a">forte</text>
+
+          <!-- Staff 2 (sem ligadura) -->
+          <text x="340" y="16" font-family="DM Sans" font-size="11" fill="#5c3d1e" font-weight="600">Sem ligadura (mínima):</text>
+          <g stroke="#2d1f0e" stroke-width="0.8">
+            <line x1="340" y1="25" x2="610" y2="25"/>
+            <line x1="340" y1="35" x2="610" y2="35"/>
+            <line x1="340" y1="45" x2="610" y2="45"/>
+            <line x1="340" y1="55" x2="610" y2="55"/>
+            <line x1="340" y1="65" x2="610" y2="65"/>
+          </g>
+          <line x1="340" y1="25" x2="340" y2="65" stroke="#2d1f0e" stroke-width="1.5"/>
+          <line x1="490" y1="25" x2="490" y2="65" stroke="#2d1f0e" stroke-width="1.2"/>
+          <line x1="609" y1="25" x2="609" y2="65" stroke="#2d1f0e" stroke-width="1.5"/>
+          <!-- Open note = half note (sem ligadura, but traverses the beat) -->
+          <ellipse cx="390" cy="50" rx="8" ry="5.5" fill="none" stroke="#2d1f0e" stroke-width="1.5" transform="rotate(-15,390,50)"/>
+          <line x1="398" y1="50" x2="398" y2="26" stroke="#2d1f0e" stroke-width="1.5"/>
+          <ellipse cx="442" cy="50" rx="8" ry="5.5" fill="none" stroke="#c8821a" stroke-width="1.8" transform="rotate(-15,442,50)"/>
+          <line x1="450" y1="50" x2="450" y2="26" stroke="#c8821a" stroke-width="1.8"/>
+          <ellipse cx="545" cy="50" rx="8" ry="5.5" fill="none" stroke="#2d1f0e" stroke-width="1.5" transform="rotate(-15,545,50)"/>
+          <line x1="553" y1="50" x2="553" y2="26" stroke="#2d1f0e" stroke-width="1.5"/>
+          <text x="428" y="80" font-family="DM Sans" font-size="9" fill="#c8821a">síncopa sem ligadura</text>
+        </svg>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          🎵 Por que a síncopa aparece sem ligadura? <span class="accordion-arrow">▾</span>
+        </div>
+        <div class="accordion-body">
+          Quando uma figura de maior valor (como uma mínima) começa na parte fraca do tempo e naturalmente se estende pelo tempo forte, não há necessidade de ligadura — a própria duração da nota já cria o efeito sincopado. A ligadura só aparece quando é preciso conectar duas figuras menores para produzir o mesmo efeito.
+        </div>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          📝 Exercício 3 — Identifique as síncopas <span class="accordion-arrow">▾</span>
+        </div>
+        <div class="accordion-body">
+          O exercício proposto na apostila pede que você <strong>faça um círculo ao redor de todas as síncopas</strong> (de todos os tipos) nas melodias apresentadas. Para resolver:<br><br>
+          1. Marque os tempos do compasso indicado (2/4, 4/4, etc.)<br>
+          2. Identifique notas que começam em partes fracas<br>
+          3. Verifique quais atravessam o tempo forte seguinte<br>
+          4. Circule essas notas — inclusive as formas sem ligadura!
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: EXERCÍCIOS ── -->
+    <div class="tab-panel" id="tab-exercicios">
+      <div class="section-header">
+        <div class="section-num">04</div>
+        <div>
+          <h2>Exercícios Práticos</h2>
+          <p>Atividades baseadas nas lições Bona 64, 65 e 66 da apostila</p>
+        </div>
+      </div>
+
+      <div class="info-box note">
+        <span class="icon">📖</span>
+        <span>Os exercícios desta seção correspondem às lições <strong>Bona 64–66</strong>. Cada lição trabalha a síncopa em diferentes contextos rítmicos e velocidades.</span>
+      </div>
+
+      <div class="exercise-grid">
+        <div class="exercise-item">
+          <div class="ex-label">Bona 64</div>
+          <p><strong>Síncopa em andamento moderado.</strong> ⚠️ Estabelecer diferença nos finais dos últimos compassos. Observe como as síncopas se encaixam no compasso 4/4.</p>
+        </div>
+        <div class="exercise-item">
+          <div class="ex-label">Bona 65</div>
+          <p><strong>Síncopa com variação rítmica.</strong> Lição mais longa com múltiplas seções. Atenção às pausas que aparecem em conjunto com as síncopas.</p>
+        </div>
+        <div class="exercise-item">
+          <div class="ex-label">Bona 66</div>
+          <p><strong>Síncopa em andamento mais rápido.</strong> Maior densidade de notas — trabalha a precisão rítmica com semicolcheias e colcheias sincopadas.</p>
+        </div>
+        <div class="exercise-item">
+          <div class="ex-label">Exercício 3</div>
+          <p><strong>Identificação.</strong> Faça um círculo ao redor das síncopas (de todos os tipos) nos compassos 2/4 propostos. Inclui formas com e sem ligadura.</p>
+        </div>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          🎓 Dica: Bona 64 — Diferença nos finais dos compassos <span class="accordion-arrow">▾</span>
+        </div>
+        <div class="accordion-body">
+          Na lição 64, o professor orienta a <strong>estabelecer diferença nos finais dos últimos compassos</strong>. Isso significa que a finalização de cada trecho deve ter uma resolução clara e diferente dos compassos anteriores. Preste atenção ao peso do último tempo antes de cada barra de compasso.
+        </div>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          🎓 Dica: Como praticar síncopas com precisão <span class="accordion-arrow">▾</span>
+        </div>
+        <div class="accordion-body">
+          <strong>Passo 1:</strong> Toque/cante apenas os tempos do compasso (palmas ou batidas de pé).<br>
+          <strong>Passo 2:</strong> Sem parar de marcar o pulso, execute a melodia.<br>
+          <strong>Passo 3:</strong> A nota sincopada deve começar <em>entre</em> os pulsos, nunca no pulso forte.<br>
+          <strong>Passo 4:</strong> Comece devagar (metrônomo) e aumente gradualmente.<br><br>
+          <em>Erro comum:</em> acentuar a nota sincopada ao invés de deixá-la soar naturalmente desde o tempo fraco.
+        </div>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          🎓 Dica: Bona 66 — Síncopas rápidas com semicolcheias <span class="accordion-arrow">▾</span>
+        </div>
+        <div class="accordion-body">
+          Na lição 66, o ritmo é mais denso. As síncopas ocorrem entre semicolcheias e colcheias em sequências rápidas. A chave é manter o <strong>pulso interno estável</strong> enquanto a melodia "flutua" sobre ele. Pratique cada compasso separadamente antes de encadear a lição completa.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: QUIZ ── -->
+    <div class="tab-panel" id="tab-quiz">
+      <div class="section-header">
+        <div class="section-num">05</div>
+        <div>
+          <h2>Quiz Interativo</h2>
+          <p>Teste seus conhecimentos sobre Síncopa e Síncope</p>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <div class="quiz-card" data-q="1">
+          <div class="q-num">Questão 01 / 07</div>
+          <div class="q-text">O que é Síncopa (ou Síncope) em música?</div>
+          <div class="options">
+            <div class="option" onclick="answerQ(this,1,'C')" data-key="A"><span class="option-letter">A</span> Um som que começa no tempo forte e vai ao fraco</div>
+            <div class="option" onclick="answerQ(this,1,'C')" data-key="B"><span class="option-letter">B</span> Uma pausa no tempo forte do compasso</div>
+            <div class="option" onclick="answerQ(this,1,'C')" data-key="C"><span class="option-letter">C</span> Um som que começa no tempo fraco e se prolonga ao tempo forte</div>
+            <div class="option" onclick="answerQ(this,1,'C')" data-key="D"><span class="option-letter">D</span> Dois sons simultâneos em tempos diferentes</div>
+          </div>
+          <div class="feedback" id="fb1"></div>
+        </div>
+
+        <div class="quiz-card" data-q="2">
+          <div class="q-num">Questão 02 / 07</div>
+          <div class="q-text">A síncopa Regular se caracteriza por notas com:</div>
+          <div class="options">
+            <div class="option" onclick="answerQ(this,2,'B')" data-key="A"><span class="option-letter">A</span> Durações diferentes</div>
+            <div class="option" onclick="answerQ(this,2,'B')" data-key="B"><span class="option-letter">B</span> A mesma duração</div>
+            <div class="option" onclick="answerQ(this,2,'B')" data-key="C"><span class="option-letter">C</span> Ausência de ligadura</div>
+            <div class="option" onclick="answerQ(this,2,'B')" data-key="D"><span class="option-letter">D</span> Presença obrigatória de pausa</div>
+          </div>
+          <div class="feedback" id="fb2"></div>
+        </div>
+
+        <div class="quiz-card" data-q="3">
+          <div class="q-num">Questão 03 / 07</div>
+          <div class="q-text">Qual das combinações abaixo representa uma síncopa Irregular?</div>
+          <div class="options">
+            <div class="option" onclick="answerQ(this,3,'A')" data-key="A"><span class="option-letter">A</span> Colcheia + semicolcheia</div>
+            <div class="option" onclick="answerQ(this,3,'A')" data-key="B"><span class="option-letter">B</span> Semínima + semínima</div>
+            <div class="option" onclick="answerQ(this,3,'A')" data-key="C"><span class="option-letter">C</span> Colcheia + colcheia</div>
+            <div class="option" onclick="answerQ(this,3,'A')" data-key="D"><span class="option-letter">D</span> Mínima + mínima</div>
+          </div>
+          <div class="feedback" id="fb3"></div>
+        </div>
+
+        <div class="quiz-card" data-q="4">
+          <div class="q-num">Questão 04 / 07</div>
+          <div class="q-text">A síncopa sempre precisa de uma ligadura para ser reconhecida?</div>
+          <div class="options">
+            <div class="option" onclick="answerQ(this,4,'B')" data-key="A"><span class="option-letter">A</span> Sim, a ligadura é obrigatória</div>
+            <div class="option" onclick="answerQ(this,4,'B')" data-key="B"><span class="option-letter">B</span> Não — ela pode aparecer sem ligadura, com figuras de maior duração</div>
+            <div class="option" onclick="answerQ(this,4,'B')" data-key="C"><span class="option-letter">C</span> Sim, mas somente em compassos 4/4</div>
+            <div class="option" onclick="answerQ(this,4,'B')" data-key="D"><span class="option-letter">D</span> Não, mas deve ter ponto de aumento</div>
+          </div>
+          <div class="feedback" id="fb4"></div>
+        </div>
+
+        <div class="quiz-card" data-q="5">
+          <div class="q-num">Questão 05 / 07</div>
+          <div class="q-text">Qual hino dos exemplos na apostila possui síncopa no coro?</div>
+          <div class="options">
+            <div class="option" onclick="answerQ(this,5,'C')" data-key="A"><span class="option-letter">A</span> Hino 14</div>
+            <div class="option" onclick="answerQ(this,5,'C')" data-key="B"><span class="option-letter">B</span> Hino 22</div>
+            <div class="option" onclick="answerQ(this,5,'C')" data-key="C"><span class="option-letter">C</span> Hino 362</div>
+            <div class="option" onclick="answerQ(this,5,'C')" data-key="D"><span class="option-letter">D</span> Hino 296</div>
+          </div>
+          <div class="feedback" id="fb5"></div>
+        </div>
+
+        <div class="quiz-card" data-q="6">
+          <div class="q-num">Questão 06 / 07</div>
+          <div class="q-text">Qual a instrução especial dada para a lição Bona 64?</div>
+          <div class="options">
+            <div class="option" onclick="answerQ(this,6,'B')" data-key="A"><span class="option-letter">A</span> Não pronunciar vogais nas síncopas</div>
+            <div class="option" onclick="answerQ(this,6,'B')" data-key="B"><span class="option-letter">B</span> Estabelecer diferença nos finais dos últimos compassos</div>
+            <div class="option" onclick="answerQ(this,6,'B')" data-key="C"><span class="option-letter">C</span> Usar proporção ¾ para colcheia e ¼ para semicolcheia</div>
+            <div class="option" onclick="answerQ(this,6,'B')" data-key="D"><span class="option-letter">D</span> Substituir figuras ligadas por pontuadas</div>
+          </div>
+          <div class="feedback" id="fb6"></div>
+        </div>
+
+        <div class="quiz-card" data-q="7">
+          <div class="q-num">Questão 07 / 07</div>
+          <div class="q-text">Na síncopa Irregular, quais são os dois padrões mais comuns citados na apostila?</div>
+          <div class="options">
+            <div class="option" onclick="answerQ(this,7,'A')" data-key="A"><span class="option-letter">A</span> Colcheia + semicolcheia e semínima + colcheia</div>
+            <div class="option" onclick="answerQ(this,7,'A')" data-key="B"><span class="option-letter">B</span> Mínima + semínima e semínima + colcheia</div>
+            <div class="option" onclick="answerQ(this,7,'A')" data-key="C"><span class="option-letter">C</span> Semibreve + mínima e colcheia + semicolcheia</div>
+            <div class="option" onclick="answerQ(this,7,'A')" data-key="D"><span class="option-letter">D</span> Semicolcheia + fusa e colcheia + semínima</div>
+          </div>
+          <div class="feedback" id="fb7"></div>
+        </div>
+
+        <div class="quiz-score" id="quizScore">
+          <div class="big-score" id="scoreText"></div>
+          <p id="scoreMsg"></p>
+          <button class="btn-retry" onclick="resetQuiz()">🔄 Tentar Novamente</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: CONTATOS ── -->
+    <div class="tab-panel" id="tab-contatos">
+      <div class="section-header">
+        <div class="section-num">06</div>
+        <div>
+          <h2>Inscrições &amp; Contato</h2>
+          <p>Links úteis para continuar sua jornada musical</p>
+        </div>
+      </div>
+
+      <div class="cta-grid">
+        <a href="https://candid-tanuki-66ac7b.netlify.app" target="_blank" class="cta-card primary">
+          <div class="cta-icon">📝</div>
+          <h3>Inscrições no Curso</h3>
+          <p>Garanta sua vaga no curso completo de teoria musical. Preencha o formulário de inscrição.</p>
+          <div class="cta-btn">Acessar Inscrições →</div>
+        </a>
+        <a href="https://sage-narwhal-db712d.netlify.app" target="_blank" class="cta-card secondary">
+          <div class="cta-icon">👨‍🏫</div>
+          <h3>Contato do Professor</h3>
+          <p>Tire suas dúvidas diretamente com o professor. Acesse o canal de atendimento.</p>
+          <div class="cta-btn">Falar com Professor →</div>
+        </a>
+      </div>
+
+      <div class="concept-card" style="margin-top:24px;">
+        <h3>📚 Sobre este Módulo</h3>
+        <p>Este é o <strong>7º Módulo</strong> do curso de Teoria Musical. Neste módulo você aprendeu sobre <strong>Síncopa e Síncope</strong> — o que é, como identificar, a diferença entre síncopa Regular e Irregular, e as diferentes formas de notação (com e sem ligadura). As lições Bona 64–66 consolidam esses conceitos na prática musical.</p>
+      </div>
+
+      <div class="info-box tip">
+        <span class="icon">🎵</span>
+        <span>Após completar o módulo 7, você terá domínio dos principais elementos rítmicos do curso. Não esqueça de revisar também o Módulo 6 (pontos e articulação) para consolidar todo o conteúdo!</span>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /app -->
+
+<script>
+  const USERS = { 'aluno': 'musica123', 'professor': 'prof2024', 'admin': 'admin123' };
+
+  function doLogin() {
+    const u = document.getElementById('loginUser').value.trim();
+    const p = document.getElementById('loginPass').value;
+    const err = document.getElementById('loginErr');
+    if (USERS[u] && USERS[u] === p) {
+      const ls = document.getElementById('loginScreen');
+      ls.style.opacity = '0'; ls.style.transition = 'opacity 0.4s';
+      setTimeout(() => { ls.style.display = 'none'; }, 400);
+      document.getElementById('app').classList.add('visible');
+      document.getElementById('headerUser').textContent = '👤 ' + u;
+      err.textContent = '';
+    } else {
+      err.textContent = '⚠️ Usuário ou senha incorretos.';
+      document.getElementById('loginPass').value = '';
+    }
+  }
+
+  document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+  document.getElementById('loginUser').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('loginPass').focus(); });
+
+  function doLogout() {
+    document.getElementById('app').classList.remove('visible');
+    document.getElementById('app').style.display = 'none';
+    const ls = document.getElementById('loginScreen');
+    ls.style.display = 'flex'; ls.style.opacity = '0';
+    setTimeout(() => { ls.style.opacity = '1'; ls.style.transition = 'opacity 0.3s'; }, 10);
+    document.getElementById('loginUser').value = '';
+    document.getElementById('loginPass').value = '';
+  }
+
+  function showTab(id) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === id));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + id));
+  }
+
+  function toggleAccordion(header) {
+    header.classList.toggle('open');
+    header.nextElementSibling.classList.toggle('open');
+  }
+
+  // QUIZ
+  let quizAnswers = {};
+  const correctAnswers = {1:'C',2:'B',3:'A',4:'B',5:'C',6:'B',7:'A'};
+  const feedbacks = {
+    1: { ok:'✅ Correto! A síncopa começa no tempo fraco e se prolonga para o tempo forte.', no:'❌ Incorreto. Síncopa é um som que COMEÇA no tempo fraco e se prolonga ao forte.' },
+    2: { ok:'✅ Certo! Na síncopa Regular, todas as notas têm a mesma duração.', no:'❌ Errado. Síncopa Regular usa notas com A MESMA duração.' },
+    3: { ok:'✅ Correto! Colcheia + semicolcheia é um exemplo de síncopa irregular (durações diferentes).', no:'❌ Errado. A combinação irregular é colcheia + semicolcheia (durações diferentes).' },
+    4: { ok:'✅ Certo! A síncopa pode aparecer sem ligadura, com figuras que naturalmente atravessam o tempo forte.', no:'❌ Errado. A síncopa NÃO precisa sempre de ligadura.' },
+    5: { ok:'✅ Correto! O Hino 362 possui síncopa especificamente no coro.', no:'❌ Errado. O exemplo com síncopa no coro é o Hino 362.' },
+    6: { ok:'✅ Certo! A instrução da lição 64 é estabelecer diferença nos finais dos últimos compassos.', no:'❌ Errado. A instrução da Bona 64 é "estabelecer diferença nos finais dos últimos compassos".' },
+    7: { ok:'✅ Correto! Os dois padrões irregulares da apostila são: colcheia+semicolcheia e semínima+colcheia.', no:'❌ Errado. Os padrões irregulares são: colcheia + semicolcheia e semínima + colcheia.' },
+  };
+
+  function answerQ(el, qNum, correct) {
+    if (quizAnswers[qNum] !== undefined) return;
+    const chosen = el.dataset.key;
+    quizAnswers[qNum] = chosen;
+    el.closest('.quiz-card').querySelectorAll('.option').forEach(o => o.classList.add('answered'));
+    const isOk = chosen === correctAnswers[qNum];
+    el.classList.add(isOk ? 'correct' : 'wrong');
+    if (!isOk) {
+      el.closest('.quiz-card').querySelectorAll('.option').forEach(o => {
+        if (o.dataset.key === correctAnswers[qNum]) o.classList.add('revealed');
+      });
+    }
+    const fb = document.getElementById('fb' + qNum);
+    fb.textContent = feedbacks[qNum][isOk ? 'ok' : 'no'];
+    fb.className = 'feedback show ' + (isOk ? 'ok' : 'no');
+    if (Object.keys(quizAnswers).length === 7) showScore();
+  }
+
+  function showScore() {
+    const score = Object.keys(quizAnswers).filter(q => quizAnswers[q] === correctAnswers[q]).length;
+    document.getElementById('scoreText').textContent = score + '/7';
+    const msgs = ['Continue estudando! Revise o conceito de síncopa.','Bom começo! Pratique mais.','Você está no caminho certo!','Bom resultado! Quase dominando.','Muito bem! Um detalhe a revisar.','Ótimo! Quase perfeito.','🏆 Parabéns! Você dominou o módulo 7!'];
+    document.getElementById('scoreMsg').textContent = msgs[score];
+    const el = document.getElementById('quizScore');
+    el.classList.add('show');
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function resetQuiz() {
+    quizAnswers = {};
+    document.querySelectorAll('.quiz-card').forEach(c => {
+      c.querySelectorAll('.option').forEach(o => o.className = 'option');
+      c.querySelectorAll('.feedback').forEach(f => f.className = 'feedback');
+    });
+    document.getElementById('quizScore').classList.remove('show');
+  }
+</script>
+</body>
+</html>

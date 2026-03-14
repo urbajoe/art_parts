@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>13º Módulo — Teoria Musical</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #faf7f2;
+    --ink: #1a1208;
+    --brown: #5c3d1e;
+    --amber: #c8821a;
+    --amber-light: #f0b84a;
+    --sage: #4a6741;
+    --red-accent: #c0392b;
+    --blue-accent: #2a5c8a;
+    --purple: #6a3a8a;
+    --teal: #2a7a6a;
+    --shadow: rgba(92,61,30,0.15);
+    --card-bg: #fffdf8;
+    --border: #e8d9c4;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--ink); min-height:100vh; overflow-x:hidden; }
+  body::before {
+    content:''; position:fixed; inset:0; z-index:-1;
+    background: repeating-linear-gradient(0deg,transparent,transparent 28px,rgba(92,61,30,0.04) 28px,rgba(92,61,30,0.04) 29px),
+                linear-gradient(135deg,#faf7f2 0%,#fff3e0 50%,#faf0e0 100%);
+  }
+
+  /* LOGIN */
+  #loginScreen { position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center; background:linear-gradient(145deg,#1a0f02 0%,#2d1f0e 40%,#3d2b10 100%); overflow:hidden; }
+  #loginScreen::before { content:'𝄜'; position:absolute; font-size:30vw; color:rgba(200,130,26,0.06); top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none; user-select:none; }
+  #loginScreen::after { content:''; position:absolute; top:50%; left:0; right:0; height:60px; background:repeating-linear-gradient(0deg,transparent,transparent 14px,rgba(200,130,26,0.12) 14px,rgba(200,130,26,0.12) 15px); transform:translateY(-50%); pointer-events:none; }
+  .login-card { background:linear-gradient(160deg,#faf7f2,#fff9ef); border-radius:20px; padding:52px 48px 44px; width:420px; max-width:94vw; position:relative; z-index:2; box-shadow:0 32px 80px rgba(0,0,0,0.55),0 2px 0 rgba(200,130,26,0.4) inset; border:1px solid rgba(200,130,26,0.25); animation:cardIn 0.6s cubic-bezier(0.34,1.56,0.64,1); }
+  @keyframes cardIn { from{opacity:0;transform:translateY(40px) scale(0.95)} to{opacity:1;transform:none} }
+  .login-badge { display:inline-block; background:var(--amber); color:#fff; font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; padding:4px 12px; border-radius:20px; margin-bottom:16px; }
+  .login-card h1 { font-family:'Playfair Display',serif; font-size:28px; font-weight:900; color:var(--brown); line-height:1.2; margin-bottom:6px; }
+  .login-card .subtitle { font-size:13.5px; color:#8a6840; margin-bottom:32px; line-height:1.5; }
+  .login-field { margin-bottom:16px; }
+  .login-field label { display:block; font-size:12px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:var(--brown); margin-bottom:7px; }
+  .login-field input { width:100%; padding:12px 16px; border:1.5px solid var(--border); border-radius:10px; font-family:'DM Sans',sans-serif; font-size:15px; background:#fffdf8; color:var(--ink); outline:none; transition:border 0.2s,box-shadow 0.2s; }
+  .login-field input:focus { border-color:var(--amber); box-shadow:0 0 0 3px rgba(200,130,26,0.15); }
+  .login-hint { font-size:11.5px; color:#a08050; margin-top:4px; }
+  .login-btn { width:100%; padding:14px; background:linear-gradient(135deg,var(--amber),#a06010); color:#fff; border:none; border-radius:10px; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600; cursor:pointer; margin-top:8px; transition:transform 0.15s,box-shadow 0.15s,filter 0.15s; }
+  .login-btn:hover { filter:brightness(1.08); transform:translateY(-1px); box-shadow:0 6px 20px rgba(200,130,26,0.4); }
+  .login-error { color:var(--red-accent); font-size:13px; margin-top:10px; text-align:center; min-height:18px; font-weight:500; }
+  .login-divider { border:none; border-top:1px solid var(--border); margin:24px 0 18px; }
+  .login-links { display:flex; gap:12px; flex-wrap:wrap; }
+  .login-link-btn { flex:1; padding:10px 12px; border:1.5px solid var(--border); border-radius:9px; font-family:'DM Sans',sans-serif; font-size:12.5px; font-weight:500; color:var(--brown); background:transparent; cursor:pointer; text-align:center; transition:border-color 0.2s,background 0.2s; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:6px; }
+  .login-link-btn:hover { border-color:var(--amber); background:rgba(200,130,26,0.06); }
+
+  /* APP */
+  #app { display:none; }
+  #app.visible { display:block; animation:fadeIn 0.5s ease; }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+  /* HEADER */
+  header { background:linear-gradient(135deg,#1a0f02 0%,#2d1f0e 100%); padding:0 40px; display:flex; align-items:center; justify-content:space-between; height:68px; position:sticky; top:0; z-index:100; box-shadow:0 2px 20px rgba(0,0,0,0.3); }
+  .header-left { display:flex; align-items:center; gap:14px; }
+  .header-clef { font-size:36px; color:var(--amber); line-height:1; filter:drop-shadow(0 2px 6px rgba(200,130,26,0.5)); }
+  .header-title { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--cream); line-height:1.2; }
+  .header-title span { display:block; font-family:'DM Sans',sans-serif; font-size:11px; font-weight:400; color:rgba(255,255,255,0.5); letter-spacing:2px; text-transform:uppercase; margin-top:1px; }
+  .header-right { display:flex; align-items:center; gap:14px; }
+  .header-user { font-size:13px; color:rgba(255,255,255,0.65); }
+  .btn-logout { padding:7px 16px; border:1px solid rgba(200,130,26,0.4); border-radius:7px; background:transparent; color:var(--amber-light); font-size:12.5px; font-family:'DM Sans',sans-serif; cursor:pointer; transition:background 0.2s; }
+  .btn-logout:hover { background:rgba(200,130,26,0.15); border-color:var(--amber); }
+
+  /* HERO */
+  .hero { background:linear-gradient(90deg,#2d1f0e,#1a0f02); padding:28px 40px; display:flex; align-items:center; gap:20px; border-bottom:3px solid var(--amber); position:relative; overflow:hidden; }
+  .hero::after { content:''; position:absolute; inset:0; background:repeating-linear-gradient(90deg,transparent,transparent 40px,rgba(200,130,26,0.04) 40px,rgba(200,130,26,0.04) 41px); pointer-events:none; }
+  .hero-badge { background:var(--amber); color:#fff; font-family:'Playfair Display',serif; font-size:20px; font-weight:700; padding:14px 16px; border-radius:12px; line-height:1; flex-shrink:0; }
+  .hero-text h2 { font-family:'Playfair Display',serif; font-size:26px; font-weight:900; color:var(--cream); }
+  .hero-text p { font-size:13.5px; color:rgba(255,255,255,0.55); margin-top:4px; }
+
+  /* TABS */
+  .tabs-wrapper { background:var(--card-bg); border-bottom:2px solid var(--border); padding:0 40px; position:sticky; top:68px; z-index:99; overflow-x:auto; scrollbar-width:none; }
+  .tabs-wrapper::-webkit-scrollbar { display:none; }
+  .tabs { display:flex; gap:2px; min-width:max-content; }
+  .tab { padding:0 20px; height:52px; display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:500; color:#8a6840; cursor:pointer; border-bottom:3px solid transparent; margin-bottom:-2px; white-space:nowrap; transition:color 0.2s,border-color 0.2s; user-select:none; }
+  .tab:hover { color:var(--amber); }
+  .tab.active { color:var(--amber); border-bottom-color:var(--amber); font-weight:600; }
+
+  /* CONTENT */
+  .content { max-width:980px; margin:0 auto; padding:36px 40px 60px; }
+  .tab-panel { display:none; }
+  .tab-panel.active { display:block; animation:panelIn 0.35s ease; }
+  @keyframes panelIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none} }
+
+  .section-header { display:flex; align-items:flex-start; gap:16px; margin-bottom:28px; }
+  .section-num { background:var(--amber); color:#fff; font-family:'DM Mono',monospace; font-size:13px; font-weight:500; padding:4px 10px; border-radius:6px; flex-shrink:0; margin-top:5px; }
+  .section-header h2 { font-family:'Playfair Display',serif; font-size:30px; font-weight:900; color:var(--brown); line-height:1.2; }
+  .section-header p { font-size:14px; color:#8a6840; margin-top:6px; line-height:1.6; }
+
+  /* CARDS */
+  .concept-card { background:var(--card-bg); border:1px solid var(--border); border-radius:16px; padding:28px 30px; margin-bottom:20px; box-shadow:0 2px 12px var(--shadow); position:relative; overflow:hidden; transition:box-shadow 0.2s,transform 0.2s; }
+  .concept-card:hover { box-shadow:0 6px 24px rgba(92,61,30,0.18); transform:translateY(-2px); }
+  .concept-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--amber); border-radius:4px 0 0 4px; }
+  .concept-card.green::before { background:var(--sage); }
+  .concept-card.blue::before { background:var(--blue-accent); }
+  .concept-card.red::before { background:var(--red-accent); }
+  .concept-card.purple::before { background:var(--purple); }
+  .concept-card.teal::before { background:var(--teal); }
+  .concept-card h3 { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--brown); margin-bottom:12px; }
+  .concept-card p { font-size:14.5px; line-height:1.75; color:#3d2b10; }
+  .concept-card p strong { color:var(--amber); }
+
+  .def-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px; }
+  @media (max-width:620px) { .def-row { grid-template-columns:1fr; } }
+
+  /* TAG */
+  .tag { display:inline-block; padding:2px 9px; border-radius:20px; font-size:11.5px; font-weight:600; }
+  .tag-amber { background:rgba(200,130,26,0.15); color:#a06010; }
+  .tag-green { background:rgba(74,103,65,0.12); color:#3a5733; }
+  .tag-blue { background:rgba(42,92,138,0.12); color:#1a3a6a; }
+  .tag-red { background:rgba(192,57,43,0.12); color:#a02010; }
+  .tag-purple { background:rgba(106,58,138,0.12); color:#5a2a7a; }
+
+  /* GRAUS TABLE */
+  .graus-table { width:100%; border-collapse:collapse; border-radius:12px; overflow:hidden; box-shadow:0 2px 12px var(--shadow); margin-bottom:24px; font-size:13.5px; }
+  .graus-table thead tr { background:linear-gradient(135deg,var(--brown),#3d2010); color:#fff; }
+  .graus-table th { padding:12px 16px; text-align:left; font-weight:600; font-size:11px; letter-spacing:1px; text-transform:uppercase; }
+  .graus-table td { padding:11px 16px; border-bottom:1px solid var(--border); background:var(--card-bg); vertical-align:top; line-height:1.6; }
+  .graus-table tr:last-child td { border-bottom:none; }
+  .graus-table tr:hover td { background:#fff8ee; }
+  .graus-table .grau-num { font-family:'DM Mono',monospace; font-size:14px; font-weight:700; color:var(--amber); }
+  .graus-table .grau-name { font-weight:700; color:var(--brown); }
+  .graus-table .grau-special { font-size:11px; color:var(--blue-accent); font-weight:600; display:block; margin-top:3px; }
+
+  /* ESCALA VISUAL */
+  .escala-visual { background:#fffdf5; border:1px solid var(--border); border-radius:14px; padding:22px 24px; margin-bottom:20px; overflow-x:auto; }
+  .escala-visual h4 { font-family:'Playfair Display',serif; font-size:15px; font-weight:700; color:var(--brown); margin-bottom:14px; }
+  .scale-row { display:flex; align-items:center; gap:0; margin-bottom:10px; }
+  .scale-note { display:flex; flex-direction:column; align-items:center; }
+  .note-circle { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; border:2px solid; flex-shrink:0; }
+  .note-circle.tonica { background:linear-gradient(135deg,var(--amber),#a06010); border-color:var(--amber); color:#fff; }
+  .note-circle.normal { background:var(--card-bg); border-color:var(--border); color:var(--brown); }
+  .note-circle.sensivel { background:rgba(192,57,43,0.12); border-color:var(--red-accent); color:var(--red-accent); }
+  .note-circle.dominante { background:rgba(42,92,138,0.12); border-color:var(--blue-accent); color:var(--blue-accent); }
+  .note-label { font-size:10px; color:#8a6840; margin-top:4px; font-weight:600; }
+  .note-grau { font-family:'DM Mono',monospace; font-size:9px; color:var(--amber); }
+  .interval-bridge { display:flex; align-items:center; justify-content:center; padding:0 3px; }
+  .interval-chip { font-size:9px; font-weight:700; padding:3px 5px; border-radius:4px; }
+  .interval-chip.tom { background:rgba(74,103,65,0.12); color:var(--sage); }
+  .interval-chip.st { background:rgba(192,57,43,0.12); color:var(--red-accent); }
+
+  /* TETRACORDE */
+  .tetracorde-wrap { background:#fffdf5; border:1px solid var(--border); border-radius:14px; padding:22px 24px; margin-bottom:20px; }
+  .tetracorde-wrap h4 { font-family:'Playfair Display',serif; font-size:15px; font-weight:700; color:var(--brown); margin-bottom:14px; }
+  .tetra-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:580px) { .tetra-grid { grid-template-columns:1fr; } }
+  .tetra-box { border-radius:10px; padding:14px 16px; border:1.5px solid var(--border); background:var(--card-bg); }
+  .tetra-box h5 { font-family:'Playfair Display',serif; font-size:14px; font-weight:700; color:var(--brown); margin-bottom:8px; }
+  .tetra-notes { display:flex; gap:4px; align-items:center; flex-wrap:wrap; }
+  .tn { padding:5px 10px; border-radius:6px; font-family:'DM Mono',monospace; font-size:13px; font-weight:600; }
+  .tn.t { background:rgba(74,103,65,0.12); color:var(--sage); }
+  .tn.st { background:rgba(192,57,43,0.12); color:var(--red-accent); }
+  .tn-sep { font-size:12px; color:var(--border); }
+
+  /* ESCALAS GRID (sustenidos/bemóis) */
+  .escalas-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:14px; margin-bottom:24px; }
+  .escala-card { background:var(--card-bg); border:1px solid var(--border); border-radius:12px; padding:16px 18px; box-shadow:0 2px 8px var(--shadow); transition:box-shadow 0.2s,transform 0.2s; }
+  .escala-card:hover { box-shadow:0 5px 18px rgba(92,61,30,0.18); transform:translateY(-2px); }
+  .escala-card .e-name { font-family:'Playfair Display',serif; font-size:16px; font-weight:700; color:var(--brown); margin-bottom:5px; }
+  .escala-card .e-qty { font-family:'DM Mono',monospace; font-size:12px; color:var(--amber); font-weight:600; margin-bottom:5px; }
+  .escala-card .e-notes { font-size:12.5px; color:#4a3015; line-height:1.5; }
+  .e-sharp { color:#c8821a; }
+  .e-flat { color:#2a5c8a; }
+
+  /* ARMADURA CHIPS */
+  .armadura-chips { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:16px; }
+  .arm-chip { padding:5px 12px; border-radius:20px; font-family:'DM Mono',monospace; font-size:12.5px; font-weight:600; cursor:pointer; transition:transform 0.15s, box-shadow 0.15s; user-select:none; border:1.5px solid; }
+  .arm-chip.sharp { background:rgba(200,130,26,0.1); border-color:rgba(200,130,26,0.3); color:#7a4010; }
+  .arm-chip.sharp:hover { background:rgba(200,130,26,0.2); transform:translateY(-1px); box-shadow:0 3px 10px rgba(200,130,26,0.25); }
+  .arm-chip.flat { background:rgba(42,92,138,0.08); border-color:rgba(42,92,138,0.25); color:#1a3a6a; }
+  .arm-chip.flat:hover { background:rgba(42,92,138,0.15); transform:translateY(-1px); box-shadow:0 3px 10px rgba(42,92,138,0.2); }
+
+  /* DICAS MEMORIZACAO */
+  .memo-card { background:linear-gradient(135deg,rgba(200,130,26,0.07),rgba(200,130,26,0.03)); border:1.5px solid rgba(200,130,26,0.25); border-radius:14px; padding:20px 22px; margin-bottom:16px; }
+  .memo-card h4 { font-family:'Playfair Display',serif; font-size:15px; font-weight:700; color:var(--brown); margin-bottom:10px; }
+  .memo-sequence { font-family:'DM Mono',monospace; font-size:16px; font-weight:700; color:var(--amber); letter-spacing:3px; display:block; margin-bottom:6px; }
+  .memo-card p { font-size:13.5px; line-height:1.6; color:#4a3015; }
+
+  /* INFO BOX */
+  .info-box { border-radius:12px; padding:16px 20px; font-size:14px; line-height:1.65; margin-bottom:20px; display:flex; gap:12px; align-items:flex-start; }
+  .info-box.warn { background:rgba(192,57,43,0.07); border:1px solid rgba(192,57,43,0.2); color:#7a1a0a; }
+  .info-box.note { background:rgba(200,130,26,0.08); border:1px solid rgba(200,130,26,0.25); color:#6a3a00; }
+  .info-box.tip { background:rgba(74,103,65,0.08); border:1px solid rgba(74,103,65,0.2); color:#2a4a22; }
+  .info-box.blue { background:rgba(42,92,138,0.07); border:1px solid rgba(42,92,138,0.2); color:#1a3a5a; }
+  .info-box .icon { font-size:18px; flex-shrink:0; margin-top:1px; }
+
+  /* ACCORDION */
+  .accordion { border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-bottom:16px; box-shadow:0 1px 8px var(--shadow); }
+  .accordion-header { padding:16px 20px; background:var(--card-bg); cursor:pointer; display:flex; align-items:center; justify-content:space-between; font-weight:600; font-size:14.5px; color:var(--brown); transition:background 0.2s; user-select:none; }
+  .accordion-header:hover { background:#fff8ee; }
+  .accordion-header.open { border-bottom:1px solid var(--border); }
+  .accordion-arrow { font-size:14px; transition:transform 0.3s; color:var(--amber); }
+  .accordion-header.open .accordion-arrow { transform:rotate(180deg); }
+  .accordion-body { padding:0 20px; max-height:0; overflow:hidden; transition:max-height 0.4s ease,padding 0.3s; background:#fffdf8; font-size:14px; line-height:1.75; color:#4a3015; }
+  .accordion-body.open { max-height:800px; padding:18px 20px; }
+
+  /* EXERCISE GRID */
+  .exercise-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px; margin-bottom:24px; }
+  .exercise-item { background:var(--card-bg); border:1px solid var(--border); border-radius:12px; padding:20px 18px; box-shadow:0 1px 8px var(--shadow); transition:box-shadow 0.2s,transform 0.2s; }
+  .exercise-item:hover { box-shadow:0 4px 18px rgba(92,61,30,0.18); transform:translateY(-2px); }
+  .exercise-item .ex-label { font-size:11px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--amber); margin-bottom:8px; }
+  .exercise-item p { font-size:13.5px; line-height:1.6; color:#4a3015; }
+
+  /* QUIZ */
+  .quiz-card { background:var(--card-bg); border:1.5px solid var(--border); border-radius:16px; padding:26px 28px; margin-bottom:18px; box-shadow:0 2px 10px var(--shadow); }
+  .quiz-card .q-num { font-family:'DM Mono',monospace; font-size:11px; color:var(--amber); letter-spacing:1.5px; font-weight:600; text-transform:uppercase; margin-bottom:8px; }
+  .quiz-card .q-text { font-size:15px; font-weight:600; color:var(--brown); margin-bottom:18px; line-height:1.5; }
+  .options { display:flex; flex-direction:column; gap:10px; }
+  .option { padding:11px 16px; border:1.5px solid var(--border); border-radius:9px; font-size:14px; cursor:pointer; transition:border-color 0.2s,background 0.2s,transform 0.1s; user-select:none; background:#fffdf8; color:var(--ink); display:flex; align-items:center; gap:10px; }
+  .option:hover:not(.answered) { border-color:var(--amber); background:rgba(200,130,26,0.06); transform:translateX(4px); }
+  .option.correct { border-color:var(--sage); background:rgba(74,103,65,0.1); color:var(--sage); font-weight:600; }
+  .option.wrong { border-color:var(--red-accent); background:rgba(192,57,43,0.07); color:var(--red-accent); }
+  .option.revealed { border-color:var(--sage); background:rgba(74,103,65,0.05); color:#3a5733; }
+  .option-letter { width:24px; height:24px; border-radius:50%; background:rgba(200,130,26,0.12); color:var(--amber); font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .feedback { margin-top:14px; font-size:13.5px; padding:10px 14px; border-radius:8px; display:none; line-height:1.5; }
+  .feedback.show { display:block; }
+  .feedback.ok { background:rgba(74,103,65,0.1); color:#2a5020; border-left:3px solid var(--sage); }
+  .feedback.no { background:rgba(192,57,43,0.08); color:#8a1a0a; border-left:3px solid var(--red-accent); }
+  .quiz-score { text-align:center; padding:20px; background:linear-gradient(135deg,rgba(200,130,26,0.1),rgba(200,130,26,0.05)); border:1.5px solid rgba(200,130,26,0.3); border-radius:14px; margin-top:20px; display:none; }
+  .quiz-score.show { display:block; animation:panelIn 0.4s ease; }
+  .quiz-score .big-score { font-family:'Playfair Display',serif; font-size:48px; font-weight:900; color:var(--amber); }
+  .quiz-score p { font-size:15px; color:var(--brown); margin-top:6px; }
+  .btn-retry { margin-top:14px; padding:10px 24px; background:var(--amber); color:#fff; border:none; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; cursor:pointer; transition:filter 0.2s; }
+  .btn-retry:hover { filter:brightness(1.1); }
+
+  /* CTA */
+  .cta-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:20px; }
+  @media (max-width:560px) { .cta-grid { grid-template-columns:1fr; } }
+  .cta-card { border-radius:16px; padding:28px 26px; text-decoration:none; display:block; transition:transform 0.2s,box-shadow 0.2s; }
+  .cta-card:hover { transform:translateY(-3px); box-shadow:0 12px 36px rgba(0,0,0,0.2); }
+  .cta-card.primary { background:linear-gradient(135deg,#2d1f0e,#1a0f02); border:1px solid rgba(200,130,26,0.3); }
+  .cta-card.secondary { background:linear-gradient(135deg,#3a4a35,#263020); border:1px solid rgba(74,103,65,0.4); }
+  .cta-card .cta-icon { font-size:32px; margin-bottom:12px; }
+  .cta-card h3 { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:#fff; margin-bottom:6px; }
+  .cta-card p { font-size:13px; color:rgba(255,255,255,0.6); line-height:1.5; margin-bottom:16px; }
+  .cta-btn { display:inline-block; padding:9px 20px; border-radius:8px; font-size:13px; font-weight:600; color:#fff; border:1.5px solid rgba(255,255,255,0.3); }
+  .cta-card.primary .cta-btn { border-color:var(--amber); color:var(--amber-light); }
+  .cta-card.secondary .cta-btn { border-color:rgba(74,103,65,0.8); color:#a0d090; }
+
+  ::-webkit-scrollbar { width:8px; height:8px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+  ::-webkit-scrollbar-thumb { background:rgba(92,61,30,0.2); border-radius:4px; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-badge">🎵 Teoria Musical</div>
+    <h1>13º Módulo</h1>
+    <p class="subtitle">Escalas Diatônicas de Modo Maior — graus, tetracordes, escalas com sustenidos e bemóis, macetes de memorização.</p>
+    <div class="login-field">
+      <label>Usuário</label>
+      <input type="text" id="loginUser" placeholder="ex: aluno01" autocomplete="username">
+    </div>
+    <div class="login-field">
+      <label>Senha</label>
+      <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+      <div class="login-hint">Usuário: <strong>aluno</strong> · Senha: <strong>musica123</strong></div>
+    </div>
+    <button class="login-btn" onclick="doLogin()">Entrar no Curso</button>
+    <div class="login-error" id="loginErr"></div>
+    <hr class="login-divider">
+    <div class="login-links">
+      <a href="https://candid-tanuki-66ac7b.netlify.app" target="_blank" class="login-link-btn">📝 Fazer Inscrição</a>
+      <a href="https://sage-narwhal-db712d.netlify.app" target="_blank" class="login-link-btn">👨‍🏫 Contato do Professor</a>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header>
+    <div class="header-left">
+      <div class="header-clef">𝄞</div>
+      <div class="header-title">Teoria Musical<span>13º Módulo — Escalas Diatônicas de Modo Maior</span></div>
+    </div>
+    <div class="header-right">
+      <div class="header-user" id="headerUser"></div>
+      <button class="btn-logout" onclick="doLogout()">Sair</button>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="hero-badge">13°</div>
+    <div class="hero-text">
+      <h2>Escalas Diatônicas de Modo Maior</h2>
+      <p>Graus da escala, tetracordes, escalas com sustenidos e com bemóis, macetes de armadura de clave</p>
+    </div>
+  </div>
+
+  <div class="tabs-wrapper">
+    <div class="tabs">
+      <div class="tab active" onclick="showTab('conceito')" data-tab="conceito"><span>📖</span> Conceito e Graus</div>
+      <div class="tab" onclick="showTab('tetracordes')" data-tab="tetracordes"><span>🔗</span> Tetracordes</div>
+      <div class="tab" onclick="showTab('sustenidos')" data-tab="sustenidos"><span>♯</span> Escalas com ♯</div>
+      <div class="tab" onclick="showTab('bemois')" data-tab="bemois"><span>♭</span> Escalas com ♭</div>
+      <div class="tab" onclick="showTab('exercicios')" data-tab="exercicios"><span>✏️</span> Exercícios</div>
+      <div class="tab" onclick="showTab('quiz')" data-tab="quiz"><span>🧠</span> Quiz</div>
+      <div class="tab" onclick="showTab('contatos')" data-tab="contatos"><span>🔗</span> Contatos</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ── CONCEITO E GRAUS ── -->
+    <div class="tab-panel active" id="tab-conceito">
+      <div class="section-header">
+        <div class="section-num">01</div>
+        <div>
+          <h2>Escala Diatônica — Conceito e Graus</h2>
+          <p>Sucessão de 8 sons com intervalos de tons e semitons — e as funções de cada nota na escala</p>
+        </div>
+      </div>
+
+      <div class="concept-card">
+        <h3>O que é Escala Diatônica?</h3>
+        <p><strong>Escala diatônica</strong> é a sucessão de <strong>8 sons</strong>, contendo intervalos de TONS E SEMITONS. A cada uma das notas contidas na escala, de acordo com sua função, dá-se o nome de <strong>GRAU</strong>. O oitavo grau (VIII) é a repetição do primeiro (I).<br><br>A Escala Diatônica é formada por <strong>5 tons e 2 semitons</strong>. Nas escalas Maiores, os semitons encontram-se do <strong>III para o IV</strong> grau e do <strong>VII para o VIII</strong>.</p>
+      </div>
+
+      <!-- Escala visual interativa -->
+      <div class="escala-visual">
+        <h4>🎼 Escala de Dó Maior — Modelo das Escalas do Modo Maior</h4>
+        <div class="scale-row" style="flex-wrap:wrap; gap:2px; justify-content:center;">
+          <div class="scale-note">
+            <div class="note-circle tonica">Dó</div>
+            <div class="note-label">Tônica</div>
+            <div class="note-grau">I</div>
+          </div>
+          <div class="interval-bridge"><div class="interval-chip tom">T</div></div>
+          <div class="scale-note">
+            <div class="note-circle normal">Ré</div>
+            <div class="note-label">Supertônica</div>
+            <div class="note-grau">II</div>
+          </div>
+          <div class="interval-bridge"><div class="interval-chip tom">T</div></div>
+          <div class="scale-note">
+            <div class="note-circle normal">Mi</div>
+            <div class="note-label">Mediante</div>
+            <div class="note-grau">III</div>
+          </div>
+          <div class="interval-bridge"><div class="interval-chip st">st</div></div>
+          <div class="scale-note">
+            <div class="note-circle normal">Fá</div>
+            <div class="note-label">Subdominante</div>
+            <div class="note-grau">IV</div>
+          </div>
+          <div class="interval-bridge"><div class="interval-chip tom">T</div></div>
+          <div class="scale-note">
+            <div class="note-circle dominante">Sol</div>
+            <div class="note-label">Dominante</div>
+            <div class="note-grau">V</div>
+          </div>
+          <div class="interval-bridge"><div class="interval-chip tom">T</div></div>
+          <div class="scale-note">
+            <div class="note-circle normal">Lá</div>
+            <div class="note-label">Superdominante</div>
+            <div class="note-grau">VI</div>
+          </div>
+          <div class="interval-bridge"><div class="interval-chip tom">T</div></div>
+          <div class="scale-note">
+            <div class="note-circle sensivel">Si</div>
+            <div class="note-label">Sensível</div>
+            <div class="note-grau">VII</div>
+          </div>
+          <div class="interval-bridge"><div class="interval-chip st">st</div></div>
+          <div class="scale-note">
+            <div class="note-circle tonica">Dó</div>
+            <div class="note-label">Rep. Tônica</div>
+            <div class="note-grau">VIII</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:14px; flex-wrap:wrap; margin-top:14px; font-size:12px;">
+          <div style="display:flex; align-items:center; gap:6px;"><div class="interval-chip tom" style="font-size:11px;">T</div> Tom</div>
+          <div style="display:flex; align-items:center; gap:6px;"><div class="interval-chip st" style="font-size:11px;">st</div> Semitom</div>
+          <div style="display:flex; align-items:center; gap:6px;"><div class="note-circle tonica" style="width:22px;height:22px;font-size:9px;">I</div> Tônica</div>
+          <div style="display:flex; align-items:center; gap:6px;"><div class="note-circle dominante" style="width:22px;height:22px;font-size:9px;">V</div> Dominante</div>
+          <div style="display:flex; align-items:center; gap:6px;"><div class="note-circle sensivel" style="width:22px;height:22px;font-size:9px;">VII</div> Sensível</div>
+        </div>
+      </div>
+
+      <table class="graus-table">
+        <thead>
+          <tr>
+            <th>Grau</th>
+            <th>Nome</th>
+            <th>Função na Escala</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="grau-num">I</td>
+            <td class="grau-name">Tônica<span class="grau-special">Grau Tonal</span></td>
+            <td>Dá origem à Escala. Base e repouso da tonalidade.</td>
+          </tr>
+          <tr>
+            <td class="grau-num">II</td>
+            <td class="grau-name">Supertônica</td>
+            <td>Está um <strong>TOM</strong> acima da Tônica.</td>
+          </tr>
+          <tr>
+            <td class="grau-num">III</td>
+            <td class="grau-name">Mediante</td>
+            <td>Grau médio entre o I e o V.</td>
+          </tr>
+          <tr>
+            <td class="grau-num">IV</td>
+            <td class="grau-name">Subdominante<span class="grau-special">Dá origem às escalas em BEMÓIS</span></td>
+            <td>Está um TOM abaixo da Dominante (grau tonal).</td>
+          </tr>
+          <tr>
+            <td class="grau-num">V</td>
+            <td class="grau-name">Dominante<span class="grau-special">Dá origem às escalas com SUSTENIDOS</span></td>
+            <td>Grau tonal mais importante, depois da Tônica.</td>
+          </tr>
+          <tr>
+            <td class="grau-num">VI</td>
+            <td class="grau-name">Superdominante<span class="grau-special">Grau Modal — Dá origem às escalas relativas menores</span></td>
+            <td>Está um TOM acima da Dominante.</td>
+          </tr>
+          <tr>
+            <td class="grau-num">VII</td>
+            <td class="grau-name">Sensível (ou Subtônica)</td>
+            <td>Nota atrativa que está um <strong>SEMITOM</strong> abaixo da Tônica Maior.</td>
+          </tr>
+          <tr>
+            <td class="grau-num">VIII</td>
+            <td class="grau-name">Repetição da Tônica</td>
+            <td>Termina a escala — é a mesma nota do grau I, uma oitava acima.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="info-box note">
+        <span class="icon">💡</span>
+        <span>A escala de <strong>Dó Maior é o MODELO</strong> de todas as escalas do Modo Maior. Todos os outros modos maiores seguem exatamente a mesma sequência de tons e semitons: T-T-st-T-T-T-st.</span>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-header" onclick="toggleAccordion(this)">📌 Os graus tonais e o grau modal <span class="accordion-arrow">▾</span></div>
+        <div class="accordion-body">
+          <strong>Graus Tonais:</strong> I (Tônica), IV (Subdominante) e V (Dominante) — determinam a tonalidade.<br><br>
+          <strong>Grau Modal:</strong> III (Mediante) e VI (Superdominante) — determinam o modo (maior ou menor). No modo maior a Mediante está a 3ª maior da tônica; no modo menor, a 3ª menor.<br><br>
+          <strong>Grau de atração:</strong> VII (Sensível) — tem tendência natural de resolver no grau I (Tônica), criando a cadência V-I.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TETRACORDES ── -->
+    <div class="tab-panel" id="tab-tetracordes">
+      <div class="section-header">
+        <div class="section-num">02</div>
+        <div>
+          <h2>Tetracordes</h2>
+          <p>A escala se divide em dois grupos de quatro sons — cada TETRACORDE é formado por 2 tons e 1 semitom</p>
+        </div>
+      </div>
+
+      <div class="concept-card teal">
+        <h3>O que é um Tetracorde?</h3>
+        <p>A escala diatônica se divide em <strong>dois grupos de quatro sons</strong>, a cada grupo se dá o nome de <strong>TETRACORDE</strong>. Cada tetracorde é formado por <strong>2 tons e 1 semitom</strong> — o mesmo padrão da escala de Dó Maior.</p>
+      </div>
+
+      <div class="tetracorde-wrap">
+        <h4>🎼 Tetracordes da Escala de Dó Maior</h4>
+        <div class="tetra-grid">
+          <div class="tetra-box">
+            <h5>1º Tetracorde (graus I–IV)</h5>
+            <div class="tetra-notes">
+              <span class="tn t">Dó</span>
+              <span class="tn-sep">T</span>
+              <span class="tn t">Ré</span>
+              <span class="tn-sep">T</span>
+              <span class="tn st">Mi</span>
+              <span class="tn-sep">st</span>
+              <span class="tn t">Fá</span>
+            </div>
+            <div style="font-size:11.5px; color:#8a6840; margin-top:8px;">Padrão: T · T · st</div>
+          </div>
+          <div class="tetra-box">
+            <h5>2º Tetracorde (graus V–VIII)</h5>
+            <div class="tetra-notes">
+              <span class="tn t">Sol</span>
+              <span class="tn-sep">T</span>
+              <span class="tn t">Lá</span>
+              <span class="tn-sep">T</span>
+              <span class="tn st">Si</span>
+              <span class="tn-sep">st</span>
+              <span class="tn t">Dó</span>
+            </div>
+            <div style="font-size:11.5px; color:#8a6840; margin-top:8px;">Padrão: T · T · st (idêntico ao 1º)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="concept-card blue">
+        <h3>Como os Tetracordes geram novas escalas</h3>
+        <p>O <strong>2º tetracorde</strong> de uma escala se torna o <strong>1º tetracorde</strong> da próxima escala com sustenidos. Da mesma forma, o <strong>1º tetracorde</strong> se torna o <strong>2º tetracorde</strong> da escala com bemóis. Isso explica por que as escalas são construídas em quintas ascendentes (sustenidos) ou quartas ascendentes (bemóis).</p>
+      </div>
+
+      <div class="info-box tip">
+        <span class="icon">🎯</span>
+        <span>Para construir qualquer escala maior: siga sempre o padrão <strong>T – T – st – T – T – T – st</strong>. Se uma nota não caber naturalmente no padrão, coloque o acidente (♯ ou ♭) necessário.</span>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-header" onclick="toggleAccordion(this)">🎓 Por que o VII grau é alterado nas escalas com sustenidos? <span class="accordion-arrow">▾</span></div>
+        <div class="accordion-body">
+          Na formação das escalas com SUSTENIDOS, o <strong>VII grau sofre uma alteração ascendente</strong> para manter a distribuição correta de tons e semitons. Isso garante que o semitom esteja sempre entre os graus VII e VIII (como na escala modelo de Dó Maior).<br><br>
+          Sem essa alteração, o 2º tetracorde ficaria com a sequência T·T·T em vez de T·T·st, o que mudaria o caráter da escala de maior para outra modalidade.
+        </div>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-header" onclick="toggleAccordion(this)">🎓 Por que o IV grau é alterado nas escalas com bemóis? <span class="accordion-arrow">▾</span></div>
+        <div class="accordion-body">
+          Na formação das escalas com BEMÓIS, o <strong>IV grau sofre uma alteração descendente</strong> para preservar o padrão T·T·st no 1º tetracorde. Sem essa alteração, o semitom ficaria em posição errada, distorcendo o modo maior.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ESCALAS COM SUSTENIDOS ── -->
+    <div class="tab-panel" id="tab-sustenidos">
+      <div class="section-header">
+        <div class="section-num">03</div>
+        <div>
+          <h2>Escalas com Sustenidos (♯)</h2>
+          <p>A partir do V grau (Dominante) da escala modelo — construídas em 5ªs Justas ascendentes</p>
+        </div>
+      </div>
+
+      <div class="memo-card">
+        <h4>🔑 Ordem dos Sustenidos na Armadura de Clave</h4>
+        <span class="memo-sequence">Fá – Dó – Sol – Ré – Lá – Mi – Si</span>
+        <p>Para achar o <strong>nome da escala</strong>: eleva-se um grau depois do último sustenido.<br>
+        Para saber <strong>quantos sustenidos</strong> a escala tem: abaixa-se um grau do nome e conta-se na ordem.</p>
+      </div>
+
+      <div class="info-box blue">
+        <span class="icon">🔍</span>
+        <span>Construção: toma-se o <strong>V grau (Dominante)</strong> da escala atual → ele vira a nova tônica → o VII grau da nova escala é elevado com ♯ para manter o padrão T–T–st.</span>
+      </div>
+
+      <div class="escalas-grid">
+        <div class="escala-card" style="border-top:3px solid var(--amber);">
+          <div class="e-name">Dó Maior</div>
+          <div class="e-qty">Escala modelo (sem acidentes)</div>
+          <div class="e-notes">Dó · Ré · Mi · Fá · Sol · Lá · Si · Dó</div>
+        </div>
+        <div class="escala-card">
+          <div class="e-name">Sol Maior</div>
+          <div class="e-qty e-sharp">Com 1 ♯: <strong>Fá♯</strong></div>
+          <div class="e-notes">Sol · Lá · Si · Dó · Ré · Mi · <span class="e-sharp">Fá♯</span> · Sol</div>
+        </div>
+        <div class="escala-card">
+          <div class="e-name">Ré Maior</div>
+          <div class="e-qty e-sharp">Com 2 ♯: <strong>Fá♯ · Dó♯</strong></div>
+          <div class="e-notes">Ré · Mi · <span class="e-sharp">Fá♯</span> · Sol · Lá · Si · <span class="e-sharp">Dó♯</span> · Ré</div>
+        </div>
+        <div class="escala-card">
+          <div class="e-name">Lá Maior</div>
+          <div class="e-qty e-sharp">Com 3 ♯: <strong>Fá♯ · Dó♯ · Sol♯</strong></div>
+          <div class="e-notes">Lá · Si · <span class="e-sharp">Dó♯</span> · Ré · Mi · <span class="e-sharp">Fá♯</span> · <span class="e-sharp">Sol♯</span> · Lá</div>
+        </div>
+        <div class="escala-card">
+          <div class="e-name">Mi Maior</div>
+          <div class="e-qty e-sharp">Com 4 ♯: Fá♯ · Dó♯ · Sol♯ · <strong>Ré♯</strong></div>
+          <div class="e-notes">Mi · <span class="e-sharp">Fá♯</span> · <span class="e-sharp">Sol♯</span> · Lá · Si · <span class="e-sharp">Dó♯</span> · <span class="e-sharp">Ré♯</span> · Mi</div>
+        </div>
+        <div class="escala-card">
+          <div class="e-name">Si Maior</div>
+          <div class="e-qty e-sharp">Com 5 ♯: + <strong>Lá♯</strong></div>
+          <div class="e-notes">Si · <span class="e-sharp">Dó♯</span> · <span class="e-sharp">Ré♯</span> · Mi · <span class="e-sharp">Fá♯</span> · <span class="e-sharp">Sol♯</span> · <span class="e-sharp">Lá♯</span> · Si</div>
+        </div>
+        <div class="escala-card">
+          <div class="e-name">Fá♯ Maior</div>
+          <div class="e-qty e-sharp">Com 6 ♯: + <strong>Mi♯</strong></div>
+          <div class="e-notes"><span class="e-sharp">Fá♯</span> · <span class="e-sharp">Sol♯</span> · <span class="e-sharp">Lá♯</span> · Si · <span class="e-sharp">Dó♯</span> · <span class="e-sharp">Ré♯</span> · <span class="e-sharp">Mi♯</span> · <span class="e-sharp">Fá♯</span></div>
+        </div>
+        <div class="escala-card">
+          <div class="e-name">Dó♯ Maior</div>
+          <div class="e-qty e-sharp">Com 7 ♯: + <strong>Si♯</strong></div>
+          <div class="e-notes"><span class="e-sharp">Dó♯</span> · <span class="e-sharp">Ré♯</span> · <span class="e-sharp">Mi♯</span> · <span class="e-sharp">Fá♯</span> · <span class="e-sharp">Sol♯</span> · <span class="e-sharp">Lá♯</span> · <span class="e-sharp">Si♯</span> · <span class="e-sharp">Dó♯</span></div>
+        </div>
+      </div>
+
+      <div class="info-box note">
+        <span class="icon">📌</span>
+        <span><strong>Obs.:</strong> Se tivermos os sustenidos (armadura de clave) e quisermos saber o nome da escala, devemos <strong>elevar um grau depois do último sustenido</strong>. Exemplo: último ♯ = Fá → sobe um grau = Sol → Escala de Sol Maior.</span>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-header" onclick="toggleAccordion(this)">🎓 Macete — Contar de 5ª em 5ª ascendente <span class="accordion-arrow">▾</span></div>
+        <div class="accordion-body">
+          A partir de Dó Maior, cada nova escala com sustenido começa uma <strong>5ª Justa acima</strong> da anterior:<br><br>
+          Dó → <strong>Sol</strong> (1♯) → <strong>Ré</strong> (2♯) → <strong>Lá</strong> (3♯) → <strong>Mi</strong> (4♯) → <strong>Si</strong> (5♯) → <strong>Fá♯</strong> (6♯) → <strong>Dó♯</strong> (7♯)<br><br>
+          Para verificar: conte sempre 5 notas acima (Dó=1, Ré=2, Mi=3, Fá=4, Sol=5). Partindo de Sol: Sol=1, Lá=2, Si=3, Dó=4, Ré=5 → próxima escala = Ré Maior. ✓
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ESCALAS COM BEMÓIS ── -->
+    <div class="tab-panel" id="tab-bemois">
+      <div class="section-header">
+        <div class="section-num">04</div>
+        <div>
+          <h2>Escalas com Bemóis (♭)</h2>
+          <p>A partir do IV grau (Subdominante) da escala modelo — construídas em 5ªs Justas descendentes</p>
+        </div>
+      </div>
+
+      <div class="memo-card" style="border-color:rgba(42,92,138,0.3); background:linear-gradient(135deg,rgba(42,92,138,0.07),rgba(42,92,138,0.03));">
+        <h4 style="color:var(--blue-accent);">🔑 Ordem dos Bemóis na Armadura de Clave</h4>
+        <span class="memo-sequence" style="color:var(--blue-accent); letter-spacing:2px;">Si – Mi – Lá – Ré – Sol – Dó – Fá</span>
+        <p>Para achar o <strong>nome da escala</strong>: observar o nome do <strong>penúltimo bemol</strong> da armadura de clave (ou contar uma 4ª abaixo/5ª acima do último bemol).<br>
+        Para saber <strong>quantos bemóis</strong>: abaixa-se cinco graus do nome da escala e conta-se na ordem.</p>
+      </div>
+
+      <div class="info-box blue">
+        <span class="icon">🔍</span>
+        <span>Construção: toma-se o <strong>IV grau (Subdominante)</strong> da escala atual → ele vira a nova tônica → o IV grau da nova escala é abaixado com ♭ para manter o padrão T–T–st.</span>
+      </div>
+
+      <div class="escalas-grid">
+        <div class="escala-card" style="border-top:3px solid var(--amber);">
+          <div class="e-name">Dó Maior</div>
+          <div class="e-qty">Escala modelo (sem acidentes)</div>
+          <div class="e-notes">Dó · Ré · Mi · Fá · Sol · Lá · Si · Dó</div>
+        </div>
+        <div class="escala-card">
+          <div class="e-name">Fá Maior</div>
+          <div class="e-qty e-flat">Com 1 ♭: <strong>Si♭</strong></div>
+          <div class="e-notes">Fá · Sol · Lá · <span class="e-flat">Si♭</span> · Dó · Ré · Mi · Fá</div>
+        </div>
+        <div class="escala-card">
+          <div class="e-name">Si♭ Maior</div>
+          <div class="e-qty e-flat">Com 2 ♭: <strong>Si♭ · Mi♭</strong></div>
+          <div class="e-notes"><span class="e-flat">Si♭</span> · Dó · Ré · <span class="e-flat">Mi♭</span> · Fá · Sol · Lá · <span class="e-flat">Si♭</span></div>
+        </div>
+        <div class="escala-card">
+          <div class="e-name">Mi♭ Maior</div>
+          <div class="e-qty e-flat">Com 3 ♭: + <strong>Lá♭</strong></div>
+          <div class="e-notes"><span class="e-flat">Mi♭</span> · Fá · Sol · <span class="e-flat">Lá♭</span> · <span class="e-flat">Si♭</span> · Dó · Ré · <span class="e-flat">Mi♭</span></div>
+        </div>
+        <div class="escala-card">
+          <div class="e-name">Lá♭ Maior</div>
+          <div class="e-qty e-flat">Com 4 ♭: + <strong>Ré♭</strong></div>
+          <div class="e-notes"><span class="e-flat">Lá♭</span> · <span class="e-flat">Si♭</span> · Dó · <span class="e-flat">Ré♭</span> · <span class="e-flat">Mi♭</span> · Fá · Sol · <span class="e-flat">Lá♭</span></div>
+        </div>
+        <div class="escala-card">
+          <div class="e-name">Ré♭ Maior</div>
+          <div class="e-qty e-flat">Com 5 ♭: + <strong>Sol♭</strong></div>
+          <div class="e-notes"><span class="e-flat">Ré♭</span> · <span class="e-flat">Mi♭</span> · Fá · <span class="e-flat">Sol♭</span> · <span class="e-flat">Lá♭</span> · <span class="e-flat">Si♭</span> · Dó · <span class="e-flat">Ré♭</span></div>
+        </div>
+        <div class="escala-card">
+          <div class="e-name">Sol♭ Maior</div>
+          <div class="e-qty e-flat">Com 6 ♭: + <strong>Dó♭</strong></div>
+          <div class="e-notes"><span class="e-flat">Sol♭</span> · <span class="e-flat">Lá♭</span> · <span class="e-flat">Si♭</span> · <span class="e-flat">Dó♭</span> · <span class="e-flat">Ré♭</span> · <span class="e-flat">Mi♭</span> · Fá · <span class="e-flat">Sol♭</span></div>
+        </div>
+        <div class="escala-card">
+          <div class="e-name">Dó♭ Maior</div>
+          <div class="e-qty e-flat">Com 7 ♭: + <strong>Fá♭</strong></div>
+          <div class="e-notes"><span class="e-flat">Dó♭</span> · <span class="e-flat">Ré♭</span> · <span class="e-flat">Mi♭</span> · <span class="e-flat">Fá♭</span> · <span class="e-flat">Sol♭</span> · <span class="e-flat">Lá♭</span> · <span class="e-flat">Si♭</span> · <span class="e-flat">Dó♭</span></div>
+        </div>
+      </div>
+
+      <div class="info-box note">
+        <span class="icon">📌</span>
+        <span><strong>Obs.:</strong> Se tivermos os bemóis (armadura de clave) e quisermos saber o nome da escala, devemos observar o nome do <strong>penúltimo bemol</strong> da armadura de clave (ou contar uma 4ª abaixo ou 5ª acima do último bemol).</span>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-header" onclick="toggleAccordion(this)">🎓 Macete — Penúltimo Bemol = Nome da Escala <span class="accordion-arrow">▾</span></div>
+        <div class="accordion-body">
+          Existe um atalho rápido: na armadura com 2 ou mais bemóis, o <strong>penúltimo bemol diz o nome da escala</strong>.<br><br>
+          Exemplos:<br>
+          • 3 bemóis (Si♭, Mi♭, Lá♭): penúltimo = <strong>Mi♭</strong> → Escala de Mi♭ Maior ✓<br>
+          • 4 bemóis (Si♭, Mi♭, Lá♭, Ré♭): penúltimo = <strong>Lá♭</strong> → Escala de Lá♭ Maior ✓<br>
+          • 5 bemóis (Si♭, Mi♭, Lá♭, Ré♭, Sol♭): penúltimo = <strong>Ré♭</strong> → Escala de Ré♭ Maior ✓<br><br>
+          Para Fá Maior (1 bemol), o atalho não funciona — é exceção a ser memorizada separadamente.
+        </div>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-header" onclick="toggleAccordion(this)">🎓 Macete — Contar de 4ª em 4ª ascendente (ou 5ª descendente) <span class="accordion-arrow">▾</span></div>
+        <div class="accordion-body">
+          A partir de Dó Maior, cada nova escala com bemol começa uma <strong>4ª Justa acima</strong> (ou 5ª abaixo) da anterior:<br><br>
+          Dó → <strong>Fá</strong> (1♭) → <strong>Si♭</strong> (2♭) → <strong>Mi♭</strong> (3♭) → <strong>Lá♭</strong> (4♭) → <strong>Ré♭</strong> (5♭) → <strong>Sol♭</strong> (6♭) → <strong>Dó♭</strong> (7♭)<br><br>
+          Note que a ordem dos bemóis é o <em>inverso</em> da ordem dos sustenidos: Fá-Dó-Sol-Ré-Lá-Mi-Si (♯) → Si-Mi-Lá-Ré-Sol-Dó-Fá (♭).
+        </div>
+      </div>
+    </div>
+
+    <!-- ── EXERCÍCIOS ── -->
+    <div class="tab-panel" id="tab-exercicios">
+      <div class="section-header">
+        <div class="section-num">05</div>
+        <div>
+          <h2>Exercícios — Bona 89 e 90</h2>
+          <p>Quaternário composto (12/8) — U.T. = Semínima Pontuada</p>
+        </div>
+      </div>
+
+      <div class="info-box purple">
+        <span class="icon">🎵</span>
+        <span>As lições Bona 89 e 90 são em compasso <strong>12/8 — Quaternário Composto</strong>. A <strong>U.T. = Semínima Pontuada (♩.)</strong>. Cada compasso tem 4 tempos de 3 colcheias cada (total: 12 colcheias).</span>
+      </div>
+
+      <div class="exercise-grid">
+        <div class="exercise-item">
+          <div class="ex-label">Bona 89 — 12/8</div>
+          <p><strong>Sostenuto — Quaternário Composto.</strong> U.T. = semínima pontuada. Andamento sustentado e expressivo. 4 tempos por compasso com subdivisão ternária. Atenção às ligaduras longas.</p>
+        </div>
+        <div class="exercise-item">
+          <div class="ex-label">Bona 90 — 12/8</div>
+          <p><strong>Moderato assai — Quaternário Composto.</strong> U.T. = semínima pontuada. Andamento moderado e denso. Grande variedade rítmica com semicolcheias e colcheias na subdivisão ternária.</p>
+        </div>
+        <div class="exercise-item">
+          <div class="ex-label">Exercício 17</div>
+          <p><strong>Armaduras de clave.</strong> Quais as armaduras de clave das escalas maiores formadas com sustenidos? Nomeie-as também. Complete as pautas com as armaduras corretas.</p>
+        </div>
+      </div>
+
+      <div class="concept-card green">
+        <h3>Como preparar as lições 89 e 90</h3>
+        <p>O metrônomo marca na <strong>semínima pontuada</strong> (U.T.). Cada pulso = 1 tempo = 3 colcheias. No 12/8, o padrão de acentuação dos tempos é: <strong>F · f · mF · f</strong> (como no 4/4, mas com subdivisão ternária). Mentalize: "1-e-a · 2-e-a · 3-e-a · 4-e-a" para as 12 colcheias.</p>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-header" onclick="toggleAccordion(this)">🎓 Como resolver o Exercício 17 — Armaduras com Sustenidos <span class="accordion-arrow">▾</span></div>
+        <div class="accordion-body">
+          Para cada escala com sustenidos, coloque os acidentes na pauta na ordem correta <strong>Fá–Dó–Sol–Ré–Lá–Mi–Si</strong>:<br><br>
+          • Dó Maior → sem acidentes (pauta vazia)<br>
+          • Sol Maior → 1♯: Fá♯<br>
+          • Ré Maior → 2♯: Fá♯, Dó♯<br>
+          • Lá Maior → 3♯: Fá♯, Dó♯, Sol♯<br>
+          • Mi Maior → 4♯: + Ré♯<br>
+          • Si Maior → 5♯: + Lá♯<br>
+          • Fá♯ Maior → 6♯: + Mi♯<br>
+          • Dó♯ Maior → 7♯: + Si♯<br><br>
+          Os sustenidos devem ser escritos nas posições corretas do pentagrama (cada ♯ vai em uma linha ou espaço específico — consulte o manual de notação).
+        </div>
+      </div>
+    </div>
+
+    <!-- ── QUIZ ── -->
+    <div class="tab-panel" id="tab-quiz">
+      <div class="section-header">
+        <div class="section-num">06</div>
+        <div>
+          <h2>Quiz Interativo</h2>
+          <p>Teste seus conhecimentos sobre Escalas Diatônicas de Modo Maior</p>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+
+        <div class="quiz-card" data-q="1">
+          <div class="q-num">Questão 01 / 08</div>
+          <div class="q-text">A escala diatônica de modo maior é formada por:</div>
+          <div class="options">
+            <div class="option" onclick="answerQ(this,1,'C')" data-key="A"><span class="option-letter">A</span> 7 tons e nenhum semitom</div>
+            <div class="option" onclick="answerQ(this,1,'C')" data-key="B"><span class="option-letter">B</span> 6 tons e 1 semitom</div>
+            <div class="option" onclick="answerQ(this,1,'C')" data-key="C"><span class="option-letter">C</span> 5 tons e 2 semitons</div>
+            <div class="option" onclick="answerQ(this,1,'C')" data-key="D"><span class="option-letter">D</span> 4 tons e 3 semitons</div>
+          </div>
+          <div class="feedback" id="fb1"></div>
+        </div>
+
+        <div class="quiz-card" data-q="2">
+          <div class="q-num">Questão 02 / 08</div>
+          <div class="q-text">Em quais graus estão os semitons na escala maior?</div>
+          <div class="options">
+            <div class="option" onclick="answerQ(this,2,'B')" data-key="A"><span class="option-letter">A</span> I–II e V–VI</div>
+            <div class="option" onclick="answerQ(this,2,'B')" data-key="B"><span class="option-letter">B</span> III–IV e VII–VIII</div>
+            <div class="option" onclick="answerQ(this,2,'B')" data-key="C"><span class="option-letter">C</span> II–III e VI–VII</div>
+            <div class="option" onclick="answerQ(this,2,'B')" data-key="D"><span class="option-letter">D</span> IV–V e VII–VIII</div>
+          </div>
+          <div class="feedback" id="fb2"></div>
+        </div>
+
+        <div class="quiz-card" data-q="3">
+          <div class="q-num">Questão 03 / 08</div>
+          <div class="q-text">Qual grau é chamado de "Sensível" e por quê?</div>
+          <div class="options">
+            <div class="option" onclick="answerQ(this,3,'C')" data-key="A"><span class="option-letter">A</span> I — porque dá origem à escala</div>
+            <div class="option" onclick="answerQ(this,3,'C')" data-key="B"><span class="option-letter">B</span> V — porque é o mais importante depois da tônica</div>
+            <div class="option" onclick="answerQ(this,3,'C')" data-key="C"><span class="option-letter">C</span> VII — nota atrativa um semitom abaixo da Tônica</div>
+            <div class="option" onclick="answerQ(this,3,'C')" data-key="D"><span class="option-letter">D</span> IV — porque dá origem às escalas em bemóis</div>
+          </div>
+          <div class="feedback" id="fb3"></div>
+        </div>
+
+        <div class="quiz-card" data-q="4">
+          <div class="q-num">Questão 04 / 08</div>
+          <div class="q-text">Cada Tetracorde é formado por:</div>
+          <div class="options">
+            <div class="option" onclick="answerQ(this,4,'B')" data-key="A"><span class="option-letter">A</span> 3 tons e 1 semitom</div>
+            <div class="option" onclick="answerQ(this,4,'B')" data-key="B"><span class="option-letter">B</span> 2 tons e 1 semitom</div>
+            <div class="option" onclick="answerQ(this,4,'B')" data-key="C"><span class="option-letter">C</span> 1 tom e 2 semitons</div>
+            <div class="option" onclick="answerQ(this,4,'B')" data-key="D"><span class="option-letter">D</span> 4 tons</div>
+          </div>
+          <div class="feedback" id="fb4"></div>
+        </div>
+
+        <div class="quiz-card" data-q="5">
+          <div class="q-num">Questão 05 / 08</div>
+          <div class="q-text">Qual é a ordem correta dos sustenidos na armadura de clave?</div>
+          <div class="options">
+            <div class="option" onclick="answerQ(this,5,'A')" data-key="A"><span class="option-letter">A</span> Fá – Dó – Sol – Ré – Lá – Mi – Si</div>
+            <div class="option" onclick="answerQ(this,5,'A')" data-key="B"><span class="option-letter">B</span> Si – Mi – Lá – Ré – Sol – Dó – Fá</div>
+            <div class="option" onclick="answerQ(this,5,'A')" data-key="C"><span class="option-letter">C</span> Dó – Ré – Mi – Fá – Sol – Lá – Si</div>
+            <div class="option" onclick="answerQ(this,5,'A')" data-key="D"><span class="option-letter">D</span> Sol – Ré – Lá – Mi – Si – Fá – Dó</div>
+          </div>
+          <div class="feedback" id="fb5"></div>
+        </div>
+
+        <div class="quiz-card" data-q="6">
+          <div class="q-num">Questão 06 / 08</div>
+          <div class="q-text">A escala de Ré Maior tem quantos e quais sustenidos?</div>
+          <div class="options">
+            <div class="option" onclick="answerQ(this,6,'B')" data-key="A"><span class="option-letter">A</span> 1 sustenido: Fá♯</div>
+            <div class="option" onclick="answerQ(this,6,'B')" data-key="B"><span class="option-letter">B</span> 2 sustenidos: Fá♯ e Dó♯</div>
+            <div class="option" onclick="answerQ(this,6,'B')" data-key="C"><span class="option-letter">C</span> 3 sustenidos: Fá♯, Dó♯ e Sol♯</div>
+            <div class="option" onclick="answerQ(this,6,'B')" data-key="D"><span class="option-letter">D</span> 4 sustenidos: Fá♯, Dó♯, Sol♯ e Ré♯</div>
+          </div>
+          <div class="feedback" id="fb6"></div>
+        </div>
+
+        <div class="quiz-card" data-q="7">
+          <div class="q-num">Questão 07 / 08</div>
+          <div class="q-text">Uma armadura de clave tem 3 bemóis (Si♭, Mi♭, Lá♭). Qual é o nome da escala?</div>
+          <div class="options">
+            <div class="option" onclick="answerQ(this,7,'C')" data-key="A"><span class="option-letter">A</span> Si♭ Maior</div>
+            <div class="option" onclick="answerQ(this,7,'C')" data-key="B"><span class="option-letter">B</span> Lá♭ Maior</div>
+            <div class="option" onclick="answerQ(this,7,'C')" data-key="C"><span class="option-letter">C</span> Mi♭ Maior</div>
+            <div class="option" onclick="answerQ(this,7,'C')" data-key="D"><span class="option-letter">D</span> Ré♭ Maior</div>
+          </div>
+          <div class="feedback" id="fb7"></div>
+        </div>
+
+        <div class="quiz-card" data-q="8">
+          <div class="q-num">Questão 08 / 08</div>
+          <div class="q-text">Qual grau dá origem às escalas com sustenidos?</div>
+          <div class="options">
+            <div class="option" onclick="answerQ(this,8,'C')" data-key="A"><span class="option-letter">A</span> IV — Subdominante</div>
+            <div class="option" onclick="answerQ(this,8,'C')" data-key="B"><span class="option-letter">B</span> I — Tônica</div>
+            <div class="option" onclick="answerQ(this,8,'C')" data-key="C"><span class="option-letter">C</span> V — Dominante</div>
+            <div class="option" onclick="answerQ(this,8,'C')" data-key="D"><span class="option-letter">D</span> VII — Sensível</div>
+          </div>
+          <div class="feedback" id="fb8"></div>
+        </div>
+
+        <div class="quiz-score" id="quizScore">
+          <div class="big-score" id="scoreText"></div>
+          <p id="scoreMsg"></p>
+          <button class="btn-retry" onclick="resetQuiz()">🔄 Tentar Novamente</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CONTATOS ── -->
+    <div class="tab-panel" id="tab-contatos">
+      <div class="section-header">
+        <div class="section-num">07</div>
+        <div>
+          <h2>Inscrições &amp; Contato</h2>
+          <p>Links úteis para continuar sua jornada musical</p>
+        </div>
+      </div>
+
+      <div class="cta-grid">
+        <a href="https://candid-tanuki-66ac7b.netlify.app" target="_blank" class="cta-card primary">
+          <div class="cta-icon">📝</div>
+          <h3>Inscrições no Curso</h3>
+          <p>Garanta sua vaga no curso completo de teoria musical.</p>
+          <div class="cta-btn">Acessar Inscrições →</div>
+        </a>
+        <a href="https://sage-narwhal-db712d.netlify.app" target="_blank" class="cta-card secondary">
+          <div class="cta-icon">👨‍🏫</div>
+          <h3>Contato do Professor</h3>
+          <p>Tire suas dúvidas diretamente com o professor.</p>
+          <div class="cta-btn">Falar com Professor →</div>
+        </a>
+      </div>
+
+      <div class="concept-card" style="margin-top:24px;">
+        <h3>📚 Sobre este Módulo</h3>
+        <p>Este é o <strong>13º Módulo</strong> do curso de Teoria Musical. Neste módulo você aprendeu sobre as <strong>Escalas Diatônicas de Modo Maior</strong>: os 8 graus e suas funções, o conceito de Tetracorde (2T+1st), as <strong>7 escalas com sustenidos</strong> (Sol a Dó♯) com ordem Fá–Dó–Sol–Ré–Lá–Mi–Si, e as <strong>7 escalas com bemóis</strong> (Fá a Dó♭) com ordem Si–Mi–Lá–Ré–Sol–Dó–Fá, além dos macetes de leitura de armadura de clave. As lições Bona 89 e 90 aplicam o 12/8 quaternário composto.</p>
+      </div>
+
+      <div class="info-box tip">
+        <span class="icon">🎵</span>
+        <span>Dominar as escalas maiores é fundamental para ler o hinário com compreensão harmônica. Com as 15 escalas (Dó + 7♯ + 7♭), você cobre todas as tonalidades usadas na música ocidental!</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const USERS = {'aluno':'musica123','professor':'prof2024','admin':'admin123'};
+
+  function doLogin() {
+    const u = document.getElementById('loginUser').value.trim();
+    const p = document.getElementById('loginPass').value;
+    const err = document.getElementById('loginErr');
+    if (USERS[u] && USERS[u] === p) {
+      const ls = document.getElementById('loginScreen');
+      ls.style.opacity='0'; ls.style.transition='opacity 0.4s';
+      setTimeout(()=>{ ls.style.display='none'; },400);
+      document.getElementById('app').classList.add('visible');
+      document.getElementById('headerUser').textContent='👤 '+u;
+      err.textContent='';
+    } else {
+      err.textContent='⚠️ Usuário ou senha incorretos.';
+      document.getElementById('loginPass').value='';
+    }
+  }
+
+  document.getElementById('loginPass').addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
+  document.getElementById('loginUser').addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('loginPass').focus(); });
+
+  function doLogout() {
+    document.getElementById('app').classList.remove('visible');
+    document.getElementById('app').style.display='none';
+    const ls=document.getElementById('loginScreen');
+    ls.style.display='flex'; ls.style.opacity='0';
+    setTimeout(()=>{ ls.style.opacity='1'; ls.style.transition='opacity 0.3s'; },10);
+    document.getElementById('loginUser').value='';
+    document.getElementById('loginPass').value='';
+  }
+
+  function showTab(id) {
+    document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===id));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.id==='tab-'+id));
+  }
+
+  function toggleAccordion(header) {
+    header.classList.toggle('open');
+    header.nextElementSibling.classList.toggle('open');
+  }
+
+  // QUIZ
+  let quizAnswers={};
+  const correctAnswers={1:'C',2:'B',3:'C',4:'B',5:'A',6:'B',7:'C',8:'C'};
+  const feedbacks={
+    1:{ok:'✅ Correto! A escala diatônica maior tem 5 tons e 2 semitons.',no:'❌ Errado. A escala diatônica maior é formada por 5 TONS e 2 SEMITONS.'},
+    2:{ok:'✅ Certo! Os semitons estão entre III–IV e VII–VIII.',no:'❌ Errado. Nas escalas Maiores, os semitons estão entre os graus III–IV e VII–VIII.'},
+    3:{ok:'✅ Correto! O VII grau (Sensível) é nota atrativa um semitom abaixo da Tônica.',no:'❌ Errado. O grau VII (Sensível) é a nota atrativa que está um SEMITOM abaixo da Tônica Maior.'},
+    4:{ok:'✅ Certo! Cada Tetracorde = 2 tons e 1 semitom.',no:'❌ Errado. Cada Tetracorde é formado por 2 TONS e 1 SEMITOM (padrão T–T–st).'},
+    5:{ok:'✅ Correto! A ordem dos sustenidos é Fá–Dó–Sol–Ré–Lá–Mi–Si.',no:'❌ Errado. A ordem dos SUSTENIDOS é Fá–Dó–Sol–Ré–Lá–Mi–Si.'},
+    6:{ok:'✅ Certo! Ré Maior tem 2 sustenidos: Fá♯ e Dó♯.',no:'❌ Errado. Ré Maior tem 2 sustenidos: Fá♯ e Dó♯.'},
+    7:{ok:'✅ Correto! Com 3 bemóis (Si♭,Mi♭,Lá♭), o penúltimo é Mi♭ → Escala de Mi♭ Maior.',no:'❌ Errado. Com 3 bemóis, o penúltimo é Mi♭ → Escala de MI♭ MAIOR.'},
+    8:{ok:'✅ Correto! O V grau (Dominante) dá origem às escalas com sustenidos.',no:'❌ Errado. O grau V (DOMINANTE) dá origem às escalas com SUSTENIDOS.'},
+  };
+
+  function answerQ(el,qNum) {
+    if(quizAnswers[qNum]!==undefined) return;
+    const chosen=el.dataset.key;
+    quizAnswers[qNum]=chosen;
+    el.closest('.quiz-card').querySelectorAll('.option').forEach(o=>o.classList.add('answered'));
+    const isOk=chosen===correctAnswers[qNum];
+    el.classList.add(isOk?'correct':'wrong');
+    if(!isOk) el.closest('.quiz-card').querySelectorAll('.option').forEach(o=>{ if(o.dataset.key===correctAnswers[qNum]) o.classList.add('revealed'); });
+    const fb=document.getElementById('fb'+qNum);
+    fb.textContent=feedbacks[qNum][isOk?'ok':'no'];
+    fb.className='feedback show '+(isOk?'ok':'no');
+    if(Object.keys(quizAnswers).length===8) showScore();
+  }
+
+  function showScore() {
+    const score=Object.keys(quizAnswers).filter(q=>quizAnswers[q]===correctAnswers[q]).length;
+    document.getElementById('scoreText').textContent=score+'/8';
+    const msgs=['Continue estudando!','Bom começo!','Progredindo!','Metade certa!','Bom resultado!','Muito bem!','Quase lá!','Excelente!','🏆 Perfeito! Módulo 13 dominado!'];
+    document.getElementById('scoreMsg').textContent=msgs[score]||msgs[8];
+    const el=document.getElementById('quizScore');
+    el.classList.add('show');
+    el.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+
+  function resetQuiz() {
+    quizAnswers={};
+    document.querySelectorAll('.quiz-card').forEach(c=>{
+      c.querySelectorAll('.option').forEach(o=>o.className='option');
+      c.querySelectorAll('.feedback').forEach(f=>f.className='feedback');
+    });
+    document.getElementById('quizScore').classList.remove('show');
+  }
+</script>
+</body>
+</html>

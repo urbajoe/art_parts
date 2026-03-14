@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>15º Módulo – Escalas Homônimas, Enarmônicas e Cromáticas</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --deep: #16213e;
+    --accent: #c9a84c;
+    --accent2: #e8c97e;
+    --cream: #faf6ef;
+    --muted: #6b6b7a;
+    --card: #ffffff;
+    --border: #e2d9c8;
+    --shadow: 0 4px 24px rgba(26,26,46,0.10);
+    --radius: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; }
+
+  /* LOGIN */
+  #login-screen {
+    position: fixed; inset: 0;
+    background: linear-gradient(135deg, var(--deep) 0%, #0f3460 60%, #1a1a2e 100%);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999; transition: opacity .5s, transform .5s;
+  }
+  #login-screen.hide { opacity: 0; pointer-events: none; transform: scale(1.04); }
+  .login-card {
+    background: rgba(255,255,255,0.05); backdrop-filter: blur(18px);
+    border: 1px solid rgba(201,168,76,0.25); border-radius: 24px;
+    padding: 52px 48px 44px; width: 100%; max-width: 420px; text-align: center;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.4);
+  }
+  .login-logo {
+    width: 72px; height: 72px; margin: 0 auto 20px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 32px; box-shadow: 0 8px 32px rgba(201,168,76,0.35);
+  }
+  .login-card h1 { font-family: 'Playfair Display', serif; color: #fff; font-size: 1.8rem; font-weight: 700; margin-bottom: 6px; }
+  .login-card p { color: rgba(255,255,255,0.55); font-size: .9rem; margin-bottom: 32px; }
+  .login-label { display: block; text-align: left; color: rgba(255,255,255,0.7); font-size: .8rem; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 6px; }
+  .login-input {
+    width: 100%; padding: 13px 16px; margin-bottom: 18px;
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 10px; color: #fff; font-size: .95rem;
+    font-family: 'DM Sans', sans-serif; outline: none; transition: border-color .2s;
+  }
+  .login-input:focus { border-color: var(--accent); }
+  .login-input::placeholder { color: rgba(255,255,255,0.3); }
+  .login-btn {
+    width: 100%; padding: 14px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none; border-radius: 10px; color: var(--deep); font-size: 1rem; font-weight: 700;
+    font-family: 'DM Sans', sans-serif; cursor: pointer; transition: transform .15s, box-shadow .15s; margin-bottom: 14px;
+  }
+  .login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,168,76,0.4); }
+  .login-error { color: #ff6b6b; font-size: .85rem; margin-top: -8px; margin-bottom: 10px; min-height: 20px; }
+  .login-hint { color: rgba(255,255,255,0.35); font-size: .78rem; }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(100deg, var(--deep) 0%, #0f3460 100%);
+    color: #fff; padding: 0 32px; display: flex; align-items: center; justify-content: space-between;
+    height: 68px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 16px rgba(0,0,0,0.18);
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .header-icon {
+    width: 42px; height: 42px; background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
+  }
+  .header-title { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; line-height: 1.2; }
+  .header-sub { font-size: .75rem; color: rgba(255,255,255,0.55); font-weight: 400; }
+  .header-actions { display: flex; gap: 10px; align-items: center; }
+  .header-link { padding: 8px 16px; border-radius: 8px; font-size: .82rem; font-weight: 600; text-decoration: none; transition: all .2s; cursor: pointer; border: none; font-family: 'DM Sans', sans-serif; }
+  .btn-outline { background: transparent; border: 1px solid rgba(201,168,76,0.5); color: var(--accent); }
+  .btn-outline:hover { background: rgba(201,168,76,0.12); }
+  .btn-gold { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: var(--deep); font-weight: 700; }
+  .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(201,168,76,0.35); }
+  .btn-logout { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); font-size: .78rem; }
+  .btn-logout:hover { background: rgba(255,255,255,0.15); }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(120deg, #16213e 0%, #0f3460 55%, #1a1a2e 100%);
+    color: #fff; padding: 56px 32px 48px; text-align: center; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '𝄪'; position: absolute; top: -20px; right: 5%; font-size: 240px;
+    color: rgba(201,168,76,0.06); line-height: 1; pointer-events: none; font-family: serif;
+  }
+  .hero-badge {
+    display: inline-block; background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.4);
+    color: var(--accent2); font-size: .75rem; font-weight: 600; letter-spacing: .1em;
+    text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 16px;
+  }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem,4vw,3rem); font-weight: 900; margin-bottom: 14px; line-height: 1.15; }
+  .hero h1 span { color: var(--accent2); }
+  .hero p { color: rgba(255,255,255,0.65); font-size: 1.05rem; max-width: 580px; margin: 0 auto 28px; }
+  .hero-stats { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; }
+  .stat { text-align: center; }
+  .stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--accent2); }
+  .stat-label { font-size: .75rem; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: .08em; }
+
+  /* TABS */
+  .tabs-wrapper { background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 68px; z-index: 90; }
+  .tabs { display: flex; padding: 0 24px; gap: 0; overflow-x: auto; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    padding: 16px 22px; font-size: .88rem; font-weight: 600; color: var(--muted);
+    cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap;
+    transition: all .2s; display: flex; align-items: center; gap: 7px;
+    background: none; border-top: none; border-left: none; border-right: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab.active { color: var(--ink); border-bottom-color: var(--accent); }
+
+  /* CONTENT */
+  .content { max-width: 900px; margin: 0 auto; padding: 40px 24px 80px; }
+  .tab-panel { display: none; animation: fadeIn .35s ease; }
+  .tab-panel.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* CARDS */
+  .card { background: var(--card); border-radius: var(--radius); padding: 32px; margin-bottom: 24px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .card-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .card-title .icon { width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .icon-gold { background: linear-gradient(135deg,#fef3c7,#fde68a); }
+  .icon-blue { background: linear-gradient(135deg,#dbeafe,#bfdbfe); }
+  .icon-green { background: linear-gradient(135deg,#d1fae5,#a7f3d0); }
+  .icon-rose { background: linear-gradient(135deg,#ffe4e6,#fecdd3); }
+  .icon-purple { background: linear-gradient(135deg,#ede9fe,#ddd6fe); }
+  .icon-teal { background: linear-gradient(135deg,#ccfbf1,#99f6e4); }
+
+  p { line-height: 1.75; color: #333; margin-bottom: 12px; }
+  p:last-child { margin-bottom: 0; }
+
+  /* HIGHLIGHT BOXES */
+  .highlight { border-radius: 12px; padding: 20px 24px; margin: 20px 0; border-left: 4px solid; }
+  .highlight-gold { background: #fffbeb; border-color: var(--accent); }
+  .highlight-blue { background: #eff6ff; border-color: #3b82f6; }
+  .highlight-green { background: #f0fdf4; border-color: #22c55e; }
+  .highlight-rose { background: #fff1f2; border-color: #f43f5e; }
+  .highlight h4 { font-weight: 700; margin-bottom: 6px; font-size: .95rem; }
+  .highlight-gold h4 { color: #92400e; }
+  .highlight-blue h4 { color: #1e40af; }
+  .highlight-green h4 { color: #15803d; }
+  .highlight-rose h4 { color: #be123c; }
+
+  /* CONCEPT BOXES */
+  .concept-row { display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 0; }
+  .concept-box { flex: 1; min-width: 200px; border-radius: 14px; padding: 22px; border: 1px solid; position: relative; overflow: hidden; }
+  .concept-box::before { content: attr(data-num); position: absolute; right: 14px; top: 8px; font-family: 'Playfair Display', serif; font-size: 3.5rem; font-weight: 900; opacity: 0.06; line-height: 1; }
+  .box-gold { background: #fffbeb; border-color: #fde68a; }
+  .box-blue { background: #eff6ff; border-color: #bfdbfe; }
+  .box-green { background: #f0fdf4; border-color: #a7f3d0; }
+  .box-rose { background: #fff1f2; border-color: #fecdd3; }
+  .concept-box h3 { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 10px; }
+  .box-gold h3 { color: #92400e; }
+  .box-blue h3 { color: #1e40af; }
+  .box-green h3 { color: #15803d; }
+  .box-rose h3 { color: #be123c; }
+  .concept-box p { font-size: .88rem; line-height: 1.65; }
+
+  /* CHROMATIC SCALE VISUAL */
+  .chromatic-wrap { background: #1a1a2e; border-radius: 14px; padding: 24px; margin: 20px 0; overflow-x: auto; }
+  .chromatic-title { font-family: 'DM Mono', monospace; font-size: .75rem; color: var(--accent); text-transform: uppercase; letter-spacing: .12em; margin-bottom: 16px; }
+  .chromatic-row { display: flex; align-items: center; gap: 0; flex-wrap: nowrap; min-width: fit-content; }
+  .c-note { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .c-pill {
+    padding: 6px 11px; border-radius: 20px; font-family: 'DM Mono', monospace;
+    font-size: .75rem; font-weight: 600; white-space: nowrap;
+  }
+  .c-nat { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+  .c-alt { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #1a1a2e; }
+  .c-deg { font-size: .6rem; color: rgba(255,255,255,0.35); font-family: 'DM Mono', monospace; }
+  .c-arrow { color: rgba(255,255,255,0.2); font-size: .8rem; padding: 0 3px; align-self: center; }
+
+  /* ENHARMONIC PAIRS */
+  .enh-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap: 12px; margin-top: 16px; }
+  .enh-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px; text-align: center; transition: all .2s;
+  }
+  .enh-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(26,26,46,0.12); border-color: var(--accent); }
+  .enh-notes { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 8px; }
+  .enh-note { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; }
+  .enh-eq { font-size: 1.1rem; color: var(--muted); }
+  .enh-label { font-size: .75rem; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+  th { background: linear-gradient(100deg, var(--deep), #0f3460); color: #fff; padding: 13px 18px; text-align: left; font-weight: 600; font-size: .8rem; letter-spacing: .05em; text-transform: uppercase; }
+  th:first-child { border-radius: 12px 0 0 0; } th:last-child { border-radius: 0 12px 0 0; }
+  td { padding: 12px 18px; border-bottom: 1px solid var(--border); }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: #faf8f4; }
+  tr:hover td { background: #fef9ec; transition: background .15s; }
+
+  /* RULE BOX */
+  .rule-box {
+    background: linear-gradient(100deg, var(--deep), #0f3460); color: #fff;
+    border-radius: 14px; padding: 24px 28px; margin: 20px 0;
+  }
+  .rule-box h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 12px; color: var(--accent2); }
+  .rule-box p { color: rgba(255,255,255,0.8); margin-bottom: 8px; font-size: .92rem; }
+  .rule-box p:last-child { margin-bottom: 0; }
+
+  /* DIRECTION BADGE */
+  .dir-row { display: flex; gap: 14px; flex-wrap: wrap; margin: 16px 0; }
+  .dir-box { flex: 1; min-width: 180px; border-radius: 12px; padding: 18px 20px; border: 1px solid; }
+  .dir-up { background: #f0fdf4; border-color: #a7f3d0; }
+  .dir-down { background: #fff1f2; border-color: #fecdd3; }
+  .dir-label { font-weight: 700; font-size: .9rem; margin-bottom: 6px; }
+  .dir-up .dir-label { color: #15803d; }
+  .dir-down .dir-label { color: #be123c; }
+  .dir-box p { font-size: .88rem; line-height: 1.6; margin: 0; }
+
+  /* QUIZ */
+  .quiz-q { margin-bottom: 28px; }
+  .quiz-q h4 { font-weight: 700; margin-bottom: 12px; font-size: 1rem; }
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-opt { padding: 12px 16px; border-radius: 10px; border: 2px solid var(--border); background: #fff; cursor: pointer; font-size: .9rem; font-family: 'DM Sans', sans-serif; transition: all .18s; text-align: left; }
+  .quiz-opt:hover { border-color: var(--accent); background: #fffbeb; }
+  .quiz-opt.correct { border-color: #22c55e; background: #f0fdf4; color: #15803d; font-weight: 600; }
+  .quiz-opt.wrong { border-color: #ef4444; background: #fef2f2; color: #b91c1c; }
+  .quiz-feedback { margin-top: 10px; font-size: .88rem; font-weight: 600; }
+  .quiz-score-bar { background: #e5e7eb; border-radius: 20px; height: 10px; margin: 8px 0; }
+  .quiz-score-fill { height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width .5s; }
+
+  /* GLOSSARY */
+  .glossary-item { padding: 16px 0; border-bottom: 1px solid var(--border); }
+  .glossary-item:last-child { border-bottom: none; }
+  .glossary-term { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.05rem; margin-bottom: 4px; }
+  .glossary-def { font-size: .9rem; color: #555; line-height: 1.65; }
+
+  /* EXERCISE */
+  .exercise-header { background: linear-gradient(100deg, var(--deep), #0f3460); color: #fff; border-radius: 12px; padding: 20px 24px; margin-bottom: 20px; display: flex; align-items: center; gap: 14px; }
+  .exercise-num { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 900; color: var(--accent2); line-height: 1; }
+  .exercise-info h3 { font-size: 1.1rem; font-weight: 700; }
+  .exercise-info p { font-size: .82rem; color: rgba(255,255,255,0.6); margin: 0; }
+  .exercise-staff { background: #f9f7f2; border: 1px solid var(--border); border-radius: 12px; padding: 24px; text-align: center; min-height: 70px; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #bbb; letter-spacing: 4px; }
+
+  /* LINK CARDS */
+  .link-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; }
+  @media(max-width:600px) { .link-cards { grid-template-columns: 1fr; } }
+  .link-card { border-radius: 14px; padding: 24px; text-decoration: none; color: inherit; border: 1px solid; transition: all .2s; display: block; }
+  .link-card:hover { transform: translateY(-3px); }
+  .link-card-enroll { background: #fffbeb; border-color: #fde68a; }
+  .link-card-enroll:hover { box-shadow: 0 8px 24px rgba(201,168,76,0.2); }
+  .link-card-contact { background: #eff6ff; border-color: #bfdbfe; }
+  .link-card-contact:hover { box-shadow: 0 8px 24px rgba(59,130,246,0.15); }
+  .link-card-icon { font-size: 2rem; margin-bottom: 10px; }
+  .link-card h3 { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 6px; }
+  .link-card p { font-size: .85rem; color: var(--muted); margin: 0; }
+  .link-arrow { margin-top: 14px; font-size: .82rem; font-weight: 700; }
+  .link-card-enroll .link-arrow { color: var(--accent); }
+  .link-card-contact .link-arrow { color: #3b82f6; }
+
+  /* PROGRESS */
+  .progress-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px 24px; margin-bottom: 24px; }
+  .progress-label { font-size: .82rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 8px; }
+  .progress-bar { background: #e5e7eb; border-radius: 20px; height: 8px; }
+  .progress-fill { height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+
+  footer { background: var(--deep); color: rgba(255,255,255,0.45); text-align: center; padding: 24px; font-size: .82rem; }
+  footer span { color: var(--accent); }
+
+  @media(max-width:640px) {
+    .hero { padding: 36px 20px 32px; }
+    .card { padding: 22px 18px; }
+    header { padding: 0 16px; }
+    .tabs { padding: 0 8px; }
+    .tab { padding: 14px 14px; font-size: .8rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">🎵</div>
+    <h1>Teoria Musical</h1>
+    <p>15º Módulo — Homônimas, Enarmônicas e Cromáticas</p>
+    <label class="login-label">Usuário</label>
+    <input id="l-user" class="login-input" type="text" placeholder="aluno@email.com" autocomplete="username">
+    <label class="login-label">Senha</label>
+    <input id="l-pass" class="login-input" type="password" placeholder="••••••••" autocomplete="current-password">
+    <div class="login-error" id="login-error"></div>
+    <button class="login-btn" onclick="doLogin()">Entrar →</button>
+    <p class="login-hint">Demo: usuário <strong style="color:rgba(255,255,255,.55)">aluno</strong> / senha <strong style="color:rgba(255,255,255,.55)">1234</strong></p>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-left">
+    <div class="header-icon">🎼</div>
+    <div>
+      <div class="header-title">Teoria Musical</div>
+      <div class="header-sub">15º Módulo</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <a href="https://candid-tanuki-66ac7b.netlify.app" target="_blank" class="header-link btn-gold">Inscrições</a>
+    <a href="https://sage-narwhal-db712d.netlify.app" target="_blank" class="header-link btn-outline">Professor</a>
+    <button class="header-link btn-logout" onclick="doLogout()">Sair</button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">📚 15º Módulo · Apostila Oficial</div>
+  <h1>Escalas <span>Homônimas,</span><br>Enarmônicas e <span>Cromáticas</span></h1>
+  <p>Compreenda as relações entre escalas de mesma tônica, notas de mesmo som e a escala formada apenas por semitons.</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">3</div><div class="stat-label">Tipos de escalas</div></div>
+    <div class="stat"><div class="stat-num">12</div><div class="stat-label">Sons cromáticos</div></div>
+    <div class="stat"><div class="stat-num">13</div><div class="stat-label">Notas na escala cromática</div></div>
+    <div class="stat"><div class="stat-num">3</div><div class="stat-label">Exercícios Bona</div></div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="tabs-wrapper">
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('conceito')" data-tab="conceito"><span>📖</span>Conceitos</button>
+    <button class="tab" onclick="switchTab('homonimas')" data-tab="homonimas"><span>🔁</span>Homônimas</button>
+    <button class="tab" onclick="switchTab('enarmonicas')" data-tab="enarmonicas"><span>↔️</span>Enarmônicas</button>
+    <button class="tab" onclick="switchTab('cromaticas')" data-tab="cromaticas"><span>🎨</span>Cromáticas</button>
+    <button class="tab" onclick="switchTab('exercicios')" data-tab="exercicios"><span>🎶</span>Exercícios</button>
+    <button class="tab" onclick="switchTab('quiz')" data-tab="quiz"><span>✏️</span>Quiz</button>
+    <button class="tab" onclick="switchTab('glossario')" data-tab="glossario"><span>📝</span>Glossário</button>
+    <button class="tab" onclick="switchTab('links')" data-tab="links"><span>🔗</span>Links</button>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<main class="content">
+
+  <!-- CONCEITOS -->
+  <div id="tab-conceito" class="tab-panel active">
+    <div class="progress-wrap">
+      <div class="progress-label">Progresso nesta aba</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><div class="icon icon-gold">📖</div>Visão Geral do 15º Módulo</div>
+      <p>Este módulo apresenta três conceitos essenciais da teoria musical que ampliam a compreensão sobre como as escalas se relacionam entre si e com o sistema tonal cromático.</p>
+      <div class="concept-row">
+        <div class="concept-box box-gold" data-num="1">
+          <h3>① Escalas Homônimas</h3>
+          <p>Mesma <strong>tônica</strong>, modos diferentes (maior e menor). Ex: Dó maior e Dó menor.</p>
+        </div>
+        <div class="concept-box box-blue" data-num="2">
+          <h3>② Escalas Enarmônicas</h3>
+          <p>Nomes e grafias <strong>diferentes</strong>, porém com o <strong>mesmo som</strong>. Ex: Fá♯ maior e Sol♭ maior.</p>
+        </div>
+        <div class="concept-box box-rose" data-num="3">
+          <h3>③ Escalas Cromáticas</h3>
+          <p>Formadas exclusivamente por <strong>semitons</strong> (diatônicos e cromáticos). Cobrem os 12 sons do sistema temperado.</p>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><div class="icon icon-blue">🎯</div>Por que estudar esses conceitos?</div>
+      <p>Esses três tipos de relação entre escalas são fundamentais para a leitura musical avançada, o reconhecimento de tonalidades próximas e o entendimento da modulação harmônica.</p>
+      <div class="highlight highlight-blue">
+        <h4>📌 Aplicação prática</h4>
+        <p>Compositores e arranjadores utilizam escalas enarmônicas para simplificar a escrita (escolhendo a armadura com menos acidentes). A escala cromática é base para o cromatismo e o jazz moderno.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOMÔNIMAS -->
+  <div id="tab-homonimas" class="tab-panel">
+    <div class="card">
+      <div class="card-title"><div class="icon icon-gold">🔁</div>Escalas Homônimas</div>
+      <p>Chamam-se <strong>HOMÔNIMAS</strong> duas escalas que têm a mesma <strong>TÔNICA</strong> e pertencem a modos diferentes.</p>
+      <div class="rule-box">
+        <h3>📌 Definição</h3>
+        <p>Homônimas = mesma nota inicial (tônica) + modos diferentes (maior ↔ menor)</p>
+        <p>A palavra vem do grego: <em>homo</em> (mesmo) + <em>ônoma</em> (nome) — mesma nota, diferente modo.</p>
+      </div>
+      <div class="highlight highlight-gold">
+        <h4>Exemplos do método</h4>
+        <p><strong>Dó maior</strong> ↔ <strong>Dó menor</strong> &nbsp;·&nbsp; <strong>Fá♯ maior</strong> ↔ <strong>Fá♯ menor</strong></p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="icon icon-blue">🎵</div>Comparação: Dó Maior × Dó Menor</div>
+      <p>Ambas as escalas partem da mesma tônica (Dó), mas diferem no III, VI e VII graus:</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Grau</th><th>Dó Maior</th><th>Dó Menor Harm.</th><th>Diferença</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>I – Tônica</td><td>Dó</td><td>Dó</td><td>—</td></tr>
+            <tr><td>II – Supertônica</td><td>Ré</td><td>Ré</td><td>—</td></tr>
+            <tr><td>III – Mediante</td><td>Mi</td><td><strong>Mi♭</strong></td><td>♭III</td></tr>
+            <tr><td>IV – Subdominante</td><td>Fá</td><td>Fá</td><td>—</td></tr>
+            <tr><td>V – Dominante</td><td>Sol</td><td>Sol</td><td>—</td></tr>
+            <tr><td>VI – Superdominante</td><td>Lá</td><td><strong>Lá♭</strong></td><td>♭VI</td></tr>
+            <tr><td>VII – Sensível</td><td>Si</td><td>Si</td><td>— (harm.)</td></tr>
+            <tr><td>VIII – Tônica</td><td>Dó</td><td>Dó</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="icon icon-green">📋</div>Pares Homônimos mais comuns</div>
+      <div class="enh-grid">
+        <div class="enh-card"><div class="enh-notes"><span class="enh-note">Dó M</span><span class="enh-eq">↔</span><span class="enh-note">Dó m</span></div><div class="enh-label">par homônimo</div></div>
+        <div class="enh-card"><div class="enh-notes"><span class="enh-note">Ré M</span><span class="enh-eq">↔</span><span class="enh-note">Ré m</span></div><div class="enh-label">par homônimo</div></div>
+        <div class="enh-card"><div class="enh-notes"><span class="enh-note">Mi M</span><span class="enh-eq">↔</span><span class="enh-note">Mi m</span></div><div class="enh-label">par homônimo</div></div>
+        <div class="enh-card"><div class="enh-notes"><span class="enh-note">Fá M</span><span class="enh-eq">↔</span><span class="enh-note">Fá m</span></div><div class="enh-label">par homônimo</div></div>
+        <div class="enh-card"><div class="enh-notes"><span class="enh-note">Sol M</span><span class="enh-eq">↔</span><span class="enh-note">Sol m</span></div><div class="enh-label">par homônimo</div></div>
+        <div class="enh-card"><div class="enh-notes"><span class="enh-note">Lá M</span><span class="enh-eq">↔</span><span class="enh-note">Lá m</span></div><div class="enh-label">par homônimo</div></div>
+        <div class="enh-card"><div class="enh-notes"><span class="enh-note">Si M</span><span class="enh-eq">↔</span><span class="enh-note">Si m</span></div><div class="enh-label">par homônimo</div></div>
+        <div class="enh-card"><div class="enh-notes"><span class="enh-note">Fá♯ M</span><span class="enh-eq">↔</span><span class="enh-note">Fá♯ m</span></div><div class="enh-label">par homônimo</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENARMÔNICAS -->
+  <div id="tab-enarmonicas" class="tab-panel">
+    <div class="card">
+      <div class="card-title"><div class="icon icon-blue">↔️</div>Escalas Enarmônicas</div>
+      <p><strong>Escalas enarmônicas</strong> são escalas de nomes e grafias diferentes, mas com o mesmo som.</p>
+      <div class="rule-box">
+        <h3>📌 Definição</h3>
+        <p>Enarmônica = grafia diferente + mesmo som físico (mesma frequência)</p>
+        <p>Ocorre quando duas tonalidades soam identicamente mas são escritas de formas distintas.</p>
+      </div>
+      <div class="highlight highlight-blue">
+        <h4>Exemplo clássico</h4>
+        <p><strong>Fá♯ maior (6#)</strong> ↔ <strong>Sol♭ maior (6♭)</strong> — mesmo som, escrita diferente.</p>
+        <p>Na prática, o músico escolhe a armadura que facilita a leitura (menor número de acidentes).</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="icon icon-gold">🎹</div>Notas Enarmônicas</div>
+      <p><strong>Notas enarmônicas</strong> são notas de nomes e grafias diferentes, porém com o mesmo som.</p>
+      <div class="enh-grid">
+        <div class="enh-card"><div class="enh-notes"><span class="enh-note">Dó♯</span><span class="enh-eq">=</span><span class="enh-note">Ré♭</span></div><div class="enh-label">enarmônicas</div></div>
+        <div class="enh-card"><div class="enh-notes"><span class="enh-note">Ré♯</span><span class="enh-eq">=</span><span class="enh-note">Mi♭</span></div><div class="enh-label">enarmônicas</div></div>
+        <div class="enh-card"><div class="enh-notes"><span class="enh-note">Fá♯</span><span class="enh-eq">=</span><span class="enh-note">Sol♭</span></div><div class="enh-label">enarmônicas</div></div>
+        <div class="enh-card"><div class="enh-notes"><span class="enh-note">Sol♯</span><span class="enh-eq">=</span><span class="enh-note">Lá♭</span></div><div class="enh-label">enarmônicas</div></div>
+        <div class="enh-card"><div class="enh-notes"><span class="enh-note">Lá♯</span><span class="enh-eq">=</span><span class="enh-note">Si♭</span></div><div class="enh-label">enarmônicas</div></div>
+        <div class="enh-card"><div class="enh-notes"><span class="enh-note">Si</span><span class="enh-eq">=</span><span class="enh-note">Dó♭</span></div><div class="enh-label">enarmônicas</div></div>
+        <div class="enh-card"><div class="enh-notes"><span class="enh-note">Mi</span><span class="enh-eq">=</span><span class="enh-note">Fá♭</span></div><div class="enh-label">enarmônicas</div></div>
+        <div class="enh-card"><div class="enh-notes"><span class="enh-note">Dó𝄪</span><span class="enh-eq">=</span><span class="enh-note">Ré</span></div><div class="enh-label">duplo ♯ = natural</div></div>
+      </div>
+      <p style="margin-top:14px;font-size:.85rem;color:var(--muted)">* Ver exemplos práticos: hinos 342 e hino 25 (hinário si♭), conforme indicado na apostila.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="icon icon-rose">🔄</div>Escalas Enarmônicas — Pares de Tonalidades</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Tonalidade A</th><th>Acidentes A</th><th>Tonalidade B</th><th>Acidentes B</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Fá♯ maior</td><td>6 #</td><td>Sol♭ maior</td><td>6 ♭</td></tr>
+            <tr><td>Si maior</td><td>5 #</td><td>Dó♭ maior</td><td>7 ♭</td></tr>
+            <tr><td>Dó♯ maior</td><td>7 #</td><td>Ré♭ maior</td><td>5 ♭</td></tr>
+            <tr><td>Fá♯ menor</td><td>3 #</td><td>Sol♭ menor</td><td>9 ♭*</td></tr>
+            <tr><td>Sol♯ menor</td><td>5 #</td><td>Lá♭ menor</td><td>7 ♭</td></tr>
+            <tr><td>Ré♯ menor</td><td>6 #</td><td>Mi♭ menor</td><td>6 ♭</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:10px;font-size:.82rem;color:var(--muted)">* Tonalidades com muitos acidentes são geralmente substituídas pela enarmônica de escrita mais simples.</p>
+    </div>
+  </div>
+
+  <!-- CROMÁTICAS -->
+  <div id="tab-cromaticas" class="tab-panel">
+    <div class="card">
+      <div class="card-title"><div class="icon icon-rose">🎨</div>Escalas Cromáticas</div>
+      <p>São aquelas formadas exclusivamente por intervalos de <strong>SEMITONS</strong> (diatônicos e cromáticos). A escala cromática não se baseia numa tonalidade, mas sim numa escala diatônica que lhe corresponde.</p>
+      <div class="rule-box">
+        <h3>📌 Regras fundamentais</h3>
+        <p>1. A escala começa e termina sobre a <strong>TÔNICA</strong> (nunca ultrapassá-la).</p>
+        <p>2. Não se modificam os semitons naturais da escala diatônica (do <strong>III para o IV grau</strong> e do <strong>VII para o VIII grau</strong>).</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="icon icon-gold">⬆️⬇️</div>Regras de Grafia — Subida e Descida</div>
+      <div class="dir-row">
+        <div class="dir-box dir-up">
+          <div class="dir-label">⬆️ SUBINDO na escala cromática</div>
+          <p>Elevar ½ tom = usar <strong>sustenido (♯)</strong> ou <strong>dobrado sustenido (𝄪)</strong> sobre a nota natural.</p>
+        </div>
+        <div class="dir-box dir-down">
+          <div class="dir-label">⬇️ DESCENDO na escala cromática</div>
+          <p>Abaixar ½ tom = usar <strong>bemol (♭)</strong> ou <strong>dobrado bemol (𝄫)</strong> sobre a nota natural.</p>
+        </div>
+      </div>
+      <div class="highlight highlight-gold">
+        <h4>⚠️ Atenção — Semitons naturais</h4>
+        <p>Os intervalos de semitom natural entre <strong>Mi–Fá</strong> (III–IV) e <strong>Si–Dó</strong> (VII–VIII) <em>não recebem nota cromática intercalada</em> — eles já são naturalmente semitons.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="icon icon-purple">🎵</div>Escala Cromática de Dó Maior — Subida</div>
+      <div class="chromatic-wrap">
+        <div class="chromatic-title">Dó Maior Cromática — Ascendente (13 notas)</div>
+        <div class="chromatic-row">
+          <div class="c-note"><div class="c-pill c-nat">Dó</div><div class="c-deg">I</div></div>
+          <div class="c-arrow">›</div>
+          <div class="c-note"><div class="c-pill c-alt">Dó♯</div><div class="c-deg">crom.</div></div>
+          <div class="c-arrow">›</div>
+          <div class="c-note"><div class="c-pill c-nat">Ré</div><div class="c-deg">II</div></div>
+          <div class="c-arrow">›</div>
+          <div class="c-note"><div class="c-pill c-alt">Ré♯</div><div class="c-deg">crom.</div></div>
+          <div class="c-arrow">›</div>
+          <div class="c-note"><div class="c-pill c-nat">Mi</div><div class="c-deg">III</div></div>
+          <div class="c-arrow">›</div>
+          <div class="c-note"><div class="c-pill c-nat">Fá</div><div class="c-deg">IV</div></div>
+          <div class="c-arrow">›</div>
+          <div class="c-note"><div class="c-pill c-alt">Fá♯</div><div class="c-deg">crom.</div></div>
+          <div class="c-arrow">›</div>
+          <div class="c-note"><div class="c-pill c-nat">Sol</div><div class="c-deg">V</div></div>
+          <div class="c-arrow">›</div>
+          <div class="c-note"><div class="c-pill c-alt">Sol♯</div><div class="c-deg">crom.</div></div>
+          <div class="c-arrow">›</div>
+          <div class="c-note"><div class="c-pill c-nat">Lá</div><div class="c-deg">VI</div></div>
+          <div class="c-arrow">›</div>
+          <div class="c-note"><div class="c-pill c-alt">Lá♯</div><div class="c-deg">crom.</div></div>
+          <div class="c-arrow">›</div>
+          <div class="c-note"><div class="c-pill c-nat">Si</div><div class="c-deg">VII</div></div>
+          <div class="c-arrow">›</div>
+          <div class="c-note"><div class="c-pill c-nat">Dó</div><div class="c-deg">VIII</div></div>
+        </div>
+      </div>
+
+      <div class="chromatic-wrap" style="margin-top:14px">
+        <div class="chromatic-title">Dó Maior Cromática — Descendente (13 notas)</div>
+        <div class="chromatic-row">
+          <div class="c-note"><div class="c-pill c-nat">Dó</div><div class="c-deg">VIII</div></div>
+          <div class="c-arrow">‹</div>
+          <div class="c-note"><div class="c-pill c-nat">Si</div><div class="c-deg">VII</div></div>
+          <div class="c-arrow">‹</div>
+          <div class="c-note"><div class="c-pill c-alt">Si♭</div><div class="c-deg">crom.</div></div>
+          <div class="c-arrow">‹</div>
+          <div class="c-note"><div class="c-pill c-nat">Lá</div><div class="c-deg">VI</div></div>
+          <div class="c-arrow">‹</div>
+          <div class="c-note"><div class="c-pill c-alt">Lá♭</div><div class="c-deg">crom.</div></div>
+          <div class="c-arrow">‹</div>
+          <div class="c-note"><div class="c-pill c-nat">Sol</div><div class="c-deg">V</div></div>
+          <div class="c-arrow">‹</div>
+          <div class="c-note"><div class="c-pill c-alt">Sol♭</div><div class="c-deg">crom.</div></div>
+          <div class="c-arrow">‹</div>
+          <div class="c-note"><div class="c-pill c-nat">Fá</div><div class="c-deg">IV</div></div>
+          <div class="c-arrow">‹</div>
+          <div class="c-note"><div class="c-pill c-nat">Mi</div><div class="c-deg">III</div></div>
+          <div class="c-arrow">‹</div>
+          <div class="c-note"><div class="c-pill c-alt">Mi♭</div><div class="c-deg">crom.</div></div>
+          <div class="c-arrow">‹</div>
+          <div class="c-note"><div class="c-pill c-nat">Ré</div><div class="c-deg">II</div></div>
+          <div class="c-arrow">‹</div>
+          <div class="c-note"><div class="c-pill c-alt">Ré♭</div><div class="c-deg">crom.</div></div>
+          <div class="c-arrow">‹</div>
+          <div class="c-note"><div class="c-pill c-nat">Dó</div><div class="c-deg">I</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="icon icon-green">📊</div>Posição dos Semitons Naturais</div>
+      <p>Na escala diatônica maior, os semitons naturais ocorrem em posições fixas — esses pontos não recebem nota cromática adicional:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Entre graus</th><th>Notas (em Dó maior)</th><th>Tipo</th><th>Cromático?</th></tr></thead>
+          <tbody>
+            <tr><td>III → IV</td><td>Mi → Fá</td><td>Semitom diatônico</td><td>❌ Não intercala</td></tr>
+            <tr><td>VII → VIII</td><td>Si → Dó</td><td>Semitom diatônico</td><td>❌ Não intercala</td></tr>
+            <tr><td>I → II</td><td>Dó → Ré</td><td>Tom inteiro</td><td>✅ Intercala Dó♯/Ré♭</td></tr>
+            <tr><td>II → III</td><td>Ré → Mi</td><td>Tom inteiro</td><td>✅ Intercala Ré♯/Mi♭</td></tr>
+            <tr><td>IV → V</td><td>Fá → Sol</td><td>Tom inteiro</td><td>✅ Intercala Fá♯/Sol♭</td></tr>
+            <tr><td>V → VI</td><td>Sol → Lá</td><td>Tom inteiro</td><td>✅ Intercala Sol♯/Lá♭</td></tr>
+            <tr><td>VI → VII</td><td>Lá → Si</td><td>Tom inteiro</td><td>✅ Intercala Lá♯/Si♭</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCÍCIOS -->
+  <div id="tab-exercicios" class="tab-panel">
+    <div class="card">
+      <div class="card-title"><div class="icon icon-rose">🎶</div>Exercícios de Solfejo — Bona 93, 94 e 95</div>
+      <p>Três exercícios extraídos do método <strong>Bona</strong>, com andamentos e características distintas, aplicando os conteúdos de escalas cromáticas e enarmônicas na prática do solfejo.</p>
+    </div>
+
+    <div class="card">
+      <div class="exercise-header">
+        <div class="exercise-num">93</div>
+        <div class="exercise-info">
+          <h3>Exercício 93 — Allegretto</h3>
+          <p>Armadura: 2# (Ré maior / Si menor) · Compasso: 3/4 · Andamento: Allegretto</p>
+        </div>
+      </div>
+      <div class="highlight highlight-gold">
+        <h4>🎯 Objetivos do Exercício 93</h4>
+        <p>Exercício de grande extensão com <strong>cadência de bravura</strong> (cadenza). Inclui a indicação <em>"a piacere"</em> (à vontade — suspender o movimento), seção de <em>diminuendo</em> e passagens cromáticas com acidentes acidentais (Ré♯, Dó♯, Sol♯). O compasso ternário 3/4 em Allegretto exige leveza e precisão rítmica.</p>
+      </div>
+      <div class="exercise-staff">𝄞 𝅝𝅥 𝅘𝅥𝅮 𝅘𝅥𝅯 𝅘𝅥𝅯 ♩. 𝄾 𝄿 …</div>
+      <p style="margin-top:14px;font-size:.85rem;color:var(--muted)">Ver partitura completa na página 2 da apostila. O exercício contém 11 linhas com marcação de cadência e <em>dim.</em></p>
+    </div>
+
+    <div class="card">
+      <div class="exercise-header">
+        <div class="exercise-num">94</div>
+        <div class="exercise-info">
+          <h3>Exercício 94 — Andante</h3>
+          <p>Armadura: 4# (Mi maior / Dó♯ menor) · Compasso: 6/8 · Andamento: Andante</p>
+        </div>
+      </div>
+      <div class="highlight highlight-blue">
+        <h4>🎯 Objetivos do Exercício 94</h4>
+        <p>Exercício em compasso sextinado (6/8) com sílabas de solfejo indicadas no início: <strong>si – fá-á – fá-á – si</strong>. Trabalha grupos de tercinas em andamento moderado, com notas enarmônicas acidentais (Mi♮, Sol♮, Ré♮ que contradizem a armadura). Inclui fermata e passagens com notas rebaixadas.</p>
+      </div>
+      <div class="exercise-staff">𝄞 𝅘𝅥𝅮 𝅘𝅥𝅮 𝅘𝅥𝅮 𝅘𝅥𝅮 𝅘𝅥𝅮 ♩. 𝄾 …</div>
+      <p style="margin-top:14px;font-size:.85rem;color:var(--muted)">Ver partitura completa na página 3 da apostila. 9 linhas com grupos de tercinas e fermata.</p>
+    </div>
+
+    <div class="card">
+      <div class="exercise-header">
+        <div class="exercise-num">95</div>
+        <div class="exercise-info">
+          <h3>Exercício 95 — Moderato assai</h3>
+          <p>Armadura: 2♭ (Si♭ maior / Sol menor) · Compasso: 3/4 · Andamento: Moderato assai</p>
+        </div>
+      </div>
+      <div class="highlight highlight-green">
+        <h4>🎯 Objetivos do Exercício 95</h4>
+        <p>Exercício mais complexo do módulo, com marcações de pulsação detalhadas <strong>(1 e 2 e 3 e)</strong>, indicações de arco (↑↓), sextinas (grupos de 6), tercinas, <em>a tempo</em>, <em>dim.</em> e notas com bemóis acidentais. Exige controle rítmico avançado e atenção às ornamentações.</p>
+      </div>
+      <div class="exercise-staff">𝄞 ♩. 𝅘𝅥𝅮 𝅘𝅥𝅯 𝅘𝅥𝅯 𝅘𝅥𝅮 𝅘𝅥𝅮 ♩ 𝄾 …</div>
+      <p style="margin-top:14px;font-size:.85rem;color:var(--muted)">Ver partitura completa na página 4 da apostila. 10 linhas com indicações rítmicas detalhadas.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="icon icon-green">📌</div>Dicas de Estudo</div>
+      <div class="concept-row">
+        <div class="concept-box box-gold" data-num="1">
+          <h3>① Cadência (Ex.93)</h3>
+          <p>Na cadência <em>a piacere</em>, o tempo fica livre. Explore a melodia com musicalidade antes de retomar o tempo.</p>
+        </div>
+        <div class="concept-box box-blue" data-num="2">
+          <h3>② Compasso 6/8 (Ex.94)</h3>
+          <p>Sinta o 6/8 em 2 tempos principais. Cada tempo vale uma colcheia pontuada. Não marque 6 tempos!</p>
+        </div>
+        <div class="concept-box box-rose" data-num="3">
+          <h3>③ Sextinas (Ex.95)</h3>
+          <p>Sextinas = 6 notas no espaço de 1 tempo. Pratique devagar com metrônomo antes de acelerar.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="tab-quiz" class="tab-panel">
+    <div class="card">
+      <div class="card-title"><div class="icon icon-purple">✏️</div>Quiz de Revisão — 15º Módulo</div>
+      <p>Teste seus conhecimentos sobre escalas homônimas, enarmônicas e cromáticas.</p>
+      <div id="quiz-score-section" style="margin-bottom:20px;">
+        <div style="display:flex;justify-content:space-between;font-size:.85rem;font-weight:600;margin-bottom:6px;">
+          <span>Pontuação</span><span id="score-text">0 / 8</span>
+        </div>
+        <div class="quiz-score-bar"><div class="quiz-score-fill" id="score-fill" style="width:0%"></div></div>
+      </div>
+      <div id="quiz-container"></div>
+      <button onclick="resetQuiz()" style="margin-top:16px;padding:10px 22px;background:var(--ink);color:#fff;border:none;border-radius:10px;font-size:.9rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🔄 Reiniciar Quiz</button>
+    </div>
+  </div>
+
+  <!-- GLOSSÁRIO -->
+  <div id="tab-glossario" class="tab-panel">
+    <div class="card">
+      <div class="card-title"><div class="icon icon-gold">📝</div>Glossário de Termos — Módulo 15</div>
+      <div class="glossary-item">
+        <div class="glossary-term">Escalas Homônimas</div>
+        <div class="glossary-def">Duas escalas que possuem a mesma <strong>tônica</strong> mas pertencem a modos diferentes (maior e menor). Ex: Dó maior e Dó menor são homônimas.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Escalas Enarmônicas</div>
+        <div class="glossary-def">Escalas com nomes e grafias diferentes, mas que produzem exatamente o mesmo som. Ex: Fá♯ maior (6#) e Sol♭ maior (6♭) são enarmônicas — soam igual no piano.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Notas Enarmônicas</div>
+        <div class="glossary-def">Notas com nomes e grafias diferentes mas com o mesmo som físico. Ex: Dó♯ e Ré♭ são a mesma tecla do piano, mas escritas de forma diferente conforme o contexto tonal.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Escala Cromática</div>
+        <div class="glossary-def">Escala formada exclusivamente por semitons (12 semitons = 13 notas incluindo a oitava). Sobe usando sustenidos e desce usando bemóis. Não elimina os semitons diatônicos naturais (Mi-Fá, Si-Dó).</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Semitom Cromático</div>
+        <div class="glossary-def">Semitom entre duas notas do mesmo nome (ex: Dó – Dó♯). Criado pela alteração de uma nota natural mediante sustenido ou bemol.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Semitom Diatônico</div>
+        <div class="glossary-def">Semitom entre duas notas de nomes diferentes que ocorre naturalmente na escala diatônica. Ex: Mi–Fá e Si–Dó em Dó maior. Esses semitons não recebem nota cromática intercalada.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">A Piacere</div>
+        <div class="glossary-def">Expressão italiana que significa "à vontade". Indica que o intérprete deve suspender o tempo regular e executar o trecho com liberdade expressiva. Presente no exercício Bona 93.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Cadência (de Bravura)</div>
+        <div class="glossary-def">Passagem virtuosística geralmente sem acompanhamento, onde o intérprete exibe suas habilidades técnicas. O tempo é livre (<em>a piacere</em>). Indicada no exercício Bona 93.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Dobrado Sustenido (𝄪)</div>
+        <div class="glossary-def">Acidente que eleva a nota em dois semitons (um tom inteiro). Usado na escala cromática quando a nota já tem um sustenido na armadura e precisa ser elevada mais meio tom.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LINKS -->
+  <div id="tab-links" class="tab-panel">
+    <div class="card">
+      <div class="card-title"><div class="icon icon-gold">🔗</div>Links Importantes</div>
+      <p>Acesse os recursos do curso diretamente pelos links abaixo.</p>
+      <div class="link-cards">
+        <a href="https://candid-tanuki-66ac7b.netlify.app" target="_blank" class="link-card link-card-enroll">
+          <div class="link-card-icon">🎓</div>
+          <h3>Inscrições no Curso</h3>
+          <p>Faça sua matrícula e tenha acesso a todos os módulos do curso de Teoria Musical.</p>
+          <div class="link-arrow">Acessar → candid-tanuki-66ac7b.netlify.app</div>
+        </a>
+        <a href="https://sage-narwhal-db712d.netlify.app" target="_blank" class="link-card link-card-contact">
+          <div class="link-card-icon">👨‍🏫</div>
+          <h3>Contato do Professor</h3>
+          <p>Entre em contato com o professor para dúvidas, aulas particulares e informações adicionais.</p>
+          <div class="link-arrow">Acessar → sage-narwhal-db712d.netlify.app</div>
+        </a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><div class="icon icon-blue">📧</div>Sobre o Curso</div>
+      <div class="highlight highlight-blue">
+        <h4>15º Módulo — Homônimas, Enarmônicas e Cromáticas</h4>
+        <p>Este módulo faz parte de um curso completo de Teoria Musical. Ao concluir, você estará apto a identificar escalas homônimas, reconhecer equivalências enarmônicas e construir escalas cromáticas em qualquer tonalidade.</p>
+      </div>
+      <p>Para mais informações sobre outros módulos, inscrições e horários, acesse os links acima ou entre em contato diretamente com o professor.</p>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p>15º Módulo · Escalas Homônimas, Enarmônicas e Cromáticas · <span>Teoria Musical</span></p>
+  <p style="margin-top:4px;">Material pedagógico baseado na apostila oficial do módulo.</p>
+</footer>
+
+<script>
+// AUTH
+function doLogin() {
+  const u = document.getElementById('l-user').value.trim();
+  const p = document.getElementById('l-pass').value.trim();
+  const err = document.getElementById('login-error');
+  if ((u === 'aluno' || u === 'aluno@email.com') && p === '1234') {
+    err.textContent = '';
+    document.getElementById('login-screen').classList.add('hide');
+    setTimeout(() => document.getElementById('login-screen').style.display = 'none', 550);
+  } else {
+    err.textContent = '⚠️ Usuário ou senha incorretos.';
+    document.getElementById('l-pass').value = '';
+  }
+}
+function doLogout() {
+  document.getElementById('login-screen').style.display = 'flex';
+  requestAnimationFrame(() => document.getElementById('login-screen').classList.remove('hide'));
+}
+document.getElementById('l-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('l-user').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('l-pass').focus(); });
+
+// TABS
+function switchTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  document.querySelector(`[data-tab="${id}"]`).classList.add('active');
+}
+
+// QUIZ
+const questions = [
+  { q: 'Escalas HOMÔNIMAS possuem:', opts: ['Mesma armadura de clave', 'Mesma tônica e modos diferentes', 'Mesmo som mas nomes diferentes', 'Mesmas notas em ordens diferentes'], a: 1 },
+  { q: 'Qual é o exemplo correto de escalas homônimas?', opts: ['Sol maior e Mi menor', 'Fá♯ maior e Sol♭ maior', 'Dó maior e Dó menor', 'Ré maior e Si menor'], a: 2 },
+  { q: 'Escalas ENARMÔNICAS são aquelas que têm:', opts: ['Mesma tônica', 'Mesma armadura de clave', 'Nomes diferentes mas mesmo som', 'Modos diferentes'], a: 2 },
+  { q: 'Qual par de tonalidades é enarmônico?', opts: ['Sol maior e Mi menor', 'Fá♯ maior e Sol♭ maior', 'Dó maior e Dó menor', 'Lá maior e Fá♯ menor'], a: 1 },
+  { q: 'A escala cromática é formada por:', opts: ['Tons inteiros', 'Semitons exclusivamente', 'Tons e semitons alternados', 'Terças menores'], a: 1 },
+  { q: 'Subindo na escala cromática, as notas adicionais usam:', opts: ['Bemóis (♭)', 'Sustenidos (♯)', 'Dobrados bemóis (𝄫)', 'Bequadros (♮)'], a: 1 },
+  { q: 'Entre quais graus NÃO se intercala nota cromática na escala de Dó maior?', opts: ['I–II e IV–V', 'II–III e V–VI', 'III–IV e VII–VIII', 'IV–V e VI–VII'], a: 2 },
+  { q: 'A indicação "a piacere" no exercício 93 (Bona) significa:', opts: ['Aumentar o andamento', 'Diminuir o volume', 'Executar à vontade, suspendendo o tempo', 'Repetir a passagem'], a: 2 },
+];
+
+let answered = new Array(questions.length).fill(false);
+let score = 0;
+
+function buildQuiz() {
+  const c = document.getElementById('quiz-container');
+  c.innerHTML = '';
+  questions.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-q';
+    div.id = 'qq-' + i;
+    div.innerHTML = `<h4>${i+1}. ${q.q}</h4><div class="quiz-options">${q.opts.map((o,j)=>`<button class="quiz-opt" onclick="answerQ(${i},${j})">${o}</button>`).join('')}</div><div class="quiz-feedback" id="qf-${i}"></div>`;
+    c.appendChild(div);
+  });
+}
+function answerQ(qi, oi) {
+  if (answered[qi]) return;
+  answered[qi] = true;
+  const opts = document.querySelectorAll(`#qq-${qi} .quiz-opt`);
+  const fb = document.getElementById('qf-' + qi);
+  opts.forEach(b => b.disabled = true);
+  if (oi === questions[qi].a) {
+    opts[oi].classList.add('correct');
+    fb.textContent = '✅ Correto!'; fb.style.color = '#15803d'; score++;
+  } else {
+    opts[oi].classList.add('wrong');
+    opts[questions[qi].a].classList.add('correct');
+    fb.textContent = `❌ Incorreto. Correto: ${questions[qi].opts[questions[qi].a]}`; fb.style.color = '#b91c1c';
+  }
+  updateScore();
+}
+function updateScore() {
+  document.getElementById('score-text').textContent = `${score} / ${questions.length}`;
+  document.getElementById('score-fill').style.width = `${(score/questions.length)*100}%`;
+}
+function resetQuiz() {
+  answered = new Array(questions.length).fill(false);
+  score = 0; updateScore(); buildQuiz();
+}
+buildQuiz();
+</script>
+</body>
+</html>

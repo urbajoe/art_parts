@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10º Módulo — Teoria Musical</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #faf7f2;
+    --ink: #1a1208;
+    --brown: #5c3d1e;
+    --amber: #c8821a;
+    --amber-light: #f0b84a;
+    --sage: #4a6741;
+    --red-accent: #c0392b;
+    --blue-accent: #2a5c8a;
+    --purple: #6a3a8a;
+    --teal: #2a7a6a;
+    --shadow: rgba(92,61,30,0.15);
+    --card-bg: #fffdf8;
+    --border: #e8d9c4;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--ink); min-height:100vh; overflow-x:hidden; }
+  body::before {
+    content:''; position:fixed; inset:0; z-index:-1;
+    background: repeating-linear-gradient(0deg,transparent,transparent 28px,rgba(92,61,30,0.04) 28px,rgba(92,61,30,0.04) 29px),
+                linear-gradient(135deg,#faf7f2 0%,#fff3e0 50%,#faf0e0 100%);
+  }
+
+  /* LOGIN */
+  #loginScreen { position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center; background:linear-gradient(145deg,#1a0f02 0%,#2d1f0e 40%,#3d2b10 100%); overflow:hidden; }
+  #loginScreen::before { content:'𝄚'; position:absolute; font-size:35vw; color:rgba(200,130,26,0.06); top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none; user-select:none; }
+  #loginScreen::after { content:''; position:absolute; top:50%; left:0; right:0; height:60px; background:repeating-linear-gradient(0deg,transparent,transparent 14px,rgba(200,130,26,0.12) 14px,rgba(200,130,26,0.12) 15px); transform:translateY(-50%); pointer-events:none; }
+  .login-card { background:linear-gradient(160deg,#faf7f2,#fff9ef); border-radius:20px; padding:52px 48px 44px; width:420px; max-width:94vw; position:relative; z-index:2; box-shadow:0 32px 80px rgba(0,0,0,0.55),0 2px 0 rgba(200,130,26,0.4) inset; border:1px solid rgba(200,130,26,0.25); animation:cardIn 0.6s cubic-bezier(0.34,1.56,0.64,1); }
+  @keyframes cardIn { from{opacity:0;transform:translateY(40px) scale(0.95)} to{opacity:1;transform:none} }
+  .login-badge { display:inline-block; background:var(--amber); color:#fff; font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; padding:4px 12px; border-radius:20px; margin-bottom:16px; }
+  .login-card h1 { font-family:'Playfair Display',serif; font-size:28px; font-weight:900; color:var(--brown); line-height:1.2; margin-bottom:6px; }
+  .login-card .subtitle { font-size:13.5px; color:#8a6840; margin-bottom:32px; line-height:1.5; }
+  .login-field { margin-bottom:16px; }
+  .login-field label { display:block; font-size:12px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:var(--brown); margin-bottom:7px; }
+  .login-field input { width:100%; padding:12px 16px; border:1.5px solid var(--border); border-radius:10px; font-family:'DM Sans',sans-serif; font-size:15px; background:#fffdf8; color:var(--ink); outline:none; transition:border 0.2s,box-shadow 0.2s; }
+  .login-field input:focus { border-color:var(--amber); box-shadow:0 0 0 3px rgba(200,130,26,0.15); }
+  .login-hint { font-size:11.5px; color:#a08050; margin-top:4px; }
+  .login-btn { width:100%; padding:14px; background:linear-gradient(135deg,var(--amber),#a06010); color:#fff; border:none; border-radius:10px; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600; cursor:pointer; margin-top:8px; transition:transform 0.15s,box-shadow 0.15s,filter 0.15s; }
+  .login-btn:hover { filter:brightness(1.08); transform:translateY(-1px); box-shadow:0 6px 20px rgba(200,130,26,0.4); }
+  .login-error { color:var(--red-accent); font-size:13px; margin-top:10px; text-align:center; min-height:18px; font-weight:500; }
+  .login-divider { border:none; border-top:1px solid var(--border); margin:24px 0 18px; }
+  .login-links { display:flex; gap:12px; flex-wrap:wrap; }
+  .login-link-btn { flex:1; padding:10px 12px; border:1.5px solid var(--border); border-radius:9px; font-family:'DM Sans',sans-serif; font-size:12.5px; font-weight:500; color:var(--brown); background:transparent; cursor:pointer; text-align:center; transition:border-color 0.2s,background 0.2s; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:6px; }
+  .login-link-btn:hover { border-color:var(--amber); background:rgba(200,130,26,0.06); }
+
+  /* APP */
+  #app { display:none; }
+  #app.visible { display:block; animation:fadeIn 0.5s ease; }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+  /* HEADER */
+  header { background:linear-gradient(135deg,#1a0f02 0%,#2d1f0e 100%); padding:0 40px; display:flex; align-items:center; justify-content:space-between; height:68px; position:sticky; top:0; z-index:100; box-shadow:0 2px 20px rgba(0,0,0,0.3); }
+  .header-left { display:flex; align-items:center; gap:14px; }
+  .header-clef { font-size:36px; color:var(--amber); line-height:1; filter:drop-shadow(0 2px 6px rgba(200,130,26,0.5)); }
+  .header-title { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--cream); line-height:1.2; }
+  .header-title span { display:block; font-family:'DM Sans',sans-serif; font-size:11px; font-weight:400; color:rgba(255,255,255,0.5); letter-spacing:2px; text-transform:uppercase; margin-top:1px; }
+  .header-right { display:flex; align-items:center; gap:14px; }
+  .header-user { font-size:13px; color:rgba(255,255,255,0.65); }
+  .btn-logout { padding:7px 16px; border:1px solid rgba(200,130,26,0.4); border-radius:7px; background:transparent; color:var(--amber-light); font-size:12.5px; font-family:'DM Sans',sans-serif; cursor:pointer; transition:background 0.2s; }
+  .btn-logout:hover { background:rgba(200,130,26,0.15); border-color:var(--amber); }
+
+  /* HERO */
+  .hero { background:linear-gradient(90deg,#2d1f0e,#1a0f02); padding:28px 40px; display:flex; align-items:center; gap:20px; border-bottom:3px solid var(--amber); position:relative; overflow:hidden; }
+  .hero::after { content:''; position:absolute; inset:0; background:repeating-linear-gradient(90deg,transparent,transparent 40px,rgba(200,130,26,0.04) 40px,rgba(200,130,26,0.04) 41px); pointer-events:none; }
+  .hero-badge { background:var(--amber); color:#fff; font-family:'Playfair Display',serif; font-size:20px; font-weight:700; padding:14px 18px; border-radius:12px; line-height:1; flex-shrink:0; }
+  .hero-text h2 { font-family:'Playfair Display',serif; font-size:26px; font-weight:900; color:var(--cream); }
+  .hero-text p { font-size:13.5px; color:rgba(255,255,255,0.55); margin-top:4px; }
+
+  /* TABS */
+  .tabs-wrapper { background:var(--card-bg); border-bottom:2px solid var(--border); padding:0 40px; position:sticky; top:68px; z-index:99; overflow-x:auto; scrollbar-width:none; }
+  .tabs-wrapper::-webkit-scrollbar { display:none; }
+  .tabs { display:flex; gap:2px; min-width:max-content; }
+  .tab { padding:0 20px; height:52px; display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:500; color:#8a6840; cursor:pointer; border-bottom:3px solid transparent; margin-bottom:-2px; white-space:nowrap; transition:color 0.2s,border-color 0.2s; user-select:none; }
+  .tab:hover { color:var(--amber); }
+  .tab.active { color:var(--amber); border-bottom-color:var(--amber); font-weight:600; }
+
+  /* CONTENT */
+  .content { max-width:980px; margin:0 auto; padding:36px 40px 60px; }
+  .tab-panel { display:none; }
+  .tab-panel.active { display:block; animation:panelIn 0.35s ease; }
+  @keyframes panelIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none} }
+
+  .section-header { display:flex; align-items:flex-start; gap:16px; margin-bottom:28px; }
+  .section-num { background:var(--amber); color:#fff; font-family:'DM Mono',monospace; font-size:13px; font-weight:500; padding:4px 10px; border-radius:6px; flex-shrink:0; margin-top:5px; }
+  .section-header h2 { font-family:'Playfair Display',serif; font-size:30px; font-weight:900; color:var(--brown); line-height:1.2; }
+  .section-header p { font-size:14px; color:#8a6840; margin-top:6px; line-height:1.6; }
+
+  /* CARDS */
+  .concept-card { background:var(--card-bg); border:1px solid var(--border); border-radius:16px; padding:28px 30px; margin-bottom:20px; box-shadow:0 2px 12px var(--shadow); position:relative; overflow:hidden; transition:box-shadow 0.2s,transform 0.2s; }
+  .concept-card:hover { box-shadow:0 6px 24px rgba(92,61,30,0.18); transform:translateY(-2px); }
+  .concept-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--amber); border-radius:4px 0 0 4px; }
+  .concept-card.green::before { background:var(--sage); }
+  .concept-card.blue::before { background:var(--blue-accent); }
+  .concept-card.red::before { background:var(--red-accent); }
+  .concept-card.purple::before { background:var(--purple); }
+  .concept-card.teal::before { background:var(--teal); }
+  .concept-card h3 { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--brown); margin-bottom:12px; }
+  .concept-card p { font-size:14.5px; line-height:1.75; color:#3d2b10; }
+  .concept-card p strong { color:var(--amber); }
+
+  .def-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px; }
+  @media (max-width:620px) { .def-row { grid-template-columns:1fr; } }
+
+  /* TAG */
+  .tag { display:inline-block; padding:2px 9px; border-radius:20px; font-size:11.5px; font-weight:600; }
+  .tag-amber { background:rgba(200,130,26,0.15); color:#a06010; }
+  .tag-green { background:rgba(74,103,65,0.12); color:#3a5733; }
+  .tag-blue { background:rgba(42,92,138,0.12); color:#1a3a6a; }
+  .tag-red { background:rgba(192,57,43,0.12); color:#a02010; }
+  .tag-purple { background:rgba(106,58,138,0.12); color:#5a2a7a; }
+
+  /* FORMULA DISPLAY — big fraction visual */
+  .formula-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:14px; margin-bottom:24px; }
+  .formula-card { background:var(--card-bg); border:1px solid var(--border); border-radius:12px; padding:18px 14px; text-align:center; box-shadow:0 2px 8px var(--shadow); transition:box-shadow 0.2s,transform 0.2s; }
+  .formula-card:hover { box-shadow:0 5px 18px rgba(92,61,30,0.18); transform:translateY(-2px); }
+  .formula-frac { display:flex; flex-direction:column; align-items:center; margin-bottom:10px; }
+  .formula-num { font-family:'DM Mono',monospace; font-size:32px; font-weight:700; color:var(--amber); line-height:1; }
+  .formula-line { width:40px; height:2px; background:var(--border); margin:4px 0; }
+  .formula-den { font-family:'DM Mono',monospace; font-size:28px; font-weight:700; color:var(--brown); line-height:1; }
+  .formula-name { font-size:12px; font-weight:600; color:var(--brown); margin-bottom:3px; }
+  .formula-desc { font-size:11px; color:#8a6840; line-height:1.4; }
+
+  /* DENOMINADOR FIGURES */
+  .denom-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:8px; margin-bottom:24px; }
+  @media (max-width:560px) { .denom-grid { grid-template-columns:repeat(4,1fr); } }
+  .denom-card { background:var(--card-bg); border:1.5px solid var(--border); border-radius:10px; padding:14px 8px; text-align:center; box-shadow:0 1px 6px var(--shadow); }
+  .denom-figure { font-size:24px; display:block; margin-bottom:6px; color:var(--ink); }
+  .denom-num { font-family:'DM Mono',monospace; font-size:18px; font-weight:700; color:var(--amber); display:block; }
+  .denom-name { font-size:10px; color:#8a6840; margin-top:3px; display:block; }
+
+  /* COMPASSO TYPE TABLE */
+  .compasso-table { width:100%; border-collapse:collapse; border-radius:12px; overflow:hidden; box-shadow:0 2px 12px var(--shadow); margin-bottom:24px; font-size:13.5px; }
+  .compasso-table thead tr { background:linear-gradient(135deg,var(--brown),#3d2010); color:#fff; }
+  .compasso-table th { padding:12px 16px; text-align:left; font-weight:600; font-size:11px; letter-spacing:1px; text-transform:uppercase; }
+  .compasso-table td { padding:11px 16px; border-bottom:1px solid var(--border); background:var(--card-bg); vertical-align:middle; line-height:1.5; }
+  .compasso-table tr:last-child td { border-bottom:none; }
+  .compasso-table tr:hover td { background:#fff8ee; }
+  .compasso-table .mono { font-family:'DM Mono',monospace; font-size:13px; font-weight:600; color:var(--amber); }
+
+  /* FORMULAS ROW (binário / ternário / quaternário) */
+  .formulas-row-wrap { background:#fffdf5; border:1px solid var(--border); border-radius:14px; padding:22px 24px; margin-bottom:20px; overflow-x:auto; }
+  .formulas-row-wrap h4 { font-family:'Playfair Display',serif; font-size:15px; font-weight:700; color:var(--brown); margin-bottom:14px; }
+  .formulas-inline { display:flex; gap:8px; flex-wrap:wrap; }
+  .fi-chip { background:var(--card-bg); border:1.5px solid var(--border); border-radius:8px; padding:8px 12px; text-align:center; min-width:52px; box-shadow:0 1px 6px var(--shadow); }
+  .fi-chip .fn { font-family:'DM Mono',monospace; font-size:16px; font-weight:700; color:var(--amber); display:block; line-height:1.1; }
+  .fi-chip .fd { font-family:'DM Mono',monospace; font-size:14px; font-weight:600; color:var(--brown); display:block; border-top:1.5px solid var(--border); padding-top:2px; margin-top:2px; }
+  .fi-chip.special { border-color:var(--amber); background:rgba(200,130,26,0.06); }
+
+  /* ACENTUAÇÃO */
+  .acentuacao-wrap { background:#fffdf5; border:1px solid var(--border); border-radius:14px; padding:22px 24px; margin-bottom:20px; }
+  .acentuacao-wrap h4 { font-family:'Playfair Display',serif; font-size:15px; font-weight:700; color:var(--brown); margin-bottom:16px; }
+  .beat-group { margin-bottom:18px; }
+  .beat-group-label { font-size:12px; font-weight:700; color:var(--brown); margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; }
+  .beat-row { display:flex; gap:6px; align-items:center; margin-bottom:6px; }
+  .beat-type-label { font-size:11px; color:#8a6840; width:90px; flex-shrink:0; }
+  .beat { width:42px; height:42px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:700; border:2px solid; flex-shrink:0; }
+  .beat.F { background:rgba(200,130,26,0.22); border-color:var(--amber); color:#7a4010; }
+  .beat.f { background:rgba(200,130,26,0.06); border-color:rgba(200,130,26,0.2); color:#b09060; }
+  .beat.mF { background:rgba(74,103,65,0.14); border-color:rgba(74,103,65,0.35); color:#3a5733; font-size:12px; }
+  .beat-subrow { font-family:'DM Mono',monospace; font-size:11px; color:#8a6840; letter-spacing:5px; padding-left:96px; margin-bottom:10px; }
+
+  /* STAFF DEMO */
+  .staff-demo { background:#fffdf5; border:1px solid var(--border); border-radius:14px; padding:24px 28px; margin-bottom:20px; overflow-x:auto; }
+  .staff-demo h4 { font-family:'Playfair Display',serif; font-size:15px; font-weight:700; color:var(--brown); margin-bottom:14px; }
+
+  /* INFO BOX */
+  .info-box { border-radius:12px; padding:16px 20px; font-size:14px; line-height:1.65; margin-bottom:20px; display:flex; gap:12px; align-items:flex-start; }
+  .info-box.warn { background:rgba(192,57,43,0.07); border:1px solid rgba(192,57,43,0.2); color:#7a1a0a; }
+  .info-box.note { background:rgba(200,130,26,0.08); border:1px solid rgba(200,130,26,0.25); color:#6a3a00; }
+  .info-box.tip { background:rgba(74,103,65,0.08); border:1px solid rgba(74,103,65,0.2); color:#2a4a22; }
+  .info-box.blue { background:rgba(42,92,138,0.07); border:1px solid rgba(42,92,138,0.2); color:#1a3a5a; }
+  .info-box .icon { font-size:18px; flex-shrink:0; margin-top:1px; }
+
+  /* ACCORDION */
+  .accordion { border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-bottom:16px; box-shadow:0 1px 8px var(--shadow); }
+  .accordion-header { padding:16px 20px; background:var(--card-bg); cursor:pointer; display:flex; align-items:center; justify-content:space-between; font-weight:600; font-size:14.5px; color:var(--brown); transition:background 0.2s; user-select:none; }
+  .accordion-header:hover { background:#fff8ee; }
+  .accordion-header.open { border-bottom:1px solid var(--border); }
+  .accordion-arrow { font-size:14px; transition:transform 0.3s; color:var(--amber); }
+  .accordion-header.open .accordion-arrow { transform:rotate(180deg); }
+  .accordion-body { padding:0 20px; max-height:0; overflow:hidden; transition:max-height 0.4s ease,padding 0.3s; background:#fffdf8; font-size:14px; line-height:1.75; color:#4a3015; }
+  .accordion-body.open { max-height:700px; padding:18px 20px; }
+
+  /* EXERCISE GRID */
+  .exercise-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px; margin-bottom:24px; }
+  .exercise-item { background:var(--card-bg); border:1px solid var(--border); border-radius:12px; padding:20px 18px; box-shadow:0 1px 8px var(--shadow); transition:box-shadow 0.2s,transform 0.2s; }
+  .exercise-item:hover { box-shadow:0 4px 18px rgba(92,61,30,0.18); transform:translateY(-2px); }
+  .exercise-item .ex-label { font-size:11px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--amber); margin-bottom:8px; }
+  .exercise-item p { font-size:13.5px; line-height:1.6; color:#4a3015; }
+
+  /* QUIZ */
+  .quiz-card { background:var(--card-bg); border:1.5px solid var(--border); border-radius:16px; padding:26px 28px; margin-bottom:18px; box-shadow:0 2px 10px var(--shadow); }
+  .quiz-card .q-num { font-family:'DM Mono',monospace; font-size:11px; color:var(--amber); letter-spacing:1.5px; font-weight:600; text-transform:uppercase; margin-bottom:8px; }
+  .quiz-card .q-text { font-size:15px; font-weight:600; color:var(--brown); margin-bottom:18px; line-height:1.5; }
+  .options { display:flex; flex-direction:column; gap:10px; }
+  .option { padding:11px 16px; border:1.5px solid var(--border); border-radius:9px; font-size:14px; cursor:pointer; transition:border-color 0.2s,background 0.2s,transform 0.1s; user-select:none; background:#fffdf8; color:var(--ink); display:flex; align-items:center; gap:10px; }
+  .option:hover:not(.answered) { border-color:var(--amber); background:rgba(200,130,26,0.06); transform:translateX(4px); }
+  .option.correct { border-color:var(--sage); background:rgba(74,103,65,0.1); color:var(--sage); font-weight:600; }
+  .option.wrong { border-color:var(--red-accent); background:rgba(192,57,43,0.07); color:var(--red-accent); }
+  .option.revealed { border-color:var(--sage); background:rgba(74,103,65,0.05); color:#3a5733; }
+  .option-letter { width:24px; height:24px; border-radius:50%; background:rgba(200,130,26,0.12); color:var(--amber); font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .feedback { margin-top:14px; font-size:13.5px; padding:10px 14px; border-radius:8px; display:none; line-height:1.5; }
+  .feedback.show { display:block; }
+  .feedback.ok { background:rgba(74,103,65,0.1); color:#2a5020; border-left:3px solid var(--sage); }
+  .feedback.no { background:rgba(192,57,43,0.08); color:#8a1a0a; border-left:3px solid var(--red-accent); }
+  .quiz-score { text-align:center; padding:20px; background:linear-gradient(135deg,rgba(200,130,26,0.1),rgba(200,130,26,0.05)); border:1.5px solid rgba(200,130,26,0.3); border-radius:14px; margin-top:20px; display:none; }
+  .quiz-score.show { display:block; animation:panelIn 0.4s ease; }
+  .quiz-score .big-score { font-family:'Playfair Display',serif; font-size:48px; font-weight:900; color:var(--amber); }
+  .quiz-score p { font-size:15px; color:var(--brown); margin-top:6px; }
+  .btn-retry { margin-top:14px; padding:10px 24px; background:var(--amber); color:#fff; border:none; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; cursor:pointer; transition:filter 0.2s; }
+  .btn-retry:hover { filter:brightness(1.1); }
+
+  /* CTA */
+  .cta-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:20px; }
+  @media (max-width:560px) { .cta-grid { grid-template-columns:1fr; } }
+  .cta-card { border-radius:16px; padding:28px 26px; text-decoration:none; display:block; transition:transform 0.2s,box-shadow 0.2s; }
+  .cta-card:hover { transform:translateY(-3px); box-shadow:0 12px 36px rgba(0,0,0,0.2); }
+  .cta-card.primary { background:linear-gradient(135deg,#2d1f0e,#1a0f02); border:1px solid rgba(200,130,26,0.3); }
+  .cta-card.secondary { background:linear-gradient(135deg,#3a4a35,#263020); border:1px solid rgba(74,103,65,0.4); }
+  .cta-card .cta-icon { font-size:32px; margin-bottom:12px; }
+  .cta-card h3 { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:#fff; margin-bottom:6px; }
+  .cta-card p { font-size:13px; color:rgba(255,255,255,0.6); line-height:1.5; margin-bottom:16px; }
+  .cta-btn { display:inline-block; padding:9px 20px; border-radius:8px; font-size:13px; font-weight:600; color:#fff; border:1.5px solid rgba(255,255,255,0.3); }
+  .cta-card.primary .cta-btn { border-color:var(--amber); color:var(--amber-light); }
+  .cta-card.secondary .cta-btn { border-color:rgba(74,103,65,0.8); color:#a0d090; }
+
+  ::-webkit-scrollbar { width:8px; height:8px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+  ::-webkit-scrollbar-thumb { background:rgba(92,61,30,0.2); border-radius:4px; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-badge">🎵 Teoria Musical</div>
+    <h1>10º Módulo</h1>
+    <p class="subtitle">Compassos Simples — fórmulas de compasso, Unidade de Tempo, Unidade de Compasso, formações e acentuação métrica.</p>
+    <div class="login-field">
+      <label>Usuário</label>
+      <input type="text" id="loginUser" placeholder="ex: aluno01" autocomplete="username">
+    </div>
+    <div class="login-field">
+      <label>Senha</label>
+      <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+      <div class="login-hint">Usuário: <strong>aluno</strong> · Senha: <strong>musica123</strong></div>
+    </div>
+    <button class="login-btn" onclick="doLogin()">Entrar no Curso</button>
+    <div class="login-error" id="loginErr"></div>
+    <hr class="login-divider">
+    <div class="login-links">
+      <a href="https://candid-tanuki-66ac7b.netlify.app" target="_blank" class="login-link-btn">📝 Fazer Inscrição</a>
+      <a href="https://sage-narwhal-db712d.netlify.app" target="_blank" class="login-link-btn">👨‍🏫 Contato do Professor</a>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header>
+    <div class="header-left">
+      <div class="header-clef">𝄞</div>
+      <div class="header-title">Teoria Musical<span>10º Módulo — Compassos Simples</span></div>
+    </div>
+    <div class="header-right">
+      <div class="header-user" id="headerUser"></div>
+      <button class="btn-logout" onclick="doLogout()">Sair</button>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="hero-badge">10°</div>
+    <div class="hero-text">
+      <h2>Compassos Simples</h2>
+      <p>Fórmula de Compasso, Unidade de Tempo, Unidade de Compasso, formações Binária, Ternária, Quaternária e Acentuação Métrica</p>
+    </div>
+  </div>
+
+  <div class="tabs-wrapper">
+    <div class="tabs">
+      <div class="tab active" onclick="showTab('conceito')" data-tab="conceito"><span>📖</span> Conceito</div>
+      <div class="tab" onclick="showTab('formula')" data-tab="formula"><span>🔢</span> Fórmula de Compasso</div>
+      <div class="tab" onclick="showTab('formacoes')" data-tab="formacoes"><span>🎼</span> Formações</div>
+      <div class="tab" onclick="showTab('acentuacao')" data-tab="acentuacao"><span>💪</span> Acentuação Métrica</div>
+      <div class="tab" onclick="showTab('exercicios')" data-tab="exercicios"><span>✏️</span> Exercícios</div>
+      <div class="tab" onclick="showTab('quiz')" data-tab="quiz"><span>🧠</span> Quiz</div>
+      <div class="tab" onclick="showTab('contatos')" data-tab="contatos"><span>🔗</span> Contatos</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ── CONCEITO ── -->
+    <div class="tab-panel active" id="tab-conceito">
+      <div class="section-header">
+        <div class="section-num">01</div>
+        <div>
+          <h2>Compassos Simples</h2>
+          <p>Definição, Unidade de Tempo e Unidade de Compasso</p>
+        </div>
+      </div>
+
+      <div class="concept-card">
+        <h3>O que é um Compasso?</h3>
+        <p><strong>Compasso</strong> é um conjunto de figuras musicais de duração igual ou variável. Os compassos são divididos em duas categorias: <strong>Simples</strong> e <strong>Compostos</strong> (os compostos serão estudados no próximo módulo).</p>
+      </div>
+
+      <div class="concept-card blue">
+        <h3>Compassos Simples</h3>
+        <p>São aqueles cuja <strong>Unidade de Tempo (UT)</strong> é representada por uma figura <strong>divisível por 2</strong> — ou seja, figuras simples, <strong>não pontuadas</strong>.</p>
+      </div>
+
+      <div class="def-row">
+        <div class="concept-card">
+          <h3>U.T. — Unidade de Tempo</h3>
+          <p>É a figura que preenche <strong>um tempo</strong> no compasso. Nos compassos simples, é representada na fórmula de compasso pelo <strong>número inferior</strong> (denominador).</p>
+        </div>
+        <div class="concept-card green">
+          <h3>U.C. — Unidade de Compasso</h3>
+          <p>É a figura que <strong>abrange todo o compasso</strong>. Para obtê-la, somam-se todas as unidades de tempo do compasso.</p>
+        </div>
+      </div>
+
+      <!-- Visual U.T. vs U.C. -->
+      <div class="staff-demo">
+        <h4>🎼 Visualização — U.T. e U.C. no compasso 2/4</h4>
+        <svg viewBox="0 0 540 100" style="width:100%;max-width:540px;display:block;">
+          <!-- staff -->
+          <g stroke="#2d1f0e" stroke-width="0.8">
+            <line x1="30" y1="22" x2="510" y2="22"/>
+            <line x1="30" y1="33" x2="510" y2="33"/>
+            <line x1="30" y1="44" x2="510" y2="44"/>
+            <line x1="30" y1="55" x2="510" y2="55"/>
+            <line x1="30" y1="66" x2="510" y2="66"/>
+          </g>
+          <line x1="30" y1="22" x2="30" y2="66" stroke="#2d1f0e" stroke-width="1.5"/>
+          <line x1="509" y1="22" x2="509" y2="66" stroke="#2d1f0e" stroke-width="2"/>
+          <line x1="504" y1="22" x2="504" y2="66" stroke="#2d1f0e" stroke-width="1"/>
+          <!-- Clef -->
+          <text x="33" y="60" font-size="38" fill="#2d1f0e" font-family="serif">𝄞</text>
+          <!-- Time sig 2/4 -->
+          <text x="74" y="42" font-size="20" fill="#2d1f0e" font-weight="bold" font-family="serif">2</text>
+          <text x="74" y="62" font-size="20" fill="#2d1f0e" font-weight="bold" font-family="serif">4</text>
+          <!-- Note 1 (UT1) -->
+          <ellipse cx="130" cy="49" rx="9" ry="6" fill="#c8821a" transform="rotate(-12,130,49)"/>
+          <line x1="139" y1="49" x2="139" y2="22" stroke="#c8821a" stroke-width="2"/>
+          <!-- Note 2 (UT2) -->
+          <ellipse cx="200" cy="49" rx="9" ry="6" fill="#c8821a" transform="rotate(-12,200,49)"/>
+          <line x1="209" y1="49" x2="209" y2="22" stroke="#c8821a" stroke-width="2"/>
+          <!-- barline -->
+          <line x1="255" y1="22" x2="255" y2="66" stroke="#2d1f0e" stroke-width="1.2"/>
+          <!-- Half note (UC) -->
+          <ellipse cx="320" cy="49" rx="9" ry="6" fill="none" stroke="#4a6741" stroke-width="2" transform="rotate(-12,320,49)"/>
+          <line x1="329" y1="49" x2="329" y2="22" stroke="#4a6741" stroke-width="2"/>
+          <!-- barline -->
+          <line x1="390" y1="22" x2="390" y2="66" stroke="#2d1f0e" stroke-width="1.2"/>
+          <!-- Labels -->
+          <text x="120" y="85" font-family="DM Sans" font-size="10" fill="#c8821a" font-weight="bold">♩ = U.T.</text>
+          <text x="183" y="85" font-family="DM Sans" font-size="10" fill="#c8821a" font-weight="bold">♩ = U.T.</text>
+          <text x="303" y="85" font-family="DM Sans" font-size="10" fill="#4a6741" font-weight="bold">♩. = U.C.</text>
+          <!-- Braces -->
+          <path d="M118 74 L240 74" stroke="#c8821a" stroke-width="1.2" stroke-dasharray="3,2"/>
+          <path d="M179 76 L179 80" stroke="#c8821a" stroke-width="1.2"/>
+          <text x="148" y="83" font-family="DM Sans" font-size="9" fill="#c8821a">2 × U.T.</text>
+          <path d="M308 74 L380 74" stroke="#4a6741" stroke-width="1.2" stroke-dasharray="3,2"/>
+          <text x="318" y="83" font-family="DM Sans" font-size="9" fill="#4a6741">1 × U.C.</text>
+        </svg>
+      </div>
+
+      <div class="info-box note">
+        <span class="icon">📌</span>
+        <span><strong>Obs.:</strong> Normalmente não se usa traço separando as fórmulas de compasso — a 3ª linha da pauta serve de separação entre numerador e denominador. As expressões "numerador" e "denominador" são usadas por analogia com fração matemática, mas <strong>não são frações matemáticas</strong>.</span>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-header" onclick="toggleAccordion(this)">📌 Como ler a fórmula de compasso? <span class="accordion-arrow">▾</span></div>
+        <div class="accordion-body">
+          Exemplo: <strong>2/4</strong><br><br>
+          • <strong>2</strong> (número superior / numerador) → quantidade de tempos por compasso<br>
+          • <strong>4</strong> (número inferior / denominador) → figura que representa a unidade de tempo (a semínima, que tem número equivalente 4)<br><br>
+          Portanto, <strong>2/4</strong> = dois tempos por compasso, cada tempo valendo uma semínima.<br><br>
+          Nos compassos simples, os números da fórmula indicam as <strong>figuras da divisão</strong>. Isso <em>não</em> acontece nos compassos compostos (próximo módulo).
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FÓRMULA ── -->
+    <div class="tab-panel" id="tab-formula">
+      <div class="section-header">
+        <div class="section-num">02</div>
+        <div>
+          <h2>Fórmula de Compasso</h2>
+          <p>Numeradores, denominadores e os números equivalentes de cada figura</p>
+        </div>
+      </div>
+
+      <div class="concept-card">
+        <h3>Números Superiores — Numeradores</h3>
+        <p>Indicam a <strong>quantidade de tempos</strong> por compasso. Os numeradores nos compassos simples são:</p>
+      </div>
+
+      <div class="formula-grid">
+        <div class="formula-card">
+          <div class="formula-frac"><div class="formula-num">2</div></div>
+          <div class="formula-name">Binário Simples</div>
+          <div class="formula-desc">2 tempos por compasso</div>
+        </div>
+        <div class="formula-card">
+          <div class="formula-frac"><div class="formula-num">3</div></div>
+          <div class="formula-name">Ternário Simples</div>
+          <div class="formula-desc">3 tempos por compasso</div>
+        </div>
+        <div class="formula-card">
+          <div class="formula-frac"><div class="formula-num">4</div></div>
+          <div class="formula-name">Quaternário Simples</div>
+          <div class="formula-desc">4 tempos por compasso</div>
+        </div>
+        <div class="formula-card">
+          <div class="formula-frac"><div class="formula-num">5</div></div>
+          <div class="formula-name">Quinário Simples</div>
+          <div class="formula-desc">5 tempos por compasso</div>
+        </div>
+        <div class="formula-card">
+          <div class="formula-frac"><div class="formula-num">7</div></div>
+          <div class="formula-name">Setenário Simples</div>
+          <div class="formula-desc">7 tempos por compasso</div>
+        </div>
+      </div>
+
+      <div class="concept-card blue">
+        <h3>Números Inferiores — Denominadores</h3>
+        <p>Indicam a <strong>qualidade do tempo</strong> — a figura que representa a unidade de tempo. Cada figura tem um <strong>número equivalente</strong>:</p>
+      </div>
+
+      <div class="denom-grid">
+        <div class="denom-card">
+          <span class="denom-figure">𝅝</span>
+          <span class="denom-num">1</span>
+          <span class="denom-name">Semibreve</span>
+        </div>
+        <div class="denom-card">
+          <span class="denom-figure">𝅗𝅥</span>
+          <span class="denom-num">2</span>
+          <span class="denom-name">Mínima</span>
+        </div>
+        <div class="denom-card" style="border-color:var(--amber); background:rgba(200,130,26,0.06);">
+          <span class="denom-figure">♩</span>
+          <span class="denom-num" style="color:var(--amber);">4</span>
+          <span class="denom-name">Semínima</span>
+        </div>
+        <div class="denom-card">
+          <span class="denom-figure">♪</span>
+          <span class="denom-num">8</span>
+          <span class="denom-name">Colcheia</span>
+        </div>
+        <div class="denom-card">
+          <span class="denom-figure" style="font-size:18px;">𝅘𝅥𝅯</span>
+          <span class="denom-num">16</span>
+          <span class="denom-name">Semicolcheia</span>
+        </div>
+        <div class="denom-card">
+          <span class="denom-figure" style="font-size:16px;">𝅘𝅥𝅰</span>
+          <span class="denom-num">32</span>
+          <span class="denom-name">Fusa</span>
+        </div>
+        <div class="denom-card">
+          <span class="denom-figure" style="font-size:14px;">𝅘𝅥𝅱</span>
+          <span class="denom-num">64</span>
+          <span class="denom-name">Semifusa</span>
+        </div>
+      </div>
+
+      <div class="info-box tip">
+        <span class="icon">💡</span>
+        <span>Macete: os denominadores são sempre potências de 2 — 1, 2, 4, 8, 16, 32, 64. O <strong>4/4</strong> é o mais comum (semínima = 1 tempo). No <strong>2/2</strong> a mínima vale 1 tempo.</span>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-header" onclick="toggleAccordion(this)">🎓 Como calcular a Unidade de Compasso (U.C.)? <span class="accordion-arrow">▾</span></div>
+        <div class="accordion-body">
+          A U.C. é a soma de todas as U.T. do compasso:<br><br>
+          <strong>2/4:</strong> 2 semínimas = 1 mínima → U.C. = mínima<br>
+          <strong>3/4:</strong> 3 semínimas = 1 mínima pontuada → U.C. = mínima pontuada<br>
+          <strong>4/4:</strong> 4 semínimas = 1 semibreve → U.C. = semibreve<br>
+          <strong>3/8:</strong> 3 colcheias = 1 semínima pontuada → U.C. = semínima pontuada<br><br>
+          <em>Atenção:</em> nos compassos simples, a U.C. é sempre uma figura pontuada (exceto quando há número par de tempos com resultado exato).
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FORMAÇÕES ── -->
+    <div class="tab-panel" id="tab-formacoes">
+      <div class="section-header">
+        <div class="section-num">03</div>
+        <div>
+          <h2>Formações dos Compassos Simples</h2>
+          <p>Binários, Ternários e Quaternários — todas as fórmulas de cada família</p>
+        </div>
+      </div>
+
+      <!-- Binários -->
+      <div class="concept-card">
+        <h3>Binários — 2 tempos</h3>
+        <p>O numerador <strong>2</strong> indica dois tempos por compasso. A família binária simples inclui todas as fórmulas com diferentes denominadores:</p>
+      </div>
+
+      <div class="formulas-row-wrap">
+        <h4>🎼 Fórmulas Binárias Simples</h4>
+        <div class="formulas-inline">
+          <div class="fi-chip special"><span class="fn">2</span><span class="fd">1</span></div>
+          <div class="fi-chip special"><span class="fn">2</span><span class="fd">2</span></div>
+          <div class="fi-chip"><span class="fn">2</span><span class="fd">4</span></div>
+          <div class="fi-chip"><span class="fn">2</span><span class="fd">8</span></div>
+          <div class="fi-chip"><span class="fn">2</span><span class="fd">16</span></div>
+          <div class="fi-chip"><span class="fn">2</span><span class="fd">32</span></div>
+          <div class="fi-chip"><span class="fn">2</span><span class="fd">64</span></div>
+        </div>
+        <div style="margin-top:10px; font-size:12.5px; color:#8a6840;">
+          ⚠️ O 2/2 (𝄵) é especial: a <strong>mínima vale uma unidade de tempo</strong> (1 tempo)!
+        </div>
+      </div>
+
+      <!-- Ternários -->
+      <div class="concept-card green">
+        <h3>Ternários — 3 tempos</h3>
+        <p>O numerador <strong>3</strong> indica três tempos por compasso. O compasso 3/4 é o mais comum da família (valsa, mazurca, etc.):</p>
+      </div>
+
+      <div class="formulas-row-wrap">
+        <h4>🎼 Fórmulas Ternárias Simples</h4>
+        <div class="formulas-inline">
+          <div class="fi-chip"><span class="fn">3</span><span class="fd">1</span></div>
+          <div class="fi-chip"><span class="fn">3</span><span class="fd">2</span></div>
+          <div class="fi-chip special"><span class="fn">3</span><span class="fd">4</span></div>
+          <div class="fi-chip"><span class="fn">3</span><span class="fd">8</span></div>
+          <div class="fi-chip"><span class="fn">3</span><span class="fd">16</span></div>
+          <div class="fi-chip"><span class="fn">3</span><span class="fd">32</span></div>
+          <div class="fi-chip"><span class="fn">3</span><span class="fd">64</span></div>
+        </div>
+        <div style="margin-top:10px; font-size:12.5px; color:#8a6840;">
+          No 3/8: colcheia = U.T. → Bona 82 (Andante mosso)
+        </div>
+      </div>
+
+      <!-- Quaternários -->
+      <div class="concept-card blue">
+        <h3>Quaternários — 4 tempos</h3>
+        <p>O numerador <strong>4</strong> indica quatro tempos por compasso. O 4/4 (𝄴) é o compasso mais utilizado em música vocal e coral:</p>
+      </div>
+
+      <div class="formulas-row-wrap">
+        <h4>🎼 Fórmulas Quaternárias Simples</h4>
+        <div class="formulas-inline">
+          <div class="fi-chip"><span class="fn">4</span><span class="fd">1</span></div>
+          <div class="fi-chip"><span class="fn">4</span><span class="fd">2</span></div>
+          <div class="fi-chip special"><span class="fn">4</span><span class="fd">4</span></div>
+          <div class="fi-chip"><span class="fn">4</span><span class="fd">8</span></div>
+          <div class="fi-chip"><span class="fn">4</span><span class="fd">16</span></div>
+          <div class="fi-chip"><span class="fn">4</span><span class="fd">32</span></div>
+          <div class="fi-chip"><span class="fn">4</span><span class="fd">64</span></div>
+        </div>
+        <div style="margin-top:10px; font-size:12.5px; color:#8a6840;">
+          No 4/4: semínima = U.T. (1 tempo); semibreve = U.C. (4 tempos)
+        </div>
+      </div>
+
+      <div class="info-box warn">
+        <span class="icon">⚠️</span>
+        <span>Atenção especial ao <strong>2/2 (𝄵)</strong>: neste compasso, a <strong>Mínima vale uma unidade de tempo</strong> — não a semínima! Isso muda completamente a leitura das figuras (Bona 78).</span>
+      </div>
+
+      <table class="compasso-table" style="margin-top:8px;">
+        <thead>
+          <tr>
+            <th>Fórmula</th>
+            <th>Família</th>
+            <th>U.T.</th>
+            <th>U.C.</th>
+            <th>Lição Bona</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="mono">2/4</td><td>Binário</td><td>Semínima</td><td>Mínima</td><td>Bona 79</td></tr>
+          <tr><td class="mono">2/2 (𝄵)</td><td>Binário</td><td><strong>Mínima</strong></td><td>Semibreve</td><td>Bona 78 ⚠️</td></tr>
+          <tr><td class="mono">3/4</td><td>Ternário</td><td>Semínima</td><td>Mínima pontuada</td><td>Bona 83, 84</td></tr>
+          <tr><td class="mono">3/8</td><td>Ternário</td><td><strong>Colcheia</strong></td><td>Semínima pontuada</td><td>Bona 81, 82</td></tr>
+          <tr><td class="mono">4/4 (𝄴)</td><td>Quaternário</td><td>Semínima</td><td>Semibreve</td><td>Bona 77</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── ACENTUAÇÃO ── -->
+    <div class="tab-panel" id="tab-acentuacao">
+      <div class="section-header">
+        <div class="section-num">04</div>
+        <div>
+          <h2>Acentuação Métrica</h2>
+          <p>Na subdivisão binária dos compassos simples: 1ª parte FORTE, 2ª parte fraca</p>
+        </div>
+      </div>
+
+      <div class="concept-card">
+        <h3>Regra Geral da Subdivisão Binária</h3>
+        <p>Na <strong>subdivisão dos compassos simples</strong> (subdivisão binária), o acento métrico das <strong>partes do tempo</strong> é: <strong>1ª FORTE</strong> e <strong>2ª fraca</strong>. Isso se aplica a cada tempo individualmente, além dos tempos do compasso como um todo.</p>
+      </div>
+
+      <div class="acentuacao-wrap">
+        <h4>📊 Padrões de Acentuação por Compasso</h4>
+
+        <!-- 3/4 -->
+        <div class="beat-group">
+          <div class="beat-group-label">3/4 — Ternário Simples</div>
+          <div class="beat-row">
+            <div class="beat-type-label">Tempos →</div>
+            <div class="beat F">F</div>
+            <div class="beat f">f</div>
+            <div class="beat f">f</div>
+          </div>
+          <div class="beat-subrow">F f &nbsp; F f &nbsp; F f</div>
+          <div style="font-size:11.5px; color:#8a6840; padding-left:96px; margin-bottom:4px;">↑ partes do tempo (subdivisão binária de cada tempo)</div>
+        </div>
+
+        <!-- 3/4 with more subdivision -->
+        <div class="beat-group">
+          <div class="beat-group-label">3/4 — com subdivição de colcheias</div>
+          <div class="beat-row">
+            <div class="beat-type-label">Tempos →</div>
+            <div class="beat F">F</div>
+            <div class="beat f">f</div>
+            <div class="beat f">f</div>
+          </div>
+          <div class="beat-subrow">F f &nbsp;F f &nbsp;F f</div>
+        </div>
+
+        <!-- 4/4 -->
+        <div class="beat-group">
+          <div class="beat-group-label">4/4 — Quaternário Simples</div>
+          <div class="beat-row">
+            <div class="beat-type-label">Tempos →</div>
+            <div class="beat F">F</div>
+            <div class="beat f">f</div>
+            <div class="beat mF">mF</div>
+            <div class="beat f">f</div>
+          </div>
+          <div class="beat-subrow">Ff &nbsp;Ff &nbsp;Ff &nbsp;Ff</div>
+        </div>
+      </div>
+
+      <div class="info-box blue">
+        <span class="icon">🔍</span>
+        <span>No compasso <strong>4/4</strong> o padrão completo é: <strong>FORTE · fraco · meio-forte · fraco</strong>. O 3º tempo tem acento médio-forte (mF) — mais fraco que o 1º, mas mais forte que os tempos 2 e 4.</span>
+      </div>
+
+      <!-- Legend -->
+      <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px; padding:16px 20px; background:var(--card-bg); border:1px solid var(--border); border-radius:12px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div class="beat F" style="width:32px; height:32px; font-size:12px;">F</div>
+          <span style="font-size:13px; color:var(--brown);"><strong>F</strong> = FORTE (acento principal)</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div class="beat f" style="width:32px; height:32px; font-size:12px;">f</div>
+          <span style="font-size:13px; color:var(--brown);"><strong>f</strong> = fraco (sem acento)</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div class="beat mF" style="width:32px; height:32px; font-size:11px;">mF</div>
+          <span style="font-size:13px; color:var(--brown);"><strong>mF</strong> = meio-forte (acento secundário)</span>
+        </div>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-header" onclick="toggleAccordion(this)">🎓 Subdivisão binária na prática <span class="accordion-arrow">▾</span></div>
+        <div class="accordion-body">
+          A subdivisão binária significa que cada tempo do compasso simples se divide em <strong>2 partes iguais</strong>. Por isso, a figura que representa a U.T. é sempre divisível por 2 (simples, não pontuada).<br><br>
+          Exemplo no 3/4 com semínimas subdivididas em colcheias:<br>
+          • Tempo 1: 1ª colcheia = FORTE, 2ª colcheia = fraca<br>
+          • Tempo 2: 1ª colcheia = forte (menor que T1), 2ª colcheia = fraca<br>
+          • Tempo 3: 1ª colcheia = forte (menor que T1), 2ª colcheia = fraca<br><br>
+          Isso cria o padrão: <strong>F f · F f · F f</strong> — alternância constante dentro de cada tempo.
+        </div>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-header" onclick="toggleAccordion(this)">📌 Diferença entre acento dos TEMPOS e acento das PARTES <span class="accordion-arrow">▾</span></div>
+        <div class="accordion-body">
+          Há dois níveis de acentuação nos compassos simples:<br><br>
+          <strong>Nível 1 — Tempos do compasso:</strong> O primeiro tempo é sempre o mais forte. No 4/4, o 3º tem acento secundário.<br><br>
+          <strong>Nível 2 — Partes do tempo (subdivisão):</strong> Dentro de cada tempo, a 1ª metade é FORTE e a 2ª é fraca — independente do peso do tempo no compasso.<br><br>
+          O solfejo combina ambos os níveis simultaneamente, o que dá a sensação rítmica natural da música.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── EXERCÍCIOS ── -->
+    <div class="tab-panel" id="tab-exercicios">
+      <div class="section-header">
+        <div class="section-num">05</div>
+        <div>
+          <h2>Exercícios — Bona 77 a 84</h2>
+          <p>Solfejo aplicado aos compassos simples binário, ternário e quaternário</p>
+        </div>
+      </div>
+
+      <div class="info-box note">
+        <span class="icon">📖</span>
+        <span>As lições Bona 77–84 aplicam diretamente os conceitos de compassos simples. Cada lição trabalha uma família e denominador diferente — sempre identificando qual figura vale <strong>uma unidade de tempo</strong> antes de começar.</span>
+      </div>
+
+      <div class="exercise-grid">
+        <div class="exercise-item">
+          <div class="ex-label">Bona 77</div>
+          <p><strong>Andante — 4/4 (semínima = U.T.).</strong> Lição em quaternário simples. Pode ser estudada também em compasso binário 2/2. Inclui tercinas e escala em fusas.</p>
+        </div>
+        <div class="exercise-item">
+          <div class="ex-label">Bona 78</div>
+          <p><strong>Allegro moderato — 2/2 (𝄵).</strong> ⚠️ Fórmula especial: <strong>Mínima = 1 tempo</strong>! Cada mínima vale uma unidade de tempo. Contém tercinas.</p>
+        </div>
+        <div class="exercise-item">
+          <div class="ex-label">Bona 79</div>
+          <p><strong>Andantino — 2/4 (semínima = U.T.).</strong> Binário simples com variedade rítmica. Acidentes ocorrentes, semicolcheias e ligaduras.</p>
+        </div>
+        <div class="exercise-item">
+          <div class="ex-label">Bona 80</div>
+          <p><strong>Larghetto — 2/4.</strong> Binário com abundância de tercinas. ⚠️ Nunca acentuar a 3ª nota das tercinas (lembre: MÚ-SI-CA).</p>
+        </div>
+        <div class="exercise-item">
+          <div class="ex-label">Bona 81</div>
+          <p><strong>Allegro moderato assai — 3/8 (colcheia = U.T.).</strong> Ternário com colcheia valendo um tempo. ⚠️ Não acentuar prolongamento de notas.</p>
+        </div>
+        <div class="exercise-item">
+          <div class="ex-label">Bona 82</div>
+          <p><strong>Andante mosso — 3/8.</strong> Ternário com colcheia como U.T. e tercinas. Combina quiálteras com subdivisão ternária do compasso.</p>
+        </div>
+        <div class="exercise-item">
+          <div class="ex-label">Bona 83</div>
+          <p><strong>Larghetto — 3/4 (semínima = U.T. em Ternário).</strong> Expressivo e lento. Grande quantidade de tercinas. Atenção ao peso dos 3 tempos.</p>
+        </div>
+        <div class="exercise-item">
+          <div class="ex-label">Bona 84</div>
+          <p><strong>Larghetto mosso — 3/4.</strong> Ternário com andamento um pouco mais movido. Tercinas em vários pontos. Lição longa e tecnicamente exigente.</p>
+        </div>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-header" onclick="toggleAccordion(this)">🎓 Passo a passo para estudar cada lição <span class="accordion-arrow">▾</span></div>
+        <div class="accordion-body">
+          <strong>1. Identifique a fórmula de compasso</strong> — qual é o numerador (quantidade de tempos) e qual figura vale 1 tempo (denominador).<br><br>
+          <strong>2. Determine a U.T. e a U.C.</strong> — saiba qual figura preenche um tempo e qual preenche o compasso inteiro.<br><br>
+          <strong>3. Marque o andamento</strong> com metrônomo na U.T. (não na semínima se a U.T. for diferente).<br><br>
+          <strong>4. Identifique o padrão de acentuação</strong> — qual tempo é FORTE, qual é fraco, se há meio-forte.<br><br>
+          <strong>5. Leia a lição em andamento lento</strong> antes de acelerar ao tempo indicado.
+        </div>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-header" onclick="toggleAccordion(this)">⚠️ Armadilha do Bona 78 — compasso alla breve (𝄵) <span class="accordion-arrow">▾</span></div>
+        <div class="accordion-body">
+          No compasso 2/2 (também escrito 𝄵 ou "alla breve"), a <strong>mínima</strong> vale 1 tempo — não a semínima. Isso significa:<br><br>
+          • Semibreve = 2 tempos<br>
+          • Mínima = 1 tempo ✓<br>
+          • Semínima = ½ tempo<br>
+          • Colcheia = ¼ tempo<br><br>
+          Se você marcar o metrônomo na semínima como de costume, estará dobrando a velocidade real da lição. O metrônomo deve marcar na <strong>mínima</strong>.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── QUIZ ── -->
+    <div class="tab-panel" id="tab-quiz">
+      <div class="section-header">
+        <div class="section-num">06</div>
+        <div>
+          <h2>Quiz Interativo</h2>
+          <p>Teste seus conhecimentos sobre Compassos Simples</p>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+
+        <div class="quiz-card" data-q="1">
+          <div class="q-num">Questão 01 / 08</div>
+          <div class="q-text">Nos compassos simples, a Unidade de Tempo (U.T.) é representada por figuras:</div>
+          <div class="options">
+            <div class="option" onclick="answerQ(this,1,'C')" data-key="A"><span class="option-letter">A</span> Pontuadas</div>
+            <div class="option" onclick="answerQ(this,1,'C')" data-key="B"><span class="option-letter">B</span> Com valor dobrado</div>
+            <div class="option" onclick="answerQ(this,1,'C')" data-key="C"><span class="option-letter">C</span> Divisíveis por 2 — simples, não pontuadas</div>
+            <div class="option" onclick="answerQ(this,1,'C')" data-key="D"><span class="option-letter">D</span> Divisíveis por 3</div>
+          </div>
+          <div class="feedback" id="fb1"></div>
+        </div>
+
+        <div class="quiz-card" data-q="2">
+          <div class="q-num">Questão 02 / 08</div>
+          <div class="q-text">Na fórmula de compasso 3/8, qual figura representa a Unidade de Tempo?</div>
+          <div class="options">
+            <div class="option" onclick="answerQ(this,2,'B')" data-key="A"><span class="option-letter">A</span> Semínima</div>
+            <div class="option" onclick="answerQ(this,2,'B')" data-key="B"><span class="option-letter">B</span> Colcheia</div>
+            <div class="option" onclick="answerQ(this,2,'B')" data-key="C"><span class="option-letter">C</span> Semicolcheia</div>
+            <div class="option" onclick="answerQ(this,2,'B')" data-key="D"><span class="option-letter">D</span> Mínima</div>
+          </div>
+          <div class="feedback" id="fb2"></div>
+        </div>
+
+        <div class="quiz-card" data-q="3">
+          <div class="q-num">Questão 03 / 08</div>
+          <div class="q-text">O número superior (numerador) da fórmula de compasso indica:</div>
+          <div class="options">
+            <div class="option" onclick="answerQ(this,3,'A')" data-key="A"><span class="option-letter">A</span> A quantidade de tempos por compasso</div>
+            <div class="option" onclick="answerQ(this,3,'A')" data-key="B"><span class="option-letter">B</span> A figura que representa a unidade de tempo</div>
+            <div class="option" onclick="answerQ(this,3,'A')" data-key="C"><span class="option-letter">C</span> O andamento da música</div>
+            <div class="option" onclick="answerQ(this,3,'A')" data-key="D"><span class="option-letter">D</span> O número de compassos por linha</div>
+          </div>
+          <div class="feedback" id="fb3"></div>
+        </div>
+
+        <div class="quiz-card" data-q="4">
+          <div class="q-num">Questão 04 / 08</div>
+          <div class="q-text">No compasso 2/2 (alla breve — 𝄵), qual figura vale uma unidade de tempo?</div>
+          <div class="options">
+            <div class="option" onclick="answerQ(this,4,'C')" data-key="A"><span class="option-letter">A</span> Semínima</div>
+            <div class="option" onclick="answerQ(this,4,'C')" data-key="B"><span class="option-letter">B</span> Colcheia</div>
+            <div class="option" onclick="answerQ(this,4,'C')" data-key="C"><span class="option-letter">C</span> Mínima</div>
+            <div class="option" onclick="answerQ(this,4,'C')" data-key="D"><span class="option-letter">D</span> Semibreve</div>
+          </div>
+          <div class="feedback" id="fb4"></div>
+        </div>
+
+        <div class="quiz-card" data-q="5">
+          <div class="q-num">Questão 05 / 08</div>
+          <div class="q-text">Qual compasso recebe o nome de "Ternário Simples"?</div>
+          <div class="options">
+            <div class="option" onclick="answerQ(this,5,'B')" data-key="A"><span class="option-letter">A</span> Compasso com numerador 2</div>
+            <div class="option" onclick="answerQ(this,5,'B')" data-key="B"><span class="option-letter">B</span> Compasso com numerador 3</div>
+            <div class="option" onclick="answerQ(this,5,'B')" data-key="C"><span class="option-letter">C</span> Compasso com numerador 4</div>
+            <div class="option" onclick="answerQ(this,5,'B')" data-key="D"><span class="option-letter">D</span> Compasso com denominador 3</div>
+          </div>
+          <div class="feedback" id="fb5"></div>
+        </div>
+
+        <div class="quiz-card" data-q="6">
+          <div class="q-num">Questão 06 / 08</div>
+          <div class="q-text">A Unidade de Compasso (U.C.) é obtida:</div>
+          <div class="options">
+            <div class="option" onclick="answerQ(this,6,'B')" data-key="A"><span class="option-letter">A</span> Dividindo-se o denominador pelo numerador</div>
+            <div class="option" onclick="answerQ(this,6,'B')" data-key="B"><span class="option-letter">B</span> Somando-se todas as Unidades de Tempo do compasso</div>
+            <div class="option" onclick="answerQ(this,6,'B')" data-key="C"><span class="option-letter">C</span> Multiplicando a U.T. pelo andamento</div>
+            <div class="option" onclick="answerQ(this,6,'B')" data-key="D"><span class="option-letter">D</span> É sempre a semibreve, independente da fórmula</div>
+          </div>
+          <div class="feedback" id="fb6"></div>
+        </div>
+
+        <div class="quiz-card" data-q="7">
+          <div class="q-num">Questão 07 / 08</div>
+          <div class="q-text">Na subdivisão binária dos compassos simples, o acento métrico das partes do tempo é:</div>
+          <div class="options">
+            <div class="option" onclick="answerQ(this,7,'A')" data-key="A"><span class="option-letter">A</span> 1ª FORTE e 2ª fraca</div>
+            <div class="option" onclick="answerQ(this,7,'A')" data-key="B"><span class="option-letter">B</span> 1ª fraca e 2ª FORTE</div>
+            <div class="option" onclick="answerQ(this,7,'A')" data-key="C"><span class="option-letter">C</span> Ambas com o mesmo peso</div>
+            <div class="option" onclick="answerQ(this,7,'A')" data-key="D"><span class="option-letter">D</span> Depende do andamento</div>
+          </div>
+          <div class="feedback" id="fb7"></div>
+        </div>
+
+        <div class="quiz-card" data-q="8">
+          <div class="q-num">Questão 08 / 08</div>
+          <div class="q-text">Qual é o número equivalente da Semínima (♩) como denominador de fórmula de compasso?</div>
+          <div class="options">
+            <div class="option" onclick="answerQ(this,8,'C')" data-key="A"><span class="option-letter">A</span> 2</div>
+            <div class="option" onclick="answerQ(this,8,'C')" data-key="B"><span class="option-letter">B</span> 8</div>
+            <div class="option" onclick="answerQ(this,8,'C')" data-key="C"><span class="option-letter">C</span> 4</div>
+            <div class="option" onclick="answerQ(this,8,'C')" data-key="D"><span class="option-letter">D</span> 1</div>
+          </div>
+          <div class="feedback" id="fb8"></div>
+        </div>
+
+        <div class="quiz-score" id="quizScore">
+          <div class="big-score" id="scoreText"></div>
+          <p id="scoreMsg"></p>
+          <button class="btn-retry" onclick="resetQuiz()">🔄 Tentar Novamente</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CONTATOS ── -->
+    <div class="tab-panel" id="tab-contatos">
+      <div class="section-header">
+        <div class="section-num">07</div>
+        <div>
+          <h2>Inscrições &amp; Contato</h2>
+          <p>Links úteis para continuar sua jornada musical</p>
+        </div>
+      </div>
+
+      <div class="cta-grid">
+        <a href="https://candid-tanuki-66ac7b.netlify.app" target="_blank" class="cta-card primary">
+          <div class="cta-icon">📝</div>
+          <h3>Inscrições no Curso</h3>
+          <p>Garanta sua vaga no curso completo de teoria musical. Preencha o formulário de inscrição.</p>
+          <div class="cta-btn">Acessar Inscrições →</div>
+        </a>
+        <a href="https://sage-narwhal-db712d.netlify.app" target="_blank" class="cta-card secondary">
+          <div class="cta-icon">👨‍🏫</div>
+          <h3>Contato do Professor</h3>
+          <p>Tire suas dúvidas diretamente com o professor. Acesse o canal de atendimento.</p>
+          <div class="cta-btn">Falar com Professor →</div>
+        </a>
+      </div>
+
+      <div class="concept-card" style="margin-top:24px;">
+        <h3>📚 Sobre este Módulo</h3>
+        <p>Este é o <strong>10º Módulo</strong> do curso de Teoria Musical. Neste módulo você aprendeu sobre os <strong>Compassos Simples</strong>: conceito de Compasso, <strong>Unidade de Tempo (U.T.)</strong> e <strong>Unidade de Compasso (U.C.)</strong>, leitura da <strong>Fórmula de Compasso</strong> (numerador e denominador), as famílias <strong>Binária, Ternária e Quaternária</strong> com todas as suas fórmulas, e a <strong>Acentuação Métrica</strong> na subdivisão binária. As lições Bona 77–84 consolidam tudo na prática.</p>
+      </div>
+
+      <div class="info-box tip">
+        <span class="icon">🎵</span>
+        <span>O módulo 10 prepara o terreno para o <strong>Módulo 11 — Compassos Compostos</strong>, onde a U.T. será uma figura pontuada e a subdivisão será ternária. Vale revisar bem as fórmulas simples antes de avançar!</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const USERS = {'aluno':'musica123','professor':'prof2024','admin':'admin123'};
+
+  function doLogin() {
+    const u = document.getElementById('loginUser').value.trim();
+    const p = document.getElementById('loginPass').value;
+    const err = document.getElementById('loginErr');
+    if (USERS[u] && USERS[u] === p) {
+      const ls = document.getElementById('loginScreen');
+      ls.style.opacity='0'; ls.style.transition='opacity 0.4s';
+      setTimeout(()=>{ ls.style.display='none'; },400);
+      document.getElementById('app').classList.add('visible');
+      document.getElementById('headerUser').textContent='👤 '+u;
+      err.textContent='';
+    } else {
+      err.textContent='⚠️ Usuário ou senha incorretos.';
+      document.getElementById('loginPass').value='';
+    }
+  }
+
+  document.getElementById('loginPass').addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
+  document.getElementById('loginUser').addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('loginPass').focus(); });
+
+  function doLogout() {
+    document.getElementById('app').classList.remove('visible');
+    document.getElementById('app').style.display='none';
+    const ls=document.getElementById('loginScreen');
+    ls.style.display='flex'; ls.style.opacity='0';
+    setTimeout(()=>{ ls.style.opacity='1'; ls.style.transition='opacity 0.3s'; },10);
+    document.getElementById('loginUser').value='';
+    document.getElementById('loginPass').value='';
+  }
+
+  function showTab(id) {
+    document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===id));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.id==='tab-'+id));
+  }
+
+  function toggleAccordion(header) {
+    header.classList.toggle('open');
+    header.nextElementSibling.classList.toggle('open');
+  }
+
+  // QUIZ
+  let quizAnswers={};
+  const correctAnswers={1:'C',2:'B',3:'A',4:'C',5:'B',6:'B',7:'A',8:'C'};
+  const feedbacks={
+    1:{ok:'✅ Correto! Compassos simples usam figuras simples (não pontuadas), divisíveis por 2.',no:'❌ Errado. Nos compassos simples a U.T. é uma figura simples, não pontuada, divisível por 2.'},
+    2:{ok:'✅ Certo! No 3/8, o denominador 8 indica que a colcheia é a U.T.',no:'❌ Errado. Em 3/8, o denominador 8 indica que a COLCHEIA é a Unidade de Tempo.'},
+    3:{ok:'✅ Correto! O número superior indica a quantidade de tempos por compasso.',no:'❌ Errado. O número SUPERIOR (numerador) indica a QUANTIDADE DE TEMPOS por compasso.'},
+    4:{ok:'✅ Certo! No 2/2 (alla breve), a MÍNIMA vale 1 tempo!',no:'❌ Errado. No compasso 2/2 (𝄵), a MÍNIMA é a Unidade de Tempo (1 tempo).'},
+    5:{ok:'✅ Correto! Ternário = numerador 3 = três tempos por compasso.',no:'❌ Errado. Ternário Simples tem numerador 3 (três tempos por compasso).'},
+    6:{ok:'✅ Certo! A U.C. é a soma de todas as U.T. do compasso.',no:'❌ Errado. A Unidade de Compasso (U.C.) é obtida SOMANDO todas as Unidades de Tempo.'},
+    7:{ok:'✅ Correto! Na subdivisão binária: 1ª parte FORTE, 2ª parte fraca.',no:'❌ Errado. Na subdivisão binária dos compassos simples: 1ª FORTE, 2ª fraca.'},
+    8:{ok:'✅ Correto! A semínima tem número equivalente 4 (por isso 4/4, 3/4, 2/4…).',no:'❌ Errado. A semínima (♩) tem número equivalente 4 — daí as fórmulas 4/4, 3/4, 2/4.'},
+  };
+
+  function answerQ(el,qNum) {
+    if(quizAnswers[qNum]!==undefined) return;
+    const chosen=el.dataset.key;
+    quizAnswers[qNum]=chosen;
+    el.closest('.quiz-card').querySelectorAll('.option').forEach(o=>o.classList.add('answered'));
+    const isOk=chosen===correctAnswers[qNum];
+    el.classList.add(isOk?'correct':'wrong');
+    if(!isOk) el.closest('.quiz-card').querySelectorAll('.option').forEach(o=>{ if(o.dataset.key===correctAnswers[qNum]) o.classList.add('revealed'); });
+    const fb=document.getElementById('fb'+qNum);
+    fb.textContent=feedbacks[qNum][isOk?'ok':'no'];
+    fb.className='feedback show '+(isOk?'ok':'no');
+    if(Object.keys(quizAnswers).length===8) showScore();
+  }
+
+  function showScore() {
+    const score=Object.keys(quizAnswers).filter(q=>quizAnswers[q]===correctAnswers[q]).length;
+    document.getElementById('scoreText').textContent=score+'/8';
+    const msgs=['Continue estudando!','Bom começo!','Progredindo!','Metade certa!','Bom resultado!','Muito bem!','Quase lá!','Excelente!','🏆 Perfeito! Módulo 10 dominado!'];
+    document.getElementById('scoreMsg').textContent=msgs[score]||msgs[8];
+    const el=document.getElementById('quizScore');
+    el.classList.add('show');
+    el.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+
+  function resetQuiz() {
+    quizAnswers={};
+    document.querySelectorAll('.quiz-card').forEach(c=>{
+      c.querySelectorAll('.option').forEach(o=>o.className='option');
+      c.querySelectorAll('.feedback').forEach(f=>f.className='feedback');
+    });
+    document.getElementById('quizScore').classList.remove('show');
+  }
+</script>
+</body>
+</html>
