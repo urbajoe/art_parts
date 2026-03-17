@@ -629,62 +629,6 @@
       text-transform: uppercase;
     }
 
-    /* ── MÓDULOS ── */
-    .modules-section {
-      background: var(--ink);
-      padding: 6rem 5%;
-      text-align: center;
-    }
-    .modules-section .section-label { color: var(--gold); }
-    .modules-section .section-title { color: var(--parchment); margin-bottom: 0.5rem; }
-    .modules-subtitle {
-      font-family: "Cormorant Garamond", serif;
-      font-size: 1.1rem;
-      color: rgba(245,239,227,0.5);
-      margin-bottom: 3rem;
-      font-style: italic;
-    }
-    .modules-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 1rem;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-    .module-card {
-      background: rgba(201,151,62,0.07);
-      border: 1px solid rgba(201,151,62,0.2);
-      padding: 1.2rem 1rem;
-      text-decoration: none;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-      transition: background 0.25s, border-color 0.25s, transform 0.25s;
-    }
-    .module-card:hover {
-      background: rgba(201,151,62,0.15);
-      border-color: var(--gold);
-      transform: translateY(-3px);
-    }
-    .module-card .mod-number {
-      font-family: "Playfair Display", serif;
-      font-size: 1.6rem;
-      color: var(--gold);
-      line-height: 1;
-    }
-    .module-card .mod-label {
-      font-family: "Instrument Sans", sans-serif;
-      font-size: 0.68rem;
-      font-weight: 500;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: rgba(245,239,227,0.6);
-    }
-    @media (max-width: 600px) {
-      .modules-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
-    }
-
     /* ── ANIMATIONS ── */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(22px); }
@@ -715,10 +659,9 @@
       <li><a href="#partitura"><span class="tab-icon">🎵</span> A Partitura</a></li>
       <li><a href="#beneficios"><span class="tab-icon">🧠</span> Neurociência</a></li>
       <li><a href="#historia"><span class="tab-icon">📜</span> História</a></li>
-      <li><a href="#modulos"><span class="tab-icon">📚</span> Módulos</a></li>
       <li><a href="#inscricoes"><span class="tab-icon">✉️</span> Inscrições</a></li>
     </ul>
-    <a href="https://sage-narwhal-db712d.netlify.app" target="_blank" class="nav-cta">Inscreva-se</a>
+    <a href="https://urbajoe.github.io/curric_mus/" target="_blank" class="nav-cta">Inscreva-se</a>
   </nav>
 
   <!-- ── HERO ── -->
@@ -744,7 +687,7 @@
       <h1 class="hero-title">A Arte de<br>Ler <em>Partituras</em></h1>
       <p class="hero-subtitle">Da antiguidade às descobertas mais recentes — como a leitura musical transforma o cérebro e a humanidade.</p>
       <div class="hero-ctas">
-        <a href="https://sage-narwhal-db712d.netlify.app" target="_blank" class="btn-primary">Inscrições</a>
+        <a href="https://urbajoe.github.io/curric_mus/" target="_blank" class="btn-primary">Inscrições</a>
         <a href="#beneficios" class="btn-outline">Saiba Mais</a>
       </div>
     </div>
@@ -857,82 +800,9 @@
       <h2 class="section-title reveal">Transforme seu cérebro.<br>Conecte-se à história.</h2>
       <p class="cta-desc reveal">Junte-se a nós e descubra como a leitura de partituras pode aprimorar suas funções cognitivas, enriquecer sua vida cultural e abrir as portas do maior repertório musical já criado pela humanidade.</p>
       <div class="cta-buttons reveal">
-        <a href="https://sage-narwhal-db712d.netlify.app" target="_blank" class="btn-gold">Fazer Inscrição</a>
-        <a href="https://sage-narwhal-db712d.netlify.app" target="_blank" class="btn-dark">Saiba Mais</a>
+        <a href="https://urbajoe.github.io/curric_mus/" target="_blank" class="btn-gold">Fazer Inscrição</a>
+        <a href="https://urbajoe.github.io/curric_mus/" target="_blank" class="btn-dark">Saiba Mais</a>
       </div>
-    </div>
-  </section>
-
-  <!-- ── MÓDULOS ── -->
-  <section class="modules-section" id="modulos">
-    <p class="section-label">Conteúdo do Curso</p>
-    <h2 class="section-title reveal">Módulos</h2>
-    <p class="modules-subtitle reveal">Acesse cada módulo diretamente</p>
-    <div class="modules-grid">
-      <a href="musica-modulo1.html" class="module-card reveal">
-        <span class="mod-number">01</span>
-        <span class="mod-label">Módulo 1</span>
-      </a>
-      <a href="musica-modulo2.html" class="module-card reveal">
-        <span class="mod-number">02</span>
-        <span class="mod-label">Módulo 2</span>
-      </a>
-      <a href="musica-modulo3.html" class="module-card reveal">
-        <span class="mod-number">03</span>
-        <span class="mod-label">Módulo 3</span>
-      </a>
-      <a href="musica-modulo4.html" class="module-card reveal">
-        <span class="mod-number">04</span>
-        <span class="mod-label">Módulo 4</span>
-      </a>
-      <a href="modulo5_musica.html" class="module-card reveal">
-        <span class="mod-number">05</span>
-        <span class="mod-label">Módulo 5</span>
-      </a>
-      <a href="musica_modulo6.html" class="module-card reveal">
-        <span class="mod-number">06</span>
-        <span class="mod-label">Módulo 6</span>
-      </a>
-      <a href="musica_modulo7.html" class="module-card reveal">
-        <span class="mod-number">07</span>
-        <span class="mod-label">Módulo 7</span>
-      </a>
-      <a href="musica_modulo8.html" class="module-card reveal">
-        <span class="mod-number">08</span>
-        <span class="mod-label">Módulo 8</span>
-      </a>
-      <a href="musica_modulo9.html" class="module-card reveal">
-        <span class="mod-number">09</span>
-        <span class="mod-label">Módulo 9</span>
-      </a>
-      <a href="musica_modulo10.html" class="module-card reveal">
-        <span class="mod-number">10</span>
-        <span class="mod-label">Módulo 10</span>
-      </a>
-      <a href="musica_modulo11.html" class="module-card reveal">
-        <span class="mod-number">11</span>
-        <span class="mod-label">Módulo 11</span>
-      </a>
-      <a href="musica_modulo12.html" class="module-card reveal">
-        <span class="mod-number">12</span>
-        <span class="mod-label">Módulo 12</span>
-      </a>
-      <a href="musica_modulo13.html" class="module-card reveal">
-        <span class="mod-number">13</span>
-        <span class="mod-label">Módulo 13</span>
-      </a>
-      <a href="modulo14_musica.html" class="module-card reveal">
-        <span class="mod-number">14</span>
-        <span class="mod-label">Módulo 14</span>
-      </a>
-      <a href="modulo15_musica.html" class="module-card reveal">
-        <span class="mod-number">15</span>
-        <span class="mod-label">Módulo 15</span>
-      </a>
-      <a href="modulo16_music.html" class="module-card reveal">
-        <span class="mod-number">16</span>
-        <span class="mod-label">Módulo 16</span>
-      </a>
     </div>
   </section>
 
@@ -975,7 +845,7 @@
     });
 
     // Active tab on scroll
-    const sections = ["inicio","partitura","beneficios","historia","modulos","inscricoes"];
+    const sections = ["inicio","partitura","beneficios","historia","inscricoes"];
     const navLinks = document.querySelectorAll(".nav-tabs a");
     window.addEventListener("scroll", () => {
       let current = "inicio";
